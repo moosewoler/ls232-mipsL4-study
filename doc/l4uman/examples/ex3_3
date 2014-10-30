@@ -1,0 +1,14 @@
+// This example illustrates how to access the DIT header page and the file 
+// headers.
+
+	Dit_Dhr dhdr;
+	Dit_Phdr phdr;
+
+	dhdr = (Dit_Dhdr *) (kinfo -> dit_hdr);
+
+	phdr = (Dit_Phdr *) ((int) dhdr + dhdr->d_phoff);
+
+	for(i = 0; i < dhdr->d_phnum; i++, phdr++)
+	{
+		/* do some work */
+	}

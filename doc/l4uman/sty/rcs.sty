@@ -1,0 +1,67 @@
+%%
+%% REVISION CONTROL 
+%% Piet van Oostrum, Dept of Computer Science, Utrecht University,
+%% Padualaan 14, P.O. Box 80.089, 3508 TB Utrecht, The Netherlands.
+%% Telephone: +31 30 531806   Uucp:   uunet!mcsun!ruuinf!piet
+%% Telefax:   +31 30 513791   Internet:  piet@cs.ruu.nl
+%%
+%% To use the RCS field XXX (e.g. XXX=Header or XXX=Date) in a (La)TeX
+%% document include
+%%  \RCS$XXX$
+%% This is expanded by RCS into \RCS$XXX: <value> $
+%% The TeX macro above defines (globally) \RCSXXX to be <value>.
+%% If the field XXX is not RCS-expanded \RCSXXX is defined as the null string.
+%%
+%% Exception:
+%% For XXX=Date, if the macro \today is defined, the RCS date is
+%% reparsed into the format defined by \today, with \year, \month and \day
+%% bound to the values in the RCS Date field. This allows you to get a
+%% language-dependent date format, e.g. by using dutch.sty, german.sty etc.
+%% The time part is put into the macro \RCSTime. The original RCS date can
+%% be found in \RCSRawDate.
+%% Also the default value for \RCSDate is the value of \today.
+%%
+%% Note: This kind of special-casing can be applied to other fields also by
+%% defining a macro \RCS@XXX. This macro will be called with the field
+%% <value> as argument and should do all the work (including defining \RCSXXX).
+%%
+%% N.B:
+%% Verbatim insertion can not be done in this way. Just use \verb$XXX$, or
+%% put $XXX$ in a verbatim environment. And of course you can put a field
+%% in comment (useful for the Log entry).
+
+\def\RCS$#1${\RCS@#1:$}
+\def\RCS@#1:#2${%
+        {\def\temp@{#2}%
+        \ifx\temp@\empty
+                \RCS@@#1:$%
+        \else
+                \RCS@@@#1:#2$%
+        \fi}
+}
+\def\RCS@@#1:#2${\RCS@@@#1: #2 :$}
+\def\RCS@@@#1: #2 :${%
+        \expandafter\ifx\csname RCS@#1\endcsname\relax
+                \expandafter\gdef\csname RCS#1\endcsname{#2}
+        \else
+                        \csname RCS@#1\endcsname{#2}
+        \fi
+}
+\def\RCS@Date#1{%
+        \gdef\RCSRawDate{#1}%
+        \ifx\today\relax
+                \gdef\RCSDate{#1}%
+        \else
+                \ifx\temp@\empty %Note: temp@ still valid from the \RCS@ call
+                        \gdef\RCSDate{\today}%
+                \else
+                        \RCS@@Date #1$%
+                \fi
+        \fi
+}
+\def\RCS@@Date #1/#2/#3 #4${
+        \gdef\RCSTime{#4}%
+        \def\year{#1}\def\month{#2}\def\day{#3}% Note: we are in a group by RCS@
+         \xdef\RCSDate{\today}
+}
+\def\RCSTime{}

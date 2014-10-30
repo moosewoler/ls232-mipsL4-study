@@ -1,0 +1,297 @@
+% Permission to make digital/hard copy of part or all of this work for
+% personal or classroom use is granted without fee provided that copies
+% are not made or distributed for profit or commercial advantage, the
+% copyright notice, the title of the publication and its date appear, and
+% notice is given that copying is by permission of the authors. To copy
+% otherwise, to republish, to post on servers, or to redistribute to lists
+% requires prior specific permission and/or a fee.
+%
+% Copyright (C) 1998 by Gernot Heiser, The University of New South Wales.
+
+
+% L4 user manual introductory chapter
+
+\chapter{Introduction}
+
+L4 is an operating system microkernel (\micro-kernel). That is, L4 by
+itself is not an operating system (OS), but rather constitutes a minimal
+base on which a variety of complete operating systems can be built. In
+this chapter we will summarise the main ideas behind L4.
+
+The basic idea of a \micro-kernel goes back to Brinch Hansen's
+Nucleus~\cite{Brinch_Hansen_70} and Hydra~\cite{Wulf_CCJLPP_74} and has
+been popularised by Mach~\cite{Rashid_TYGBBBC_88}. The argument goes
+that by reducing the size of the kernel, the part of the operating
+system (OS) executing in privileged mode, it becomes possible to build a
+system which is more secure and reliable (because the \emph{trusted
+computing base} is smaller) and easy to extend. A further advantage is
+that a
+\micro-kernel-based system can easily implement a number of different
+APIs (also called \emph{OS personalities}) without having to emulate one
+within the other.
+
+There was also hope of improved efficiency, as operating systems tend to
+grow as new features are added, resulting in an increase of the number
+of layers of software that need to be traversed when asking for
+service. (An example is the addition of the VFS layer in UNIX for
+supporting NFS.) A microkernel based system, in contrast, would grow
+horizontally rather than vertically: Adding new services means adding
+additional servers, without lengthening the critical path of the most
+frequently used operations.
+
+However, performance of these first-generation microkernels proved
+disappointing, with applications generally experiencing a significant
+slowdown compared to a traditional (``monolithic'') operating
+system~\cite{Chen_Bershad_93}. Liedtke, however, has
+shown~\cite{Liedtke_93, Liedtke_95, Liedtke_96} that these performance
+problems are not inherent in the microkernel concept and can be overcome
+by good design and implementation. L4 is the constructive proof of this
+theorem, as has been clearly demonstrated by H\"artig \emph{et
+al.}~\cite{Hartig_HLSW_97}.
+
+
+\section{L4 design philosophy}
+
+The most fundamental task of an operating system is to provide secure
+sharing of resources, in essence this is the only reason why there
+\emph{needs to be} an operating system. A \micro-kernel is to be as small
+as possible. Hence, the main design criterion of the \micro-kernel is
+\emph{minimality} with respect to security: \emph{A service (feature) is
+to be included in the \micro-kernel if and only if it impossible to
+provide that service outside the kernel without loss of security.} The
+idea is that once we make things small (and do it well), performance
+will look after itself.
+
+A strict application of this rule has some surprising consequences. For
+example device drivers: Some device drivers access physical memory
+(e.g.\ DMA) and can therefore break security. They need to be
+trusted. This, however, does not mean that they need to be in the
+kernel. If they need not execute privileged instructions, and if the
+kernel can provide sufficient protection to run them  at user level,
+then this is what should be done, and, consequently, this is what L4
+does.
+
+
+
+\section{L4 abstractions and mechanisms}
+
+Based on such reasoning Liedtke concludes that the \micro-kernel needs
+to provide:
+\begin{description}
+\item[address spaces] because they are the basis of protection,
+\item[threads] because there needs to be an abstraction of program
+execution,
+\item[inter-process communication] (IPC) as there needs to be a way to
+transfer data between address spaces,
+\item[unique identifiers] (UIDs) for context-free addressing in IPC operations.
+\end{description}
+We will look at these in turn.
+
+
+\subsection{Address spaces}
+
+An address-space contains all the data (other than hardware registers)
+which are directly accessible by a thread. An address space is a set of
+mappings from virtual to physical memory (which is \emph{partial} in the
+sense that many mappings are undefined, making the corresponding virtual
+memory inaccessible). Address spaces in L4 can be recursively
+constructed: A thread can map parts of its address space into another
+thread's address space (provided the receiver cooperates) and thereby
+share the data mapped by that region of the address space. Mappings can
+be revoked at any time, so the mapper retains full control.
+
+Alternatively, virtual address space can be \emph{granted} to a
+different address space. In this case the granter relinquishes all
+control over the data mapped by that part of the address space and no
+longer has a valid mapping for that address space region. The granter
+cannot revoke a grant. The grantee, in contrast, inherits full control
+over the granted address space (unless the grant was read-only, in which
+case write access is lost.) Note that while a grant is irreversible, the
+granter has, in general, received the address space (directly or
+indirectly) via mapping, and an address space at the beginning of the
+mapping chain can still revoke the mapping.
+
+Mapping and granting are implemented as operations on page tables,
+without copying any actual data. Mapping and granting is achieved as a
+side effect of IPC operations and specified by the means of \emph{flex
+pages}. This is not accidental: For security reasons mapping requires an
+agreement between sender and receiver, and thus requires IPC
+anyway. Details will be explained in Section~\ref{s:fpages}.
+
+The concept of a \emph{task} is essentially equivalent to that of an
+address space. In L4, a task is the set of threads sharing an address
+space. Creating a new task creates an address space with one running
+thread.
+
+Strictly speaking the number of tasks is a constant. There are two kinds
+of tasks: \emph{active} and \emph{inactive} ones. When we say that a
+task is created we mean that an inactive task is activated. Inactive
+tasks are essentially capabilities (task creation rights). This is
+important, as a thread can only create a task if it already owns the
+task ID to use. Inactive tasks can be donated to other tasks.
+
+
+
+There is a hierarchy of tasks, with parents having some limited control
+over their children. The main purpose of this is to be able to control
+(IPC-based) information flow between address spaces. It has nothing to
+do with process hierarchies a particular L4-based personality OS may
+implement. Such a hierarchy is under full control of the particular OS
+personality.
+
+
+\subsection{Threads}
+
+A thread is the basic execution abstraction. A thread has an address
+space (shared with the other threads belonging to the same task), a UID,
+a register set (including an instruction pointer and a stack pointer), a
+page fault handler (pager), and an exception handler. IPC operations are
+addressed to threads (via their UIDs). Threads are extremely
+light-weight and cheap to create, destroy, start and stop. The
+lightweight thread concept, together with very fast IPC, is the key to
+the efficiency of L4 and OS personalities built on top.
+
+
+\subsection{IPC}
+
+Message-passing IPC is the heart of L4. The \micro-kernel provides a
+total of seven system calls (IPC being one of them), which provide some
+very rudimentary OS functionality. Everything else must be built on top,
+implemented by server threads, which communicate with their clients via
+IPC.
+
+IPC is used to pass data by value (i.e., the \micro-kernel copies the
+data between two address spaces) or by reference (using mapping or
+granting). IPC is also used for synchronisation (as it is blocking, so
+each successful IPC operation results in a \emph{rendez-vouz}),
+wakeup-calls (as timeouts can be specified), pager invocation (the
+\micro-kernel converts a page fault into an IPC to a user-level pager),
+exception handling (the \micro-kernel converts an exception fault into
+an IPC to a user-level exception handler), and interrupt handling (the
+\micro-kernel converts an interrupt fault into an IPC to a user-level
+interrupt-handler from a pseudo-thread). Device control is registered
+via IPC (although actual device access is memory mapped).
+
+
+\subsection{\label{s:i:c&c}Clans \& chiefs}
+
+Clans and chiefs are L4's basic mechanism enabling the implementation of
+arbitrary security policies~\cite{Liedtke_92}. They allow controlling
+IPC and thus information flow.
+
+The basic idea is simple: A task's creator is that task's \emph{chief},
+all tasks (directly) created by a particular chief constitute that
+chief's \emph{clan}. Threads can directly send IPC only to other threads
+in the same clan, or to their chief. If a message is sent to a thread
+outside the clan containing the sender, that message is instead
+delivered to the sender's chief (who may or may not forward the
+message). If a message is sent to a member of a subclan of the clan
+containing the sender, that message is delivered to the task in the clan
+whose clan (directly or indirectly) contains the addressee.
+
+This is depicted in Fig.~\ref{f:i:c&c}, where circles represent tasks,
+ovals clans (with their chief on top), and arrows symbolise IPC. The
+bold arrow indicates the \emph{intended} IPC, while the thin arrows
+indicate the way the IPC is actually routed (provided all chiefs
+cooperate).
+
+\begin{figure}[htb]
+
+\setlength{\unitlength}{0.5pt} 
+\begin{center}\begin{picture}(320,240)(0,-50) 
+ 
+\put(170,170){\circle{20}} 
+\put(70,120){\circle{20}} 
+\put(90,60){\circle{20}} 
+\put(40,30){\circle{20}} 
+ 
+\put(250,120){\circle{20}} 
+\put(200,85){\circle{20}} 
+\put(200,25){\circle{20}} 
+\put(270,40){\circle{20}} 
+ 
+\thicklines 
+\put(105,55){\vector(3,-1){80}} 
+\thinlines
+ 
+\put(85,75){\vector(-1,3){10}} 
+\put(85,120){\vector(1,0){150}} 
+\put(245,110){\vector(-2,-1){30}} 
+\put(200,70){\vector(0,-1){30}} 
+ 
+\put(70,60){\oval(100,100)} 
+ 
+\put(200,40){\oval(60,70)} 
+ 
+\put(250,50){\oval(190,120)} 
+
+\put(170,60){\oval(380,200)} 
+
+\end{picture}\end{center} 
+\caption{\label{f:i:c&c}Message redirection by clans \& chiefs}
+\end{figure}
+
+
+\subsection{UIDs}
+
+A UID of a thread is that of its task plus the number of the thread
+within the task (called \emph{lthread} or local thread number). The UID
+of a task consists of the task number, some fields describing its place
+in the task hierarchy, and a version number.
+
+Both, tasks and threads are limited (on L4/MIPS there are 2048 tasks and
+within each task 128 threads). This means that tasks (or address spaces)
+and threads must be recycled. The \micro-kernel ensures uniqueness of
+task IDs by incrementing the version number whenever a task number is
+reused.
+
+As far as threads are concerned, the L4 view is that threads do not die
+as long as their task exists, they can only be blocked (waiting for IPC
+which will never arrive). This avoids the issue of lthread uniqueness.
+
+Obviously, both thread and task numbers are insufficient for a real
+multi-user operating system. This means that an OS personality will in
+general need to map its own task and thread abstraction onto L4's. How
+this is done is up to the OS personality, L4 only provides the tools.
+
+
+
+\section{Resource allocation}
+
+As said earlier, the classical job of the OS is resource allocation. In
+a \micro-kernel-based system, this is left to the OS personality, the
+\micro-kernel only provides the tools, and enforces security.
+
+L4's view of resources is simple: Each resource is allocated on a
+first-come-first-served basis. This is by no means a free-for-all: The
+servers implementing OS personalities are started at boot time by the
+\micro-kernel. As they are the first running tasks, they have the chance
+to allocate all resources to themselves before any ``user'' tasks
+exist. (As most resources are claimed via IPC the clans \& chiefs
+mechanism would anyway prevent direct access to resources by tasks which
+are not top-level.)
+
+Initial servers must be contained in the L4 boot image, and must be
+identified as to be started up by L4. This leaves responsibility for
+providing ``sensible'' servers to whoever creates the boot
+image. Obviously, if you create the boot image you are in full control
+over what gets to run, and what is in the system. Hence this approach is
+secure.
+
+The same argument holds for ``competition'' between initial servers (OS
+personalities). This is under full control of the system designer (and
+whoever creates the boot image) and therefore secure.
+
+
+\section{Organisation of this manual}
+
+Having presented the basic ideas on which L4 is based the next chapters
+will discuss L4 in detail. Chapter~\ref{c:ipc} explains the IPC system
+call, which is by far the most complex one in L4. The remaining L4
+system calls are covered in Chapter~\ref{c:other}. Chapter~\ref{c:use}
+discusses general use of the system.
+
+% 
+%%% Local Variables: %%%
+%%% mode: latex %%%
+%%% End: %%%

@@ -1,0 +1,16 @@
+// This example covers both sending a request to SIGMA0 for the kernel 
+// information page and successfully receiving the mapping from SIGMA0.
+	
+	l4_msgdope_t result;
+	l4_ipc_reg_msg_t msg;
+	l4_kernel_info *kinfo;
+	
+	msg.reg[0] = SIGMA0_KERNEL_INFO_MAP;
+
+	l4_mips_ipc_call(SIGMA0_TID, L4_IPC_SHORT_MSG, &msg, 
+			 L4_IPC_MAPMSG(0, L4_WHOLE_ADDRESS_SPACE),
+			 &msg, L4_IPC_NEVER, &result);
+
+	kinfo = (l4_kernel_info *) msg.reg[0];
+
+	

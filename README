@@ -1,0 +1,59 @@
+  		README for L4/MIPS
+
+Prequisites before building
+
+1) You need mips-sgi-irix6 cross-compiler development tools.
+	
+2) A running version of GNU make, from here on referred to as make.
+
+
+
+Now, to build the Downloadable Image Tool (DIT)
+
+1) First set edit src/Makefile.conf as appropriate. In particular you
+   will need to set the following according to your local environment:
+
+    - TOP to the (absolute) path name of the directory of this README
+      file;
+    - TOOLBIN to the directory where tool binaries (which are to run on
+      the development host) are to be installed;
+    - INSTALL to the directory where L4/MIPS is to be installed (i.e.,
+      the include files, libraries and kernel images);
+    - TARGET_MACH to one of the supported machines;
+    - XDEVBIN to where your cross development tools are installed;
+    - HOST_BAUD to one of the baudrates;
+    - BOOT to the directory used for booting;
+    - KERNELNAME to the name under which the kernel image containing
+      device drivers will be installed in $(INSTALL)/kernel.
+
+   Some other variables may need defining if your enviroment has some
+   unusual conventions (check MAKEWHATIS, MAKEWHATISFLAGS).
+
+
+   The following are to be executed from $(TOP)/src:
+
+2) Run "make depend" to build dependencies.
+
+3) Run "make tools" to build dit.
+
+4) Run "make tools-install" to install it in $(TOOLBIN)
+
+Now to build L4/MIPS, serial driver and the libraries
+
+1) run "make all"
+
+2) run "make install"
+
+You now have a bootable image (in $(INSTALL)/kernel/kernel-serial)
+containing the kernel and serial driver, and a little example set up
+ready for building in $(INSTALL)/example. See the docs for more info on
+doing further development.
+
+Kernel developers may find the programs in $(TOP)/src/kernel/test useful.
+
+Good luck!
+
+Distributed Systems Group,                 <disy@cse.unsw.edu.au>
+School of Computer Science & Engineering   http://www.cse.unsw.edu.au/~disy
+University of New South Wales,
+Sydney 2052, Australia.

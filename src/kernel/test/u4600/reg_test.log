@@ -1,0 +1,102 @@
+Interrupt Serial IO, thread id 0x1002000000060001
+main:   Hello world! I'm        0x1002000000080001
+main:   L4uK version 79 build 6
+main:   Memory size 64MB
+main:   L4 reserved below 0x63000 and above 0x3999000
+main:   KIP @ 0x4f000, DitHdr @ 0x62000
+main:   serial       addr 0x63000    size 0x5000    
+main:   reg_test     addr 0x68000    size 0xc000    
+main:   starting pager
+main:   Test pager is   0x1002000000080401
+pager:  Hello world, I'm        0x1002000000080401
+main:   starting page fault tester
+pager:  fault 0x731ca   fpage   0x731c8 0x73032
+page fault thread:      Hello world, I'm        0x1002000000080c01!
+page fault thread:      About to touch 0x6e590
+pager:  fault 0x6a000   fpage   0x6a000 0x6a032
+pager:  fault 0x6e592   fpage   0x6e590 0x6e032
+page fault thread       zero:   0x0     0x0
+page fault thread       AT:     0x10beef        0xab
+page fault thread       v0:     0x20beef        0x20beef
+page fault thread       v1:     0x30beef        0x30beef
+page fault thread       a0:     0x40beef        0x40beef
+page fault thread       a1:     0x50beef        0x50beef
+page fault thread       a2:     0x60beef        0x60beef
+page fault thread       a3:     0x70beef        0x70beef
+page fault thread       a4:     0x80beef        0x80beef
+page fault thread       a5:     0x90beef        0x90beef
+page fault thread       a6:     0x100beef       0x100beef
+page fault thread       a7:     0x110beef       0x110beef
+page fault thread       t0:     0x120beef       0x120beef
+page fault thread       t1:     0x130beef       0x130beef
+page fault thread       t2:     0x140beef       0x140beef
+page fault thread       t3:     0x150beef       0x150beef
+page fault thread       s0:     0x160beef       0x160beef
+page fault thread       s1:     0x170beef       0x170beef
+page fault thread       s2:     0x180beef       0x180beef
+page fault thread       s3:     0x190beef       0x190beef
+page fault thread       s4:     0x200beef       0x200beef
+page fault thread       s5:     0x210beef       0x210beef
+page fault thread       s6:     0x220beef       0x220beef
+page fault thread       s7:     0x230beef       0x230beef
+page fault thread       t8:     0x240beef       0x240beef
+page fault thread       t9:     0x250beef       0x250beef
+page fault thread       k0:     0x260beef       0xffffffff80040000
+page fault thread       k1:     0x270beef       0xffffffff80020370
+page fault thread       gp:     0x280beef       0x280beef
+page fault thread       sp:     0x6e590 0x6e590
+page fault thread       s8:     0x300beef       0x300beef
+page fault thread       ra:     0x310beef       0x310beef
+page fault thread       hi:     0x320beef       0x6     <== TRASHED!
+page fault thread       lo:     0x330beef       0x0     <== TRASHED!
+
+page fault thread       2 register(s) trashed!
+
+page fault thread       ======== End of test ========
+main:   starting page fault tester
+exception thread:       Hello world, I'm        0x1002000000081001!
+exception thread:       About to take an exception
+main: exception from 0x1002000000081001 cause=0x2c epc=0x6ac70
+main: restarting thread at pc = 0x6ac74
+exception thread        zero:   0x0     0x0
+exception thread        AT:     0x10beef        0xab
+exception thread        v0:     0x20beef        0x40    <== TRASHED!
+exception thread        v1:     0x30beef        0x30beef
+exception thread        a0:     0x40beef        0x40beef
+exception thread        a1:     0x50beef        0x50beef
+exception thread        a2:     0x60beef        0x60beef
+exception thread        a3:     0x70beef        0x70beef
+exception thread        a4:     0x80beef        0x80beef
+exception thread        a5:     0x90beef        0x90beef
+exception thread        a6:     0x100beef       0x100beef
+exception thread        a7:     0x110beef       0x110beef
+exception thread        t0:     0x120beef       0x120beef
+exception thread        t1:     0x130beef       0x130beef
+exception thread        t2:     0x140beef       0x140beef
+exception thread        t3:     0x150beef       0x150beef
+exception thread        s0:     0x160beef       0x160beef
+exception thread        s1:     0x170beef       0x170beef
+exception thread        s2:     0x180beef       0x180beef
+exception thread        s3:     0x190beef       0x190beef
+exception thread        s4:     0x200beef       0x200beef
+exception thread        s5:     0x210beef       0x210beef
+exception thread        s6:     0x220beef       0x220beef
+exception thread        s7:     0x230beef       0x230beef
+exception thread        t8:     0x240beef       0x240beef
+exception thread        t9:     0x250beef       0x250beef
+exception thread        k0:     0x260beef       0x400d0f3
+exception thread        k1:     0x270beef       0x6ac74
+exception thread        gp:     0x280beef       0x280beef
+exception thread        sp:     0x290beef       0x290beef
+exception thread        s8:     0x300beef       0x300beef
+exception thread        ra:     0x310beef       0x310beef
+exception thread        hi:     0x320beef       0x6     <== TRASHED!
+exception thread        lo:     0x330beef       0x0     <== TRASHED!
+
+exception thread        3 register(s) trashed!
+
+exception thread        ======== End of test ========
+main: end of testing
+L4 KERNEL DEBUGGER: assert(0) failed, file 'reg_main.c', line 251.
+
+TCB BASE: 0xc000000000100000

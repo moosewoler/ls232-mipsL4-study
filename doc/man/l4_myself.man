@@ -1,0 +1,41 @@
+.\"     $Id: l4_myself.man,v 1.4 1998/01/22 05:45:25 kevine Exp $
+.\"     Copyright (C) 1997, 1998 Kevin Elphinstone, University of New
+.\"     South Wales.
+.\"
+.\"     This file is part of the L4/MIPS micro-kernel distribution.
+.\"
+.\"     This program is free software; you can redistribute it and/or
+.\"     modify it under the terms of the GNU General Public License
+.\"     as published by the Free Software Foundation; either version 2
+.\"     of the License, or (at your option) any later version.
+.\"     
+.\"     This program is distributed in the hope that it will be useful,
+.\"     but WITHOUT ANY WARRANTY; without even the implied warranty of
+.\"     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+.\"     GNU General Public License for more details.
+.\"     
+.\"     You should have received a copy of the GNU General Public License
+.\"     along with this program; if not, write to the Free Software
+.\"     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+.TH L4_MYSELF 2 "28.07.97" "CSE/UNSW" "System calls"
+.SH NAME
+l4_myself \-  deliver the id of the current thread
+.SH "Synopsis"
+.br
+\fB#include <syscalls.h>\fP
+.PP
+\fBl4_threadid_t l4_myself(void); \fP 
+.SH "Description"
+The \fBl4_myself()\fP system call returns the id of the current thread.
+.SH "Arguments"
+The system call requires no arguments.
+.SH "Return Values"
+The thread id of the current thread is returned.
+.SH "See Also"
+\fIl4_thread_ex_regs\fP, 
+\fIl4_fpage_unmap\fP, 
+\fIl4_id_nearest\fP,  
+\fIl4_ipc\fP,
+\fIl4_thread_switch\fP, 
+\fIl4_thread_schedule\fP, 
+\fIl4_task_new\fP 

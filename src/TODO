@@ -1,0 +1,53 @@
+**********************************************************************
+Major problems to resolve and unimplemented features.
+**********************************************************************
+
+* granting is not supported.
+
+* page table manipulations are not pre-emptable, ie interrupts can be
+  locked out for significant amount of time.
+
+* scheduling: externel preemptor not implemented.
+
+* Need cache control primitives.
+
+**********************************************************************
+Minor problems and implementation omissions
+**********************************************************************
+
+* Should reserve fixed ASIDs for interrupt receiving threads to avoid
+  delays if number tasks > 256 and receiver has to fetch a new ASID to
+start running.
+
+* Flush "shared invalid" tcb from shared tcb gpt to avoid page
+  table build up.
+
+* vm_task_unmap() currently invalidates, it should remove gpt
+  entries.
+
+* result of id_nearest to inactive thread is undefined.
+
+* continuous interrupts lock out other tasks, this should be fixed in
+  when scheduling is fixed.
+
+* currently can't send fpages in memory, only registers.
+
+* vm_fpage_unmap() currently only invalidates PTEs. It could remove them
+  to avoid build up. Though one needs to be careful in the case of a
+page unmap that eventually unmaps more than one page in the same page
+table.
+
+* kernel state in l4_thread_schedule is not implemented.
+
+**********************************************************************
+Things that would be nice to implement or fix.
+**********************************************************************
+
+* clean up libkern (link with user level  libc instead???).
+
+* clean up syscall numbers.
+
+* clean up machine dependent parts of L4.
+
+* use xcontext register to store pagetable pointer for task even if not
+  using linear arrays.

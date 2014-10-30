@@ -1,0 +1,66 @@
+.\"     $Id: l4_mips_ipc.man,v 1.4 1998/12/16 02:50:52 gernot Exp $
+.\"     Copyright (C) 1997, 1998 Kevin Elphinstone, University of New
+.\"     South Wales.
+.\"
+.\"     This file is part of the L4/MIPS micro-kernel distribution.
+.\"
+.\"     This program is free software; you can redistribute it and/or
+.\"     modify it under the terms of the GNU General Public License
+.\"     as published by the Free Software Foundation; either version 2
+.\"     of the License, or (at your option) any later version.
+.\"     
+.\"     This program is distributed in the hope that it will be useful,
+.\"     but WITHOUT ANY WARRANTY; without even the implied warranty of
+.\"     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+.\"     GNU General Public License for more details.
+.\"     
+.\"     You should have received a copy of the GNU General Public License
+.\"     along with this program; if not, write to the Free Software
+.\"     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+.TH L4_IPC 2 "28.07.97" "CSE/UNSW" "System calls"
+.SH NAME
+l4_ipc \- Overview over IPC in L4
+.SH "Description"
+Ipc in L4 is always synchronous and unbuffered: a message is
+transferred from the sender to the recipient if and only if the
+recipient has invoked a corresponding ipc operation. The sender blocks
+until this happens or a timeout specified by the sender elapsed
+without the destination becoming ready to receive.
+.PP
+Ipc can be used to copy data as well as to map or grant fpages from
+the sender to the recipient.
+.PP
+It currently comprises 7 calls:
+.IP "\fBl4_mips_ipc_call()\fP"
+The usual blocking RPC.
+.IP "\fBl4_mips_ipc_receive()\fP"
+Wait for a message from a specified thread.
+.IP "\fBl4_mips_ipc_reply_and_wait()\fP"
+Send a message to a client and
+wait for the next order from a client.
+.IP "\fBl4_mips_ipc_reply_deceiving_and_wait()\fP"
+Send a message to a
+client (using a virtual sender id) and wait for the next order from a client.
+.IP "\fBl4_mips_ipc_send()\fP"
+Send a message and continue.
+.IP "\fBl4_mips_ipc_send_deceiving()\fP"
+Send a message using a virtual
+sender id.
+.IP "\fBl4_mips_ipc_wait()\fP"
+Wait for a message from any thread.
+.IP "\fBl4_mips_ipc_sleep()\fP"
+Sleep for a specified time interval.
+.SH "See Also"
+\fIl4_mips_ipc_receive\fP, 
+\fIl4_mips_ipc_chief_receive\fP, 
+\fIl4_mips_ipc_reply_and_wait\fP, 
+\fIl4_mips_ipc_reply_deceiving_and_wait\fP, 
+\fIl4_mips_ipc_chief_reply_and_wait\fP, 
+\fIl4_mips_ipc_send\fP, 
+\fIl4_mips_ipc_send_deceiving\fP, 
+\fIl4_mips_ipc_chief_send\fP, 
+\fIl4_mips_ipc_call\fP,
+\fIl4_mips_ipc_chief_call\fP,
+\fIl4_mips_ipc_wait\fP,
+\fIl4_mips_ipc_chief_wait\fP,
+\fIl4_mips_ipc_sleep\fP 

@@ -1,0 +1,1933 @@
+2002-09-16  Cristan Szmajda <cls@cse.unsw.edu.au>
+
+	* syscalls.S: committed k_id_nearest fix from `Inside L4' document
+	
+	* intr_serial.c: increased timeout to solve some serial problems
+	
+	* strcmp.S: made 64-bit clean
+
+	* tagged whole thing as L4_81
+
+2002-08-01  Cristan Szmajda <cls@cse.unsw.edu.au>
+
+        * exc.S: added idt_fixup workaround for IDT 79R4600 rev. 2.0 erratum 7
+
+2002-04-13  Daniel Potts <danielp@cse.unsw.edu.au> (cls)
+
+	* updated DIT tool path
+	
+2000-08-22  Gernot Heiser <gernot@cse.unsw.EDU.AU>
+
+	* Fixed u4600 serial driver code (matthewc@cse.unsw.edu.au).
+	
+2000-08-08  Gernot Heiser <gernot@zuse.disy.cse.unsw.EDU.AU>
+
+	* Removed target "lib32" from master Makefile
+
+	* tagged whole thing as L4_80
+	
+1999-10-28  Alan Au  <alanau@baragula.disy.cse.unsw.EDU.AU>
+
+	* macros.h(wakeup_remaining): fixed incorrect operand order that
+	was causing infinite kernel loop in l4_thread_schedule
+
+1999-10-01  Alan Au  <alanau@baragula.disy.cse.unsw.EDU.AU>
+
+	* debugger.c, panic.S: fix up register stacking for kdbg due to
+	last fix
+
+1999-09-30  Alan Au  <alanau@baragula.disy.cse.unsw.EDU.AU>
+
+	* kernel.h, exc.S: fixed hi/lo bug (weren't stacked/unstacked before)
+
+1999-09-29  Alan Au  <alanau@baragula.disy.cse.unsw.EDU.AU>
+
+	* kernel.h, syscalls.S: patched in Daniel's fix for task delete
+
+	* kernel/vm/vm-tlbcache-gpt-pair/gpt.c (gpt_print): enable
+	printing of nodes 
+
+
+1999-09-11  Gernot Heiser <gernot@zuse.disy.cse.unsw.EDU.AU>
+
+	* Added kernel/test/reg_*.c testing register conservation
+
+	* Added kernel/test/map_*.c testing mappings with large fpags
+
+	* Fixed bug in kernel/vm/*/<PT>.c(vm_map): Send fpage of size 64
+	lead to overflow resulting in no mapping at all.
+
+	* Re-checked kernel panics and marked all as "ok" or "FIXME".
+	
+1999-09-03  Alan Au  <alanau@bassoon>
+
+	* kernel/interrupts.S(int_ip7): Wakeup thread was not being
+	inserted into the busy list. 
+
+1999-07-20  Alan Au  <alanau@bassoon>
+
+	* kernel/schedule.c(process_lists): fixed - removing tcb from busy
+	list level that only contained one tcb broke the circular list
+
+1999-04-14  Alan Au  <alanau@bassoon>
+
+	* kernel/syscalls.S(k_thread_schedule): fixed a bug - was getting
+	mcp from destination thread and not source task
+
+1999-04-06  Alan Au  <alanau@baragula.disy.cse.unsw.edu.au>
+
+	* Fixed schedule.c: wakeup thread should not preempt threads
+	at the same priority.
+
+Mon Mar 22 17:28:00 1999  Gernot Heiser <gernot@zuse.disy.cse.unsw.EDU.AU>
+	
+	* Fixed build on P4000i
+
+	* Added <NL> -> <NL><CR> conversion in Indy serial driver
+	
+	* Added 32-bit ELF support to DIT (to support Linux)
+
+	* Removed warnings in "make depend" from some Makefiles
+	
+Mon Mar  8 18:28:18 1999  Gernot Heiser <gernot@zuse.disy.cse.unsw.EDU.AU>
+
+	* Added 32-bit library back again (to support Linux)
+
+	* Luke's fix to make DIT cope with the elf flag indicating .noreorder
+	
+Wed Feb 10 15:52:52 1999  Gernot Heiser <gernot@zuse.disy.cse.unsw.EDU.AU>
+
+	* tagged whole thing as L4_79
+	
+	* Added tests for chief IPC interfaces
+
+	* Fixed bug in IPC path (kernel/exc.S) which overwrote original
+	destination address in redirected IPC
+
+	* Fixed bug in new l4_mips_ipc_chief_receive stub (lib/libl4/ipc.S)
+
+	* Fixed Makefiles to stop on failed sub-make
+
+	* Made build with either GNU or SGI tools (but SGI test fails)
+
+	* Added "read" test, fixed "time" test.
+
+	* Fixed time functions to account for 1ms accuracy of L4 timeouts.
+
+1999-01-22  Alan Au  <alanau@baragula.disy.cse.unsw.edu.au>
+
+	* Fixed bug in U4600 serial driver: cleared extra interrupts
+	
+Tue Dec 29 14:59:31 1998  Gernot Heiser <gernot@zuse.disy.cse.unsw.EDU.AU>
+	
+	* Fixed a race condition in kernel/drivers/intr_serial.c
+
+	* Fixed a bug in kernel/drivers/serial.c.
+
+	* Fixed return type of strlen() to make it compatible with gcc builtin
+
+	* Added time.h, time.c in libl4, time.c in kernel tests.
+	Time tester reads from serial port, should probably have a
+	separate read tester.
+
+	* Added missing style files in doc/l4uman/sty and updated
+	Makefiles, dito unicrest-screen.eps.
+	
+	* Fixed Makefiles and example directory to be properly included in
+	the installation.
+
+	* Fixed src/include/Makefile to install kernel includes as well
+	(at least dit.h is required)
+	
+Tue Dec 29 14:59:31 1998  Gernot Heiser <gernot@zuse.disy.cse.unsw.EDU.AU>
+	
+	* tagged whole thing as L4_78
+
+	* Fixes to Makefiles & some sources to remove compiler warnings
+
+Tue Dec 29 14:59:31 1998  Gernot Heiser <gernot@zuse.disy.cse.unsw.EDU.AU>
+	
+	* Incorporated docs into standard installation process
+
+	* Made ref man grab kernel version from kernel sources
+
+	* Renamed all *.ms to *.S
+
+	* Eliminated all m4 use
+
+	* Fixed declarations to eliminate almost all compiler warnings
+
+Tue Dec 29 08:28:25 1998  Gernot Heiser <gernot@zuse.disy.cse.unsw.EDU.AU>
+	
+	* tagged whole thing as L4_77
+
+	* Renamed src/lib64 to src/lib
+	
+Tue Dec 29 08:01:38 1998  Gernot Heiser <gernot@zuse.disy.cse.unsw.EDU.AU>
+
+	* tagged whole thing as L4_77_tmp
+	
+	* Removed src/lib32, src/kernel/test32, src/tools/mk32
+
+Mon Dec 28 23:20:41 1998  Gernot Heiser <gernot@zuse.disy.cse.unsw.EDU.AU>
+
+	* tagged whole thing as L4_77_64_32
+
+	* Renamed (old) lib to lib32
+
+	* Fixed "make realclean", "make install", streamlined build
+	process, incl making a driverless kernel as well as kernel-serial
+
+	* Made kernel tests work again
+
+	* Added sample outputs from kernel tests
+
+	* Bug fix in lib64/ipc.ms
+
+	* Removed a number of compiler warnings
+
+	* Cleaned up some inconsistencies between header files in
+	lib64/libc and include
+	
+Sat Dec 26 16:06:09 1998  Gernot Heiser <gernot@zuse.disy.cse.unsw.EDU.AU>
+
+	* tagged whole thing as L4_77_64
+
+	* Bug fixes in manuals
+
+	* Support for "chief" type IPC interfaces, incl new man pages
+
+	* Improved Makefiles ("make depend" works, separated installation
+	from source directories)
+
+	* Improved and clarified Installation procedure
+
+	* Renamed some .ms to .S
+
+	* Bug fixes in calling stubs (lib/lib64/ipc.ms)
+
+	* Bug fixes in sigma0.c and kernel (to have consistent,
+	i.e. uncached, clock in KIP in non-caching kernel)
+	
+Thu Sep  3 16:49:01 1998  Alan Au  <alanau@mozart.orchestra.cse.unsw.EDU.AU>
+
+	* tagged whole thing as L4_76
+
+	* Bug fixes of L4 user manual
+
+	* Changed long to int (tools/dit/coff.h)
+
+	* Renamed l4_ipc_sleep to l4_mips_ipc_sleep (lib/libl4/ipc.S)
+
+	* Added l4_thread_schedule stub (lib/libl4/syscall.S)
+
+	* Modified sigma0 to allow uncached ram mappings (sigma0.h)
+
+	* Fixed L4_IPC_MSG_TRANSFER_STARTED macro (ipc.h)
+
+Tue Jun  2 11:55:42 1998  Alan Au  <alanau@mozart.orchestra.cse.unsw.EDU.AU>
+
+	* tagged whole thing as L4_75
+
+	* rearranged register input/ouput in l4_thread_schedule(syscalls.ms)
+
+	* added *old_ext_preempter to l4_thread_schedule parameter list
+
+Wed May 27 13:51:37 1998  Alan Au  <alanau@mozart.orchestra.cse.unsw.EDU.AU>
+
+	* tagged whole thing as L4_74
+
+	* fixed minor bug in scheduling causing illegal memory reference.
+
+Thu May 14 17:16:20 1998  Kevin John Elphinstone  <kevine@cse.unsw.edu.au>
+
+	* Merged my test branch up to L4_K2_72_1 into main source trunk. 
+
+Thu May 14 15:40:17 1998  Alan Au  <alanau@faure.orchestra.cse.unsw.EDU.AU>
+
+	* tagged as L4_73
+
+Tue Apr 14 13:27:39 1998  Alan Au  <alanau@faure.orchestra.cse.unsw.EDU.AU>
+
+	* kernel/debugger.c: Added printing of scheduling variables.
+	
+	* kernel/interrupts.ms: 
+	(all interrupts): Stacked the thread that is preempted.
+
+	(int_ip7): Added code to do the following on each tick:
+	  - decrement the kerenl time quantum remaining
+	  - increment the current thread's cpu time
+	Added code to reload kernel scheduling variables when a new thread
+	is scheduled in.
+
+	* include/kernel/kernel.h: Added scheduling variables to tcb and
+ 	kernel sections. Changed busy list from single circular list to a
+ 	prioritised array of circular lists.
+
+	* kernel/macros.m4: Added encode_time and decode_time macros to
+ 	manipulate to/from timeslice format. Added int_preempt macro to
+ 	stack an interrupted thread and relaod new kernel scheduling
+ 	variables. Modified ins_busy_list macro to use the new busy list
+ 	structure.
+
+	* kernel/schedule.c:
+	(get_next_thread): Modified code to use the new busy list
+ 	structure. Added code to check th interrupted stack before looking
+ 	at the busy list.
+
+	(check_wake_up): Modified code to use the new busy list
+ 	structure. Added code to check if highest priority wakeup thread
+ 	against current running priority to determine whether to preempt
+ 	current thread or not.
+
+	(process_lists):  Modified code to use the new busy list
+ 	structure.
+
+	* kernel/startup.ms: Added code to initialise the startup thread
+ 	and SIGMA0 with maximum timeslice and priority. Startup thread is
+ 	subsequently set back to lowest priority.
+	
+	* kernel/syscalls.ms
+	(syscall_init): Added the mapping for the l4_thread_schedule
+ 	system call into the syscall jump table.
+	
+	(k_thread_schedule): Implemented.
+ 	
+	(create_thread): Added code to initialise the scheduling
+ 	parameters of the created task/lthread0. mcp is set to lower of
+ 	parent thread's mcp and mcp given in the system call. Timeslice
+ 	value is inherited from parent.
+
+	(k_lthread_ex_reg): Added code to initialise the scheduling
+ 	parameters of the started thread. All values inherited from parent
+ 	thread.
+
+	* lib64/libl4/syscalls.ms: Created l4_thread_schedule system call
+        wrapper.
+
+	* kernel/syscalls.ms:  Implemented the
+ 	k_thread_schedule procedure.
+	
+	
+Thu May 14 16:26:58 1998  Kevin John Elphinstone  <kevine@cse.unsw.edu.au>
+
+	* tagged as L4_K2_72_1
+
+	* src/kernel/vm/vm-tlbcache-gpt-pair/
+ 	{tlb2-2way-128.ms|tlb2-2way-128.ms}: Tuned the routine a little.
+
+	* src/kernel/vm/vm-tlbcache-gpt-pair/
+ 	{tlb2-1way-128.ms|tlb2-1way-128.ms}: Did some tuning of refill
+ 	routine and fixed a bug in the consistency of the cache during
+	asid_get.
+
+	* src/kernel/vm/vm-tlbcache-gpt-pair/as.ms: Set the ASID of the
+	initial address space to 0.
+
+	* src/kernel/vm/vm-gpt-pair/lookup.ms: Fixed a bug in the TLB
+	instrumentation code that "helped" the result unfairly and did
+	some tuning.
+
+	* src/kernel/vm/vm-gpt-pair/gpt.h: Added GPT_NODE_SIZE symbol to
+	set the GPT node size via the makefile.
+
+	* src/kernel/test/{ipc_test_client.c|ipc_test_client_asm.s}:
+	Reduced the number of repetition for IPC test loop to avoid
+	problems with timer ticking over.
+
+	* src/kernel/drivers/intr_serial.c: Added -DSERIAL_DEBUG to switch
+	on printing the task and thread that sent the string to be
+	printed.
+
+	* src/kernel/syscalls.ms: fixed bug that accidently skipped over
+	some cleanup code if ASID did not need freeing.
+
+	* src/kernel/startup.ms: Fixed present list for sigma0 tcb so it's
+	ASID can be reclaimed correctly.
+
+	* src/kernel/panic.s: get_tlb for debugger corrupted entryhi
+	register (set it to zero).
+
+	* src/kernel/exc.ms: Fixed bug in window_fault, which did not check
+	whether address space it was switching to had a ASID.
+
+	* src/kernel/debugger.c: Fixed duplicate print out of
+	asid_fifo_count.
+
+	* src/kernel/asid.ms: use ASID 0 rather than invalid (255) ASID
+	for doing TLB refills during asid_get.
+
+	* src/include/r4kc0.h: Added constant for maximum ASID number of
+ 	R4K. Can be used to simulate lesser numbers of hardware ASIDs.
+
+	* src/kernel/vm/vm-gpt-pair/gpt.c: Added NO_PTE_PRINT flag for
+ 	turning off page table printing when running benchmarks.
+
+Fri Mar 20 10:38:13 1998  Kevin John Elphinstone  <kevine@cse.unsw.edu.au>
+
+	* Tagged whole thing as L4_72.
+
+Thu Mar 19 16:15:13 1998  Kevin John Elphinstone  <kevine@cse.unsw.edu.au>
+
+	* Added several new page table types including speeding up the
+	standard page table. The currently supported and recommended is
+	the vm/vm-tlbcache-gpt-pair with DEBUGFLAGS=-DTLB_CACHE and
+	TLB2_OBJ=tlb2-1way-128.o.
+
+	* src/kernel/vm/vm-mpt/mpt.c: Optimised some of the initialisation
+	code. Also broke down some of the code into functio calls. 
+
+	* src/kernel/vm/vm-gpt-pair/gpt.c: Optimised some of the GPT code
+	to single page and region mappnig and unmapping. Also move some
+	code into a function call. 
+
+	* src/kernel/tlb.ms: Added code to check if task being 'tlb
+	sync'd' has a valid ASID.
+
+	* src/kernel/syscalls.ms: removed un-needed ASID flush call.
+
+	* src/kernel/sigma0.c: Added sum 'hacks' to allocate memory for
+	IPTs and CPTs. Note implementation only supports 5 tasks and is
+	not for real use.
+
+	* src/kernel/macros.m4: removed instrumentation code to initialise
+ 	page table size. It's now down in the page table code itself.
+
+	* src/kernel/debugger.c: Added code to print tlb2 miss counter.
+
+	* src/include/kernel/kernel.h: Added a TLB2 miss counter for
+	instrumentation. 
+
+	Changed a few constants to allow variation of tlb cache size and
+	also to work inside gpt_sim.
+
+Tue Jan 27 12:07:06 1998  Kevin John Elphinstone  <kevine@cse.unsw.edu.au>
+
+	* Tagged whole thing as L4_71.
+
+	* src/kernel/vm/vm-gpt/gpt.c, src/kernel/vm/vm-gpt-pair/gpt.c:
+ 	Fixed a bug in tlb shootdown in client address spaces.
+
+	* Added README and GNU copyright notice and checked build worked
+	following the directions.
+
+Thu Jan 22 15:00:33 1998  Kevin John Elphinstone  <kevine@cse.unsw.edu.au>
+
+	* Added a multilevel page table version of the vm sub-system for
+ 	comparison with gpts.
+
+	* Added more copyright notices to various files.
+
+Fri Jan 16 16:43:20 1998  Kevin John Elphinstone  <kevine@cse.unsw.edu.au>
+
+	* src/tmp/gpt_sim/{kmem.c,main.c}: Added some extra tests to make
+	it tougher for incorrect page table implementations to pass
+	through simulator.
+
+	* src/kernel/vm/vm-tlbcache-gpt/tlb2.ms: Fixed some problems due
+	to recent changes and got the old tlb cache code going.
+
+	* src/kernel/vm/vm-gpt/lookup.ms: Found the bug that was cause
+ 	seemingly random lockups. tlb refill handler must not be a
+ 	multiple of 48 to avoid deadlocking in a pathological situation.
+
+	* src/kernel/tlb.ms: Remove some unnecessary intructions.
+
+	* src/kernel/sigma0.c: Added an internal #def (USER_CACHE_SETTING)
+	that allows easy changing of user-level code cache setting.
+
+	* src/include/r4kc0.h: Added a flag (NO_CACHING) that can be set
+	in top level makefile to switch caching off if needed.
+
+Wed Jan 14 15:53:05 1998  Kevin John Elphinstone  <kevine@cse.unsw.edu.au>
+
+	* src/lib64/libl4/ipc.ms: Updated code to use new system call
+	names.
+
+	* src/kernel/test/{ipc_test_client.c,ipc_test_client_asm.s,
+ 	ipc_test_server.c,ipc_test_timestamp.c}: Updated orginal test code
+ 	to work with new stack handling and header files.
+
+	* src/kernel/drivers/iserial.c: Updated indy driver to used new
+	stack handling for initial servers.
+
+	* src/kernel/syscalls.ms: Fixed a serious bug in syscall handling
+	for fpage_unmap.
+
+	* src/kernel/startup.ms: Removed superfluous code.
+
+	* src/kernel/sigma0.c: Updated recent changes to work on the
+	INDY. 
+
+	* src/kernel/kmem.c: Fixed a bug in INDY version.
+
+	* src/kernel/exc.ms: Added untested code to restrict L4 ipc to
+ 	between a chief and it's children and intra-task.
+
+Tue Jan 13 11:21:53 1998  Kevin John Elphinstone  <kevine@cse.unsw.edu.au>
+
+	* src/kernel/vm/vm-gpt-pair/gpt.c: Fixed bug in tree traversal in
+	'pair' gpt.
+
+Mon Jan 12 12:55:50 1998  Kevin John Elphinstone  <kevine@cse.unsw.edu.au>
+
+	* src/tools/dit/append_elf64.c: Changed dit to allow loading of
+	elf 64 CPIC files. Also ignore alignment field, ie assume it's
+	linked correctly aligned.
+
+	* src/tmp/gpt_sim/*: Played around with the simulator while
+	debugging. Nothing really changed.
+
+	* src/kernel/vm/vm-gpt/gpt.c: Fixed a bug in tree traversal code.
+
+	* src/kernel/vm/vm-gpt/as.ms: Fixed a bug in gpts that have a root
+	size of 4.
+
+	* src/kernel/syscalls.ms: Added a system call that sets the
+	address to store mapping times, and added intrumentation for
+	unmap syscall.
+
+	* src/kernel/startup.ms: Added some initialisation code for
+	mapping intrumentation.
+
+	* src/kernel/panic.s: Added code to read the count registers from
+	C. 
+
+	* src/kernel/ipc.c: Added some intrumentation code to measure
+	mapping and unmapping times.
+
+	* doc/{cac.tex|ipc.fig|mipsl4.tex|scheduling.tex}: removed these
+	old files as they are not really relavent anymore.
+
+Tue Dec 16 11:17:12 1997  Kevin John Elphinstone  <kevine@cse.unsw.edu.au>
+
+	* Tagged whole thing as L4_70.
+
+	* src/kernel/vm/vm-gpt: Added a new VM implementation that use
+	straight GPTs with no special leaf nodes.
+
+	* src/kernel/vm/vm-gpt-pair/{vm.c,gpt.c}: Fixed a bug in tree walking
+	code that occasionally started too early in the tree.
+
+	* src/kernel/{startup.ms,interrupts.ms}: Fixed a bug in GT_TICK
+	code. 
+
+	* src/include/kernel/kernel.h: Moved t8 register save location to
+	avoid it effecting TLB refill time when instrumentation is on.
+
+	* src/include/r4kc0.h: Added ability to quickly switch caching on
+	and off for debugging with a logic analyser.
+
+Tue Dec  9 14:47:47 1997  Kevin John Elphinstone  <kevine@cse.unsw.edu.au>
+
+	* src/kernel/vm/*: is now the repository of various different vm
+	implementations. Each is selectable in top level Makefile.conf
+
+	* fixed up the build hiearchy so it works and also passed build
+	flags onto the vm implementation.. 
+
+Mon Dec  8 10:45:25 1997  Kevin John Elphinstone  <kevine@cse.unsw.edu.au>
+
+	* tagged the lot as L4_69
+
+	* Lots of changes since last time, general overview is:- 
+
+	Merged the gpt only page table code from simulator back into the
+ 	L4 kernel tree and got it running. Did lots of benchmarking etc
+ 	for various n-ary GPT trees. In detail :-
+
+	* Added src/include/kernel/gt64010a.h a header file for the
+	gt64010.
+	
+	* Added src/kernel/drivers/clock.c, a program to receiver and
+	count precise interrupts from the gt64010.
+
+	* Added src/kernel/u4600/dlr1414.s, routines to print to LED from
+	C. 
+
+	* src/tools/dit/append_data.c: Changed dit to store real file
+	sizes rather than the rounded file sizes.
+
+	* src/tmp/gpt_sim/vm/lookup.ms: Added intrumentation to tlb refill
+	handler. It is included if TLB_INSTR is def'd
+
+	* src/tmp/gpt_sim/vm/gpt.h: Added whole bunch of new support
+	GPTROOTSIZE and GPTSIZE combinations.
+
+	Fixed up a few function prototypes, though some cleaning up is
+	still needed.
+
+	* src/tmp/gpt_sim/vm/gpt.c: Added a ugly hack to allow gpt insert
+ 	to be passed tcb or gpt pointers. Needed as vm_tcb_insert does not
+ 	always have access to a tcb pointer.
+
+	Added some intrumention code that is active if TLB_INSTR is
+	def'd. 
+
+	Fixed a bug in tree parsing code. Changed  an 8-bit index to a
+	16-bit index as values were out of range if GPTSIZE was 8.
+
+	gpt_print was modified to print out tree statistics for 
+
+	* src/tmp/gpt_sim/vm/as.ms: Added code to handle more
+	GPTROOTSIZEs. 
+
+	Added the pop_pos, push_pos code here for stack position in tree.
+
+	* src/kernel/u4600/boot.s: Changed reset_serial_io (called by
+	panic) from being stub to actually doing the reset if it's def'd
+	in.
+
+	* src/kernel/tlb.ms: Fixed a potential ASID corruption bug in
+	tlb_sync.
+
+	tlb_sync_shared modified to simply 'shoot down' entries, rather
+	than bothering to search and load new potentially new entries.
+
+	* src/kernel/startup.ms: Added code to initialise TLB
+	instrumentation variables and initialise the GT_TICKer if
+	required. 
+
+	* src/kernel/sigma0.c: Changed a kludge required for rounding
+	physical addresses to work for memeory sizes not powers of 2.
+
+	* src/kernel/panic.s: Added code to get compare regeister for
+	debugger.
+
+	Removed code to push and pop page table 'position' on the
+	stack. It has moved into the vm specific code.
+
+	* src/kernel/macros.m4: Added code to tcb init code to  initialise
+	page table intsrumentation variables.
+
+	* src/kernel/ipc.c: Added some more tracing for kernel debugging.
+
+	* src/kernel/interrupts.ms: Added code to do precise tick
+	interrupts from a gt64010 timer on u4600 board. defining GT_TICK
+	selects this timing mode, otherwise the internal R4700 timer is
+	used using the adaptive tick length.
+
+	* src/kernel/exc.ms: Cleaned up an 'END()', added some more
+	tracing.
+
+	* src/kernel/debugger.c: Added printing of the co-processor
+	compare register to observe the adaptive timer value.
+
+	Added code to print out various TLB and page table instrumention
+	values.
+	
+
+	* src/include/kernel/u4600.h: Added symbolic descriptions of
+	interrupt identifiers.
+
+	* src/include/kernel/kernel.h: Added some page table profiling
+	entries in the task control blocks.
+
+	The adaptive timer has been tuned a little more, ie it starts
+	closer to the observed equilibrium point.
+
+	Added TLB profiling entries to the kernel data. 
+
+
+Fri Oct 31 13:50:13 1997  Kevin John Elphinstone  <kevine@cse.unsw.edu.au>
+
+	* Worked on a new gpt only page table setup inside simulator:- 
+
+
+	- moved old gpt-cached code to vm-tlbcache-gpt directory, and new gpt
+	code is in vm directory.
+
+	- modified simulator to test some new features of vm interface and
+	new vm code seems to work. Code is done except for vm_print_fpage.
+
+Mon Oct 13 11:52:20 1997  Kevin John Elphinstone  <kevine@cse.unsw.edu.au>
+
+	* worked on gpt_sim (the page table exerciser) again and got it
+ 	running with the new gpt code and software tlb.
+
+Fri Oct  3 14:17:29 1997  Kevin John Elphinstone  <kevine@cse.unsw.edu.au>
+
+	* tagged as L4_68
+
+	* merged the bugs fixes done in asyst lab source branch. See
+	changelog for L4_65_2 for details.
+
+Thu Oct  2 15:32:56 1997  Kevin John Elphinstone  <kevine@cse.unsw.edu.au>
+
+	* tagged as L4_67
+
+	* fixed a bug in dit that didn't load .lit8 and .lit4
+	sections. Also added a -z flag to not layout bss section in file
+	(only works if last thing in file). Also allowed appending of
+	files of size < 16 bytes if -f flag is used.
+
+	* Added floating point support. defaults to 32 32bit registers
+	unless FLOAT64 is defined.
+
+Fri Sep  5 17:01:00 1997  Kevin John Elphinstone  <kevine@cse.unsw.edu.au>
+
+	* tagged as L4_66
+
+	* Created an interface to a generalised page table in preparation
+ 	for developing and testing various page table scenarios. Moved gpt
+ 	implementation specific stuff to behind this interface. gpt stuff
+ 	is now in src/kernel/vm.
+
+Mon Aug 25 10:53:36 1997  Kevin John Elphinstone  <kevine@cse.unsw.edu.au>
+
+	* Tagged as L4_65. This is the version used for the Advanced
+ 	Operating Systems course.
+
+	* src/{lib,lib64}/libl4/{l4_ipc.c,l4_types.c}: Made some changes
+	to ensure various so far unused functions mentioned in header
+	files actually work.
+
+	* src/kernel/test/l4_test_child.c: Fixed a problem with use of
+	uninitialise variable.
+
+	* src/kernel/debugger.c: Added a 'verion' command to print out the
+	kernel version number.
+
+	* src/include/l4/{ipc.h,syscalls.h,types.h}: Clean up the header
+	files and added lots of comments.
+
+	* doc/l4R4x00-10.tex: Fixed some typos, added a section on the
+	kernel debugger and C library header files.
+	
+
+Mon Aug 11 11:30:41 1997  Kevin John Elphinstone  <kevine@cse.unsw.edu.au>
+
+	* tagged as L4_64.
+
+	* src/kernel/u4600/boot.s: fixed a bug in boot which allowed
+	ethernet card to corrupt kernel data.
+
+	* src/kernel/drivers/{intr_serial.c|,erial.c}: Added support for
+	receiving to serial port servers.
+
+	* src/kernel/startup.ms: Now initialise the cache on startup to
+ 	avoid the miniscule chance of having write-back data time bombing
+ 	us later.
+
+	Also now auto memory size on the U4600 board.
+
+	* src/kernel/sigma0.c: Added printing out of actual exception
+	names. 
+
+	* src/kernel/kmem.c: Added some free list checking while chasing a
+	bug.
+
+	* src/kernel/ipc.c: fixed a bug in long ipc which would fail with
+	a MSGCUT when sending to a zero length long message to a short
+	receiver. 
+
+	* src/kernel/exc.ms: asserts now print out expression, file and
+ 	line number before calling kernel debugger.
+
+	* src/include/l4/types.h: fixed the type for interrupt ids.
+
+	* fixed a bug in assert.h so it now stringifies the expression
+	correctly.
+
+	* Added a -f flag to dit to force the loading of executables as
+	unstructured data. Updated the manual accordingly.
+
+Sat Aug  2 15:32:16 1997  Kevin John Elphinstone  <kevine@cse.unsw.edu.au>
+
+	* tagged as L4_63
+
+	* added new flag to dit to support "forced" unstructured data
+	loads of executables.
+
+	* Initial servers are now responsible for setting up their own
+	stack. Added a new startup crtS.o to help do this.
+
+	* Sigma0 no longer uses a frame table to save memory and supports
+	mapping kernel info and dit header read_only.
+
+	* Added a kernel info page and associated support in sigma0. It
+	contains a version and a build number now, also a copy of the
+	system clock.
+
+	* Tuned to the number of cycles between clock interrupts to keep
+	better time. Time slice is now 32ms.
+
+	* We are serious now...we even have a reference manual and manual
+	pages :-). Many thanks to jochen for src.
+
+Fri Jul 25 10:10:33 1997  Kevin John Elphinstone  <kevine@cse.unsw.edu.au>
+
+	* made the serial port baud rate a build variable.
+
+	* tested the interrupt driver serial driver with interrupts routed
+	through pci interrupt controller.
+
+	* fixed a major bug in task_new watch locked the machine if
+	anything was waiting with a wakeup.
+
+	* Got Indy build target going again.
+
+Sun Jul 20 12:35:45 1997  Kevin John Elphinstone  <kevine@cse.unsw.edu.au>
+
+	* Added a interrupt driven serial port driver and fixed a few
+	bugs. Tagged as L4_62.
+
+	* src/lib64/libl4/l4_types.c: Added the constants for NIL_ID
+ 	refered to below in header file.
+
+	* src/kernel/drivers/z85230.h: Add a few more constants need to
+	get interrupt driven serial I/O going.
+
+	* src/kernel/syscalls.ms: fixed a bug in thread_switch which
+	crashed if given thread id other than nil.
+
+	- fixed bug in ex_reg which occasionally corrupted busy list.
+
+	* src/kernel/schedule.c: Added miscellaneous debugging code to
+	get_next_thread.
+
+	* src/kernel/interrupts.ms: Enabled debug interrupt support for
+	U4600 board.
+
+	* src/kernel/exc.ms: Fixed a bug in long ips which failed to
+	restore sender busy status.
+
+	* src/include/l4/types.h: Added constants for L4_NIL_ID and
+	L4_INVALID_ID that would work with the SGI compiler.
+
+	* src/include/string.h: Added ansi prototype for strlen.
+
+	* src/include/libc.h: Added prototype for wbflush.
+
+Fri Jul 18 14:16:58 1997  Kevin John Elphinstone  <kevine@cse.unsw.edu.au>
+
+	* tagged as L4_61.
+
+	* Added support for trap restarts (though untested at moment).
+
+	* Added support for z85230 serial port on u4600.
+
+	* Fixed a bug in asid_init code which used uninitialised variable.
+
+	* Changed trap exceptions to simply invoke kernel debugger again
+	to make debugging easier.
+
+	* Added conditional compilation for some P4000i features.
+
+	* Added build support for our new u4600 board.
+
+Sun Jul 13 16:33:41 1997  Kevin John Elphinstone  <kevine@cse.unsw.edu.au>
+
+	* tagged as L4_60.
+
+	* changed l4_test etal to cope with system call change and did a
+	simple exception to test handler.
+
+	* Modified task_new and ex_reg to take exception handlers
+	arguments. 
+
+	* Added a thread to sigma0 to act as a exception handler to
+	initial batch of loaded tasks. It simply prints a message and
+	panics. 
+
+	* Removed preemptors from tasks and added exception handlers to do
+	ipc upon taking an exception just like page faults are handled.
+	
+
+Tue Jul  8 13:37:27 1997  Kevin John Elphinstone  <kevine@cse.unsw.edu.au>
+
+	* tagged as L4_59.
+
+	* cleaned up all the kernel panics to print out semi sensible
+	messages and cleaned up the debugger a little also.
+
+	* tagged as L4_58.
+
+	* src/kernel/test/{l4_test.c|tt1.c|tt2.c|tt3.c}. Added code to
+	build up a 3 level task hierarchy and kill it to test task
+	new. Seems to work.
+
+	* src/kernel/syscalls.ms: Fixed bug in inactive part of
+	task_new. I forgot to unmap task tcbs of task killed as child of
+	hierarchy.
+
+	* src/kernel/debugger.c: Fixed bug, now prints dying flag
+	correctly. 
+
+Mon Jul  7 17:55:27 1997  Kevin John Elphinstone  <kevine@cse.unsw.edu.au>
+
+	* stuffed up commit, tagged again as L4_57
+
+	* tagged as L4_56
+
+	* src/kernel/syscalls.ms: Added code to the "create" part of task
+	new to maintain a process hierarchy.
+
+	- In the destroy part of task_new: Added flush asid from tlb call
+ 	to ensure any possible long ipc mappings are removed.
+
+	- added code to traverse through children of a chief and destroy
+	them as well. Code is largely UNTESTED.
+
+	* src/kernel/{debugger.c|macros.m4}: Updated to be consistent with
+	new tcb variables.
+
+	* src/include/kernel/kernel.h: Added variables to maintain a task
+	hierarchy.
+
+Fri Jul  4 16:38:18 1997  Kevin John Elphinstone  <kevine@cse.unsw.edu.au>
+
+	* tagged as L4_55.
+
+	* src/kernel/test/{l4_test.c|l4_test_child.c} Added code which
+	lightly test ex_reg long_ipc break off code.
+
+	* src/kernel/syscalls.ms: fixed bug in kill part of task_new that
+	could result in dying task becoming busy if ipc is between local
+	threads.
+
+	- Added code to break of long ipc in kill part of task_new.
+
+	- fixed bug in ex_reg. It did not break off ipc unless it was
+	starting a new thread.
+
+	- Added code to break of long ipc in ex_reg.
+
+	* src/kernel/ipc.c: Enable interrupts during long ipc copy
+	routines. 
+
+	* src/kernel/exc.ms: Fixed bug in manipulation of page fault
+	timeouts which result in sender and receiver "swapping" timeouts.
+
+	- removed unnecessary pending_recv_exreg routine. ex_reg uses
+	make_busy instead to restart thread directly.
+
+Thu Jul  3 11:24:16 1997  Kevin John Elphinstone  <kevine@cse.unsw.edu.au>
+
+	* tagged as L4_54
+
+	* No longer run coloured page frames. Instead free tcbs are
+	invalidated from the cache to avoid write-back problems when
+	colour changes.
+
+Wed Jul  2 12:42:21 1997  Kevin John Elphinstone  <kevine@cse.unsw.edu.au>
+
+	* tagged L4_53
+
+	* src/kernel/test/{l4_test.c|l4_test_child.c}: Added code to test
+	sender side ipc page faults.
+	
+	* src/kernel/exc.ms: Added code for page fault timeouts on both
+	sender and receiver side. 
+
+	- Added code to stack state for sender page faults.
+
+	- failed sender faults now break off ipc with page fault timeout.
+
+	* src/kernel/debugger.c: made consistent with tcb variables again.
+
+	* src/include/kernel/kernel.h: Added timeout variable to tcb
+	needed to implement page fault timeouts.
+
+Tue Jul  1 16:19:28 1997  Kevin John Elphinstone  <kevine@cse.unsw.edu.au>
+
+	* Tagged as L4_52
+
+	* src/kernel/test/{l4_test.c|l4_test_child.c}: Added code to test
+	receiver side page faults.
+
+	* src/kernel/macros.m4: updated tcb_init to init new variables.
+
+	* src/kernel/exc.ms: Added lots of code to handle page faults
+	during long ipc on the receiver window. Ie code synthesises page
+	fault on receiver side.
+
+	* src/kernel/debugger.c: Updated to be consistent with new tcb
+	vars added below.
+
+	* include/kernel/kernel.h: Added two tcb variables to stack ipc
+	state during page faults while in long ipc.
+
+Mon Jun 30 16:45:28 1997  Kevin John Elphinstone  <kevine@cse.unsw.edu.au>
+
+	* tagged L4_51
+
+	* src/kernel/test/intr_test.c: Interrupt code tester. uses sonic
+	timer to generate interrupts.
+
+	* src/kernel/drivers/sonic.h: Added a couple constants needed in
+	interrupt test code.
+
+	* src/kernel/syscalls.ms: modified kernel exit specific code to
+	support new routines.
+
+	* src/kernel/startup.ms: Added interrupt servicing initialisation
+	code. 
+
+	* src/kernel/macros.m4: Modified kernel exit rouotine to preserve
+	interrupt mask and dissable floating point.
+
+	- added more initialisation code for tcbs.
+
+	* src/kernel/interrupts.ms: Added the code to send interrupt ipc
+	to servicing threads upon interrupt. If any error code is returned
+	the thread is disassociated.
+
+	* src/kernel/exc.ms: Modified kernel entry and exit routines to
+	preserve globally the interrupt mask bits.
+
+	- fixed a bug in interrupt handling which would take an interrupt
+	if one was pending, but was also masked.
+
+	- added code on receive_only to enable interrupt if thread is an
+	interrupt servicing thread.
+
+	- on receive_only with timeout = 0, add code to handle association
+	and disassociation of interrupt servicing threads.
+
+	* src/kernel/debugger.c: Updated debugger to be consistent with
+	kernel and tcb variables,
+
+	* src/include/kernel/kernel.h: Added TCB bases for interrupt
+	sending threads, and an interrupt enable mask per thread tcb. Also
+	added per thread interrupt, service thread to kernel vars.
+
+	* Got interrupt handling going as per reference manual.
+
+Thu Jun 26 10:39:15 1997  Kevin John Elphinstone  <kevine@cse.unsw.edu.au>
+
+	* tagged L4_50
+
+	* src/kernel/syscalls.ms: modified thread_switch to take tid as
+	argument and attempt to switch to that thread if able, otherwise
+	switch to next runnable thread.
+
+Wed Jun 25 17:33:35 1997  Kevin John Elphinstone  <kevine@cse.unsw.edu.au>
+
+	* Ran the l4_test.c code compiled with gcc and it works. Tagged as
+	L4_49.
+
+	* src/tools/dit: Lots of changes and additions to dit to compile
+	independently of SGI machine, cope with different endian machine,
+	and support 32-bit ecoff.
+
+	* src/lib/libl4: 32-bit gcc versions of the L4 C library.
+
+	* src/lib/libc: Added lots of libc code taken from PMON
+	sources. Most of it's untested.
+
+	* src/kernel/test/l4_test.c: Made a few minor changes so it can be
+	compiled with gcc.
+
+	* src/kernel/interrupts.ms: remove dodgy conditional break point.
+
+	* src/include/l4/{ipc.h,sigma0.h,types.h} : Modified to work with
+ 	gcc.
+
+	* src/include/stdarg.h: Modified to switch between SGI 64-bit
+	stdarg and gcc stdarg.
+
+	* src/include/regdef.h: Added 32-bit calling convention register
+	names.
+
+	* Added a src/lib directory which contains sources to libraries
+	for 32-bit ecoff gcc binaries.
+
+Fri Jun 20 11:08:16 1997  Kevin John Elphinstone  <kevine@cse.unsw.edu.au>
+
+	* tagged as L4_48
+
+	* moved the current user libraries in lib to lib64 in preparation
+	for build 32-bit gcc user libraries.
+
+Wed Jun 18 14:54:23 1997  Kevin John Elphinstone  <kevine@cse.unsw.edu.au>
+
+	* Tagged as L4_47
+
+	* src/kernel/test/l4_test.c, src/kernel/test/l4_test_child.c:
+	Added code to test page faults on the sender side during long ipc.
+
+	* src/kernel/syscalls.ms: fixed a rather large bug in task_new
+	which free it's own ASID when killing a task, rather than the dead
+	ASID.
+
+	* src/kernel/ipc.c: now enforce size_dopes >= snd_dopes in long
+	ipc checks.
+
+	- fixed bug in indirect sending of strings which sent an extra
+ 	byte.
+
+	* src/kernel/exc.ms: fixed a bug in the detection of page faults
+	in long ipc window. 
+
+	- Rewrote long ipc window tlb handling routine as old one did not
+ 	handle page pairs correctly.
+
+	- put is a missing 'set .reorder' which fix broken trap handling.
+
+Tue Jun 17 15:23:52 1997  Kevin John Elphinstone  <kevine@cse.unsw.edu.au>
+
+	* tagged as L4_46
+
+	* src/kernel/test/: Added l4_test.c and l4_test_child.c as an
+	attempt to provide a reasonably complete verification suite for
+	l4_kernel. 
+
+	* src/lib/ipc.ms: Added stub for
+	l4_mips_ipc_reply_deceiting_and_wait and fixed bug in
+	l4_mips_ipc_send_deceiting.
+
+	* src/kernel/indy/boot.s, src/kernel/p4000i/boot.s: changed boot
+	code to enable 64-bit supervisor space.
+
+	* src/kernel/tlb2.ms: added routine to flush the window into
+	receiver address space.
+
+	* src/kernel/syscalls.ms: mips 64-bit supervisor mode space now
+ 	enabled. Used in long ipc.
+
+	- task_new changed to not rely on comm_partner in indicate poll
+	fine state.
+
+	- ex_reg fixed to break off pending threads correctly.
+
+	* src/kernel/startup.ms: mips 64-bit supervisor mode space now
+ 	enabled. Used in long ipc.
+
+	* src/kernel/ipc.c: Thread state is set correctly in preparation
+	for page fault and enabled interrupts.
+
+	- comm_partner now set to indicate partner in long ipc.
+
+	- recv fpage descriptors can now be in memory.
+
+	- return code for received fpages set correctly.
+
+	- direct strings and indirect strings are now transfered.
+
+	* src/kernel/exc.ms: Lots of ugly changes to page fault exception
+	handling. Various bug fixes.
+
+	- Added code to handle exceptions in recv window by sender.
+
+	- Added code to handle normal exceptions during long ipc.
+
+	- changed send_only_short and send_only_short_restart to return
+ 	error codes.
+
+	- fixed a bug in send timeouts, time value was calculated
+	incorrectly. 
+
+	- removed code that clears  T_COMM_PARTNER as it is now longer
+	used to indicate pending threads.
+
+	- fixed stack corruption in pending_wakeup, pending_recv_killed.
+
+	- added pending_recv_exreg to handle case when send is broken off
+	by ipc.
+
+	- long ipc now breaks off okay with error code in both sender and
+ 	receiver.
+
+	* src/kernel/debugger.c: Corrected fine state printing to print
+ 	new constants.
+
+	* src/include/l4/types.h: Changed msgdopes to be 64 bits to avoid
+	alignment problems. Added a header type for in memory messages.
+
+	* src/include/l4/ipc.h: Changed ipc error return codes to match
+ 	reference manual and fixed prototype for
+ 	l4_mips_ipc_reply_deceiting_and_wait. Added some constants specify
+	max message sizes.
+
+	* src/include/kernel/kernel.h: Added receivers 'map address' to
+ 	tcb variables, which is used by tlb exception handler to figure
+ 	out where in the receivers address space and fault in the 'window'
+	maps to.
+
+	- Added LOCKR and LOCKS fine states to distinguish between task
+	engaged in long ipc.
+ 	
+	- Added a few constants specifying window into receiver.
+
+	* on the road to real long ipc, ie direct and indirect
+	strings. Built a tester that tries to reasonably test l4 system
+	calls. See above for gory details.
+
+Tue Jun 10 11:06:13 1997  Kevin John Elphinstone  <kevine@cse.unsw.edu.au>
+
+	* tagged as L4_45
+
+	* modified test clients to ensure only a single fpage is sent.
+
+	* Changed the long_ipc path. It now uses 'C' and also can send
+	more than one fpage. Still only support register only IPC.
+
+Thu May 15 16:19:49 1997  Kevin John Elphinstone  <kevine@cse.unsw.edu.au>
+
+	* Tagged as L4_44
+
+	* Added ASID management L4. I use a free list for allocate asids
+	until they are consumed, then revert to FIFO ASID allocation by
+	removing ASIDS from running tasks. Tested system with both all and
+	only 1 ASID all seems fine.
+
+	* src/kernel/tlb2.ms: Added tlb2 and tlb selective flushing
+	routines, based on asid. Added ASID management routines free,
+	alloc, init, get.
+
+	* src/kernel/syscalls.ms: task_new now uses asid_alloc to get a
+	new asid for new tasks. ex_reg now now longer currupts singularly
+	linked present list.
+
+	* src/kernel/startup.ms: Added call to asid management
+	initialisation. Reserved ASID 0 for nil thread. Used ASID alloc
+	for sigma0. Ensured singularly linked list of present tcbs was
+	valid for the two initial tasks.
+
+	* src/kernel/macros.m4: Changed switch_thread to check if
+	task we are switching to has a valid ASID and calls asid_get if
+	not.
+
+	* src/kernel/debugger.c: Updated to print new kernel variables.
+
+	* src/include/kernel/kernel.h: Added thread ID shifting
+	constant. Added space for ASID management. Added asid free list
+	and fifo counter to kernel variables.
+
+	* src/include/r4kc0.h: Added a mask for ASID in EntryHi C0
+	register.
+
+	* doc/scheduling.tex: Added file about my scheduling thoughts in
+	L4. 
+
+	* doc/cac.tex: Added file about clans and chiefs implementation.
+
+	* doc/mipsL4.tex: Added info about pgae colouring tcbs and ASID
+	management.
+
+Wed Apr  9 16:16:57 1997  Kevin John Elphinstone  <kevine@cse.unsw.edu.au>
+
+	* tagged L4_43
+
+	* Added deceiting IPC to IPC sycall. Added some simple tests to
+	ensure it worked for some simple cases.
+
+Fri Apr  4 11:02:09 1997  Kevin John Elphinstone  <kevine@cse.unsw.edu.au>
+
+	* Tagged L4_42
+
+	* Added clans and chiefs redirection to ipc path and added some
+	simple tests to the test client to ensure basic operation.
+
+Thu Apr  3 11:04:54 1997  Kevin John Elphinstone  <kevine@cse.unsw.edu.au>
+
+	* Tagged L4_41
+
+	* Ensured shared invalid page is read-only.
+
+	* Added id_nearest system call and some simple tests to use it.
+
+Tue Mar 25 15:05:30 1997  Kevin John Elphinstone  <kevine@cse.unsw.edu.au>
+
+	* Tagged L4_40
+
+	* Switched write-back cache back on for both mapped and unmapped
+ 	memory.
+
+	* Used "page coloring" to manage tcb frames to avoid problems with
+	aliasing in write-back cache.
+
+Mon Mar 24 12:51:47 1997  Kevin John Elphinstone  <kevine@cse.unsw.edu.au>
+
+	* tagged as L4_39
+
+	* Improved L4 benchmarking and added a Mungi benchmark courtesy of
+	jerry.
+
+	* Changed write-back caching to write-through to avoid problem
+	with stale dirty cache entries, will need to fix eventually.
+
+	* Added a KDEBUG flag to include or exclude debugging code
+
+	* Added conditional break points to debugger
+
+Tue Mar 11 14:58:06 1997  Kevin John Elphinstone  <kevine@dingo.orchestra.cse.unsw.EDU.AU>
+
+	* tagged L4_38.
+
+	* fixed task_new in syscall lib to supply the correct args.
+
+	* Wrote process_lists() to ensure dying tasks are not in busy or
+	wakeup lists.
+
+	* Changed present list handling to be a simple linked list of
+	present tcbs in a task.
+
+	* wrote task_gpt_unmap() to invalidate gpts associated with a task. 
+
+	* changed shared invalid frame to be mapped read_only to avoid
+	potential problems.
+
+	* changed the general tester to also time task creation and
+	deletion.
+
+	* Wrote more complete version of task_new which
+
+	- Generates and uses correct format tids (including chief,
+ 	version, depth), except site = 0 all the time.
+
+	- Enforces only chief can kill or create a task.
+
+	- Implements creating inactive tasks and chief transfer.
+
+Mon Mar 10 10:56:02 1997  Kevin John Elphinstone  <kevine@dingo.orchestra.cse.unsw.EDU.AU>
+
+	* tagged L4_37
+
+	* Wrote gpt_tree_free to free complete trees.
+
+	* Modified fpage_unmap to support real fpage unmaps. It checks
+	bounds to ensure security of kernel mappings and supports fpage
+	sizes of 12 to 63.
+
+Sun Mar  9 12:01:24 1997  Kevin John Elphinstone  <kevine@jungfrau.disy.cse.unsw.EDU.AU>
+
+	* tagged L4_36
+
+	* Removed the ipc syscall on page fault. Code simply jumps
+	straight to IPC code now.
+
+	* Added printing to gpt_sim
+
+Thu Mar  6 19:35:11 1997  Kevin John Elphinstone  <kevine@moench.disy.cse.unsw.EDU.AU>
+
+	* tagged L4_35
+
+	* Ported the ipc_client etc to use indy timers so we can test indy
+	as well.
+
+	* Added a test to ipc_client to thrash tlb and measure it's
+	performance.
+
+	* fixed a minor bug in tlb_flush. It now uses dmtc0 correctly
+
+	* Revised gpt management. Instead of add/remove entries all the
+	time.
+
+	- unmap now simply invalidates the pte, but keeps the gpt entry
+	valid.
+
+	- New gpt blocks are initialised with valid gpt guards and invalid
+	pte. In kernel space, blocks are initialised with the shared
+	invalid tcb.
+
+	- Above results is being faster generally as gpt_lookup_ptr adds
+ 	most new mappings, not gpt_insert which parses tree much slower.
+
+	* fixed bug in syscall number bounds checking.
+
+Wed Mar  5 11:33:09 1997  Kevin John Elphinstone  <kevine@moench.disy.cse.unsw.EDU.AU>
+
+	* tagged L4_34
+
+	* Changed ipc_test to benchmark more aspects of L4.
+
+	* Changed the memory (mt and gpt) memory list management to use
+	kernel variable "list pointers" rather than C data segment.
+
+	* Fixed a bug in gpt_unmap. It now actually unmaps!!
+
+	* Experimented with gpt_print. Unrolled the recursion, it now does
+	gpt parsing interatively with small stack allocated via alloca.
+
+	* Changed makefiles to use a top level configuration file and gnu
+	make.
+
+	* Revised the syscall numbers to reduce jump table size.
+
+	* Move the exc jumptable and syscall jumptable into kernel
+	variable, rather than C data section.
+
+	* Did some further optimising of cache alignment for kernel
+	variables.
+	
+
+	* Changed gpt's to use 16 entry blocks, rather than 2 entry
+	(binary structure).
+
+Fri Feb 28 10:51:25 1997  Kevin John Elphinstone  <kevine@dingo.orchestra.cse.unsw.EDU.AU>
+
+	* tagged L4_33
+
+	* Added mem_test.c to test memory cache miss penalty
+
+	* writing micro-benchmarker to enable tuning.
+
+	* Removed complete tlb flushing and replaced with selective tlb
+	flushing.
+
+	* Made trap exceptions "returnable" so one can use assert as a
+	break point for user mode code.
+
+	* fixed a bug in ex_reg for thread id 1.
+
+Sun Feb 23 12:43:58 1997  Kevin John Elphinstone  <kevine@moench.disy.cse.unsw.EDU.AU>
+
+	* Tagged L4_32
+
+	* Wrote a timestamp routine for the Indy that supercedes the slow
+	old c equivalent.
+
+	* Added support for dumping ranges of memory in the debugger.
+
+	* Added primitive support for n32 compiled clients. Hacked dit to
+	support their addition to downloadabel images.
+
+	* Added some primitive profiling code that uses the last megabyte
+	to store addresses.
+
+Sat Feb 15 14:18:15 1997  Kevin John Elphinstone  <kevine@jungfrau.disy.cse.unsw.EDU.AU>
+
+	* Tagged as L4_31.
+
+	* Changed dit to round the link address to below 128M so as
+	drivers appear to run from 0-64M ram (ie unchanged).
+
+	* Added indy specific drivers for time (using i8254) and serial
+	port (using z85230).
+
+	* Did port to Indy!!! Lots of little changes including
+
+	- kernel.h: New memory layout as physical memory is not at zero on
+	Indy, it starts at 128M
+
+	- exc.ms: removed P400i specific debuging code
+	
+	- interrupts.ms: ifdef'd p4000i specific interrupt handling, and
+	now panic if other previously unused interrupts actually happen.
+
+	- macros.m4: renamed ifdef in m4 so ifdef in CPP works.
+
+	- sigma0.c: lots of little changes to cope with new physical
+ 	memory layout. It actually hides it from drivers etc so normal
+ 	code runs as before. NOTE: Does not handle > 128M ram.
+	
+	- startup.ms: ifdef's p4000i specific stuff, hardwired ram to be
+	64M, appropriate interrupts now enabled and ifdef'd. 
+
+	- syscalls.ms: also enables and ifdefs appropropriate interrupts.
+
+	
+Fri Jan 31 14:27:47 1997  Kevin John Elphinstone  <kevine@jungfrau.disy.cse.unsw.EDU.AU>
+
+	* Tagged L4_30
+
+	* Fixed a bug with the second tcb in a page pair not being
+	intialised properly which resulted in ex_reg not working for odd
+	tcbs. Both tcbs in a page are now initialised sesnsibly on
+	allocation.
+	
+
+Thu Jan 30 11:46:31 1997  Kevin John Elphinstone  <kevine@jungfrau.disy.cse.unsw.EDU.AU>
+
+	* tagged lot as L4_29
+
+	* fixed tlb2_sync_shared to check both buckets in cache.
+
+	* Fixed a major bug. Page fault protocol was incorrect, w/r were
+	indicated randomly, ie incorrectly.
+
+	* added new kernel vars to debugger print out.
+
+	* cleaned up kernel.h as the C struct was out of date with
+	assembler offsets.
+
+	* Suprisingly it all seems to work (with my test suite). Tagged as
+	L4_28
+
+	* New tlb2.ms 
+	
+	- New TLB refill routine that uses a software TLB cache (128k,
+ 	two-way assoc).
+
+	- Miss routine for software tlb cache load "page pairs" for
+	effecient loading of tlb2 and TLB.
+
+	- sync routines added to ensure consistency in both TLB and tlb2
+	after changes are made to gpt's. Handles both per process pte and
+	shared tcb pte.
+
+	* Merged the simulator code into the kernel which wasn't as simple
+	as it sounds. Gory, potentially out of order, details follow.
+
+	- In gptdefs: changed the structs defining both gpt nodes and
+ 	mapping trees. put in the new protoypes for gpt functions and tlb2
+	functions.
+
+	- In kernel.h: changed the memory layout to reserve space for
+ 	TLB2. Created some extra save registers for both TLB exceptions
+ 	and entering the kernel.
+
+	- In kmem.h: Added prototypes for new mapping tree memory
+	management routines.
+
+	- In types.h: Add some convenient bitmasks for RW and GRANT.
+
+	- In debugger.c: Modified gpt printer to use new gpt tree layout.
+
+	- In exc.ms: Changed kernel entry routine for cope with TLB refill
+ 	on entry. Previously it would double or triple fault until clean
+	entry.
+
+	- In exc.ms: Modified tlb exception handling to handle both read
+	and write faults correctly. It's now much shorter as it doesn't
+	try an initial refill "for luck" anymore.
+
+	- In gpt.c: Major changes here. All functions changed, some simple
+ 	cleaned up with minor changes (gpt_insert,gpt_remove,gpt_init),
+	others virtually redone to use new gpt and map tree layout
+	(gpt_map, gpt_fpage_unmap).
+
+	- In kmem.c: New mapping tree memory management code added. Gpt
+	code cleaned up.
+
+	- In sigma0.c: pt_insert modified to use new gpt layout.
+
+	- In syscalls.ms: TLB manipulation code removed, now handle more
+	consistently elsewhere (tlb2.ms).
+
+	- In tcb.c: tcb allocator modified to use the new gpt layout and
+	ensure second in page pair has GLOBAL bit set.
+
+
+Fri Jan 24 16:06:36 1997  Kevin John Elphinstone  <kevine@dingo.orchestra.cse.unsw.EDU.AU>
+
+	* tagged and L4_27
+
+	* Used simulator to build and test a TLB cache. Came up with a new
+ 	gpt parser which is 2 cycles slower, but will load pairs for the
+ 	mips TLB.
+
+	* Revived the simulator in tmp to get ro/rw pages working.
+
+	* Fixed a bug in IPC path due to over zealous optimising on my
+	part, IPC slowed to 91 cycles. Could get this back with really
+	ugly optimisation, but will leave it for now.
+
+Sat Jan 18 15:22:55 1997  Kevin John Elphinstone  <kevine@moench.disy.cse.unsw.EDU.AU>
+
+	* Tagged L4_26
+
+	* Tuned the IPC path again directly rather than as a separate
+	file. Got *** 90 cycles *** for IPC which is actually better than
+	previous incorrect result.
+
+Fri Jan 17 16:36:39 1997  Kevin John Elphinstone  <kevine@moench.disy.cse.unsw.EDU.AU>
+
+	* Tagged as L4_25
+
+	* fixed send base and send fpage to be in correct order in
+	registers.
+
+	* fixed a bug in page fault ipc which corrupted the PC of the
+	faulting instruction.
+
+Wed Jan 15 13:37:55 1997  Kevin John Elphinstone  <kevine@moench.disy.cse.unsw.EDU.AU>
+
+	* Tagged as L4_24
+
+	* Fixed nasty bug to do with interrupts disabled in kernel. Tlb
+ 	exceptions are higher priority than interrupts and the situation
+ 	arises that we can page fault on code with an invalid pager and we
+ 	endless loop with interrupts disabled. Page fault ipc is now
+	delivered with interrupts enabled.
+
+	* Tagged as L4_23
+
+	* Added a hand optimised version of exc.ms for speed testing. Got
+	*** 86 *** cycles for IPC.
+
+	* Added a real ipc timing tester to the test.
+
+	* Added reboot to debugger.
+
+	* Fixed a bug in round robin scheduling code.
+
+	* Finally fixed the "Address Error Load" bug. Added a tlb
+ 	exerciser to the tests to reproduce it..
+
+	* Removed general exception redirect so that general exception
+	handler now runs in place for better performance.
+
+	* re-arranged kernel variable and tcb variable layout to be cache
+	friendly for much improved IPC performance.
+
+Thu Dec 19 14:32:21 1996  Kevin John Elphinstone  <kevine@jungfrau.disy.cse.unsw.EDU.AU>
+
+	* Fixed a big in ipc library that was corrupting messages on the
+	user side.
+
+	* Modified TLB refill to use it's own "save" registers as it was
+	corrupting the general exception handler.
+
+	* Modified dit to be able to add executables to the kernel image
+	without the kernel actually running them.
+
+	* modified the header files for l4 syscalls, types, and ipc as
+	MIPS C compiler allocates bit strings in the opposite direction to
+	the PC.
+
+Wed Dec 11 11:47:31 1996  Kevin John Elphinstone  <kevine@jungfrau.disy.cse.unsw.EDU.AU>
+
+	* tagged as L4_22
+
+	* Changed proto type for ex reg to be compatible with pc version.
+	
+
+Fri Dec  6 14:32:07 1996  Kevin John Elphinstone  <kevine@jungfrau.disy.cse.unsw.EDU.AU>
+
+	* Tagged as L4_21
+
+	* Changed exception return routine again. I must be hitting a
+	co-processor hazard in some manner, though the docs indicate I'm
+	okay in the regard?? New routine works so far.
+
+	* Wrote a new syscall interface library to match new header files.
+
+	* Modified sigma0 to use less stack. 
+
+	* Added support for using the 32 bit format timeouts, rather than
+	my previous linear timeouts.
+
+	* Merged the dresden l4 C header files into my source tree and
+	modified both them and my code to use them.
+
+Fri Nov 29 10:30:08 1996  Kevin John Elphinstone  <kevine@jungfrau.disy.cse.unsw.EDU.AU>
+
+	* Tagged as L4_20.
+
+	* Wrote first attempt at lthread_ex_regs. Seems to work.
+
+	* Fixed a bug in thread id generationin create task.
+
+	* Added make busy macro to start threads in various states for
+	ex_regs.
+
+	* Added comm partner to tcb to allow easier break off of IPC.
+
+	* Fixed a bug in exception and syscall return that cause an
+	interrupt to interrupt the exception return which corrupted the
+	stack. 
+
+	* Added trace macro to print out string to LED display from inside
+	kernel.
+
+	* Added ability to print a few more c0 registers in debugger
+
+Fri Nov 22 16:32:27 1996  Kevin John Elphinstone  <kevine@jungfrau.disy.cse.unsw.EDU.AU>
+
+	* tagged as L4_19
+
+	* page faults to non-existent task control blocks are caught and
+ 	panic-ed on.
+
+	* Hacked tlb general exception handling to potentially act as a
+ 	refill handler for debugging purposes.
+
+	* Finally found the true cause of the semi-random address
+	exception errors. Would you believe a missing nop in the tlb
+	refill routine!!
+
+Thu Nov 21 10:15:18 1996  Kevin John Elphinstone  <kevine@jungfrau.disy.cse.unsw.EDU.AU>
+
+	* Tagged as L4_18
+
+	* We have virtual task control blocks!!! Uses a single shared
+	branch of the gpt tree and the "global" bit in the TLB for
+	efficient TLB refill.
+
+	Did this by
+
+	- shuffling the memory layout to be more efficient (see kernel.h).
+	
+	- moving tcb space from physical space to kernel virtual.
+	
+	- changing create thread and startup appropriately.
+	
+	- keeping an array of chief/version numbers for each task so as to
+	be able to recycle tcbs.
+	
+
+Sun Nov 17 14:13:54 1996  Kevin John Elphinstone  <kevine@jungfrau.disy.cse.unsw.EDU.AU>
+
+	* tagged the whole thing as L4_17
+
+	* Added the beginnings of assert. it currently simply causes a
+	trap exception.
+
+	* fixed a nasty bug in sigma0 to do with device mapping that was
+	causing semi-random problems/crashes.
+
+	* Added lots more debugger features
+	
+	- runs on special stack area
+ 	
+	- now has "break" style ability to stop and restart via call to
+	dbg from just about anywhere in kernel.
+
+	- can now print out gpt trees for debugging purposes
+	
+
+	* Added code to support specifying thread id in task create.
+
+Thu Nov 14 19:34:24 1996  Kevin John Elphinstone  <kevine@jungfrau.disy.cse.unsw.EDU.AU>
+
+	* Tagged the whole thing as L4_16
+
+	* Added extra coded to serial exerciser threads to test sonic
+	timestamper as well,
+
+	* Added extra features to debugger to dump tlb contents and
+	various c0 registers.
+
+	* Add a driver for the sonic ethernet chip for timing purposes
+	only at this stage.
+
+	* Changed dit to include names of files in downloadable image.
+
+Wed Oct  9 17:16:45 1996  Kevin John Elphinstone  <kevine@jungfrau.disy.cse.unsw.EDU.AU>
+
+	* tagged the whole thing as L4_15
+
+	* we use real, per task, ASIDs now.
+
+	* wrote a loader that starts sigma0 and then all extra task images
+	appended to kernel in downloaded image.
+
+	* don't have kernel printf tracing now serial i/o done at user
+	level. 
+
+	* fixed a bug in debugger to stop it from deriving the wrong tcb
+	base now we have a user level sp.
+	
+	* add device mapping to sigma0 and wrote a user level serial port
+	device that simply prints messages it receives prefixed by the
+	senders thread id.
+
+	* modified task_create to accept user level sp, ip, and pager.
+
+	* made a user level libc using libkern...may clean up lib kern at
+	some stage as these are similar.
+
+	* Modified sigma0 to "reserve" pages for downloaded images, and
+ 	added new kernel function frame_reserve which does a similar
+ 	thing.
+
+	* Wrote a tool called dit that can :-
+
+	- build a 32 bit object file from a 64 bit one to allow kernel
+	download (also adds an extra program segment for a header page)
+
+	- query a 32 bit image to find the next link address for cascading
+	devices driver images to run with sigma0 as pager
+
+	- append a driver image that is linked at correct address internal
+ 	to the last program segment, including correctly allocating space
+ 	in the segment for bss etc.
+
+	- dump the header section to see whats been appended to the
+	initial kernel.
+
+	The tool seem to function okay for now.
+
+	* Lots of changes yet again including USER LEVEL TASKS!!!!!
+
+Fri Sep 27 10:14:12 1996  Kevin John Elphinstone  <kevine@jungfrau.disy.cse.unsw.EDU.AU>
+
+	* tagged everything as L4_14
+
+	* pretty major additions since last time:- 
+
+	- fixed a bug in "long" exception return.
+
+	- Modified create thread to create a gpt with new threads.
+
+	- Ported frame table table memory management to board including
+ 	ugly hack to cope with race condition with sigma0.
+
+	- added code to do mapping ipc to "long" ipc path which then calls
+ 	the C code from the simulator.
+
+	- Modified the debugger to print out various new variables both in
+	the kernel and TCBs.
+	
+	- Wrote a real sigma0 that receives page faults and sends mapping
+ 	ipc to client
+
+	- Wrote a tlb refill handler and a tlb exception handler. tlb
+ 	exception handler sends a page fault ipc to pager if page
+ 	"invalid".
+
+Fri Sep 13 13:00:23 1996  Kevin John Elphinstone  <kevine@jungfrau.disy.cse.unsw.EDU.AU>
+
+	* Tagged whole thing as L4_13.
+
+	* in the tmp directory, wrote gpt_map routines that maps a
+ 	flexpage from one gpt to another. The above routine also generates
+ 	mapping trees to allow fpage unmaps to happen semi-efficiently.
+
+ 	Wrote a fpage unmap routine that use mapping trees to unmap gpts
+ 	in derived address spaces.
+
+ 	wrote a memory allocator for mapping trees.
+
+ 	Wrote a simulator that - 
+
+	- builds up a hierachy of simulated address spaces, each with own
+ 	gpt and frame table to double check.
+  	
+	- probes address spaces causing "maps" from parent address spaces,
+ 	which propogate up to sigma0. Double checked from local address
+ 	space frame table.
+
+	- generates unmap calls that invalidate current page and all child
+ 	address space pages. Double checked using per address space frame
+ 	table.
+
+ 	Fixed bad bug in frame table allocator.
+
+
+	* Added TLB initialisation to boot.s
+
+	* Added sizemem function to libkern.
+
+Thu Aug  1 15:34:01 1996  Kevin Elphinstone  <kevine@jungfrau.disy.cse.unsw.EDU.AU>
+
+	* Added test_threads3.c to test the pending case again and fixed a
+	bug or two I found. Note: ipc_sleep is a receive_from waiting for
+	thread ID -1 not zero which now signifies an open wait. Tagged
+	whole thing as L4_12.
+
+	* Wrote a new C ipc library (ipc.ms) to do various scenarious of
+	ipc and only actually 8 dword messages to be sent. Tested it with
+	the re-written test_threads.
+
+Wed Jul 31 11:00:20 1996  Kevin Elphinstone  <kevine@jungfrau.disy.cse.unsw.EDU.AU>
+
+	* Added test_threads2.c which has three concurrent threads sending
+	to a busy thread and timing out. The kernel crashed at first but
+	has been fixed now. Tagged as L4_11
+
+Thu Jul 11 15:01:02 1996  Kevin Elphinstone  <kevine@jungfrau.disy.cse.unsw.EDU.AU>
+
+	* Debugged all the changes to the stage that the previous (L4_9)
+ 	testing threads now work reliably. Tagged this version as L4_10.
+
+	* Kernel now uses real thread IDs with version numbers. However,
+	since I haven't implemented 'kill', this is not very well tested
+	as everthing has a version number of 1 :-)
+
+	* Added a simple debugger and changed the panic routine to jump to
+ 	the debugger. Debugger allows printing memory, kernel variables,
+ 	registers, TCBs and thats about all. Added a few extra routines to
+ 	libkern needed by the debugger.
+
+	* The code to handle pending IPC is there now (untested) and three
+ 	level wake up list handling is also been added and seems to work.
+
+	* Lots of major changes since last version. Decided to use m4 as a
+	macro processor for the assembler. Most assembler files now use
+	macros defined in macros.m4 as shorthand.
+
+	Re-wrote most of the IPC code to something fairly close to what
+ 	will be the final version. Has most things in place to handle
+ 	everthing, though some things may only be tested for and not
+ 	handled yet (eg long ipc, deceiting ipc, clans and
+	chief). Basically the framework is there.
+
+Wed Apr 17 11:31:46 1996  Kevin Elphinstone  <kevine@composer.orchestra.cse.unsw.EDU.AU>
+
+	* Oops, stuffed the directory structure up, so version L4_8
+ 	actually doesn't build. I fixed the problem and tested it and
+ 	tagged it as L4_9.
+
+	* Changed the test threads to also print the LED count via kprintf
+	to test the stuff implemented below. It works!!! Tagged the whole
+	thing as L4_8
+
+	* Wrote a kprintf routine for kernel printing. It simply adds
+	characters into a buffer. Thread 0 now monitors the buffer and does
+	polled output on the serial port.
+
+	* Grabbed the serial port driver from the pmon sources and did
+	some really ugly hacking to get it to compile outside of pmon. It
+	does polled I/O which should suffice for now.
+
+	* Restructured the sources into more appropriate directories, as
+	sources are beyond the doing everything in "tmp" stage.
+
+Fri Mar 29 13:45:27 1996  Kevin Elphinstone  <kevine@jungfrau>
+
+	* Added "auto" thread ID allocation to example below. Thread IDs
+	are still not the proper L4 thread id though. Tagged as L4_7
+
+Thu Mar 28 12:39:05 1996  Kevin Elphinstone  <kevine@jungfrau>
+
+	* Wrote four threads that passed a token between each other, with
+	one of them updating a LED counter. Ie send_receive, receive_only,
+	send_only now work. Note: sending to busy thread kernel
+	panics. Tagged as L4_6.
+
+	* Wrote a receive_only ipc test thread that "sleeps" and times out
+	on wait for message. Tagged as L4_5.
+
+Wed Mar 27 13:29:23 1996  Kevin Elphinstone  <kevine@jungfrau>
+
+	* Added libmipsL4.s, giving a C interface to system calls so test
+	code can now be in C. Tested it by running a C version of test
+	application used previously. Tagged L4_4.
+
+	* Added thread switch system call. It take no args and switches to
+	head of runq for remaining time slice. Thread zero (init) now
+	simply loops calling this syscall. Tagged as L4_3
+
+	* Wrote the basic IPC code. Does register transfers only, IPC
+	timeouts, run and wakeup queue handling, no fpages, chiefs
+	etc. Tested only by previous applications (ie no IPC tested, only
+	create thread and id_myself to test runq handling). Tagged as L4_2
+
+Mon Mar  4 13:51:45 1996  Kevin Elphinstone  <kevine@jungfrau>
+
+	* Got system calls working and context switching. Built two simple
+	system calls (create thread, id_myself) and created 4 threads
+	which simply print their ID on the alphn display. Tagged the whole
+	thing as L4_1
+
+Thu Feb 22 13:58:43 1996  Kevin Elphinstone  <kevine@jungfrau>
+
+	* Did a more complicated example of catching timer
+	interrupts. Built a simple counting display using C and libkern
+	etc. Tagged as TIMER_1
+
+	* Set up handling of more than just the debug interrupt. Set up
+	the count and compare register to do timer interrupts. Tagged it
+	as TIMER.
+
+Wed Feb 21 15:57:38 1996  Kevin Elphinstone  <kevine@jungfrau>
+
+	* changed exception handling to stack and unstack registers to
+	both catch and return from exceptions. Tagged as EXCPT_2
+
+	* Oops, code fails to build cleanly. Fixed makefile and retagged
+	as EXCPT_1
+
+	* Current code is a simple exception catcher and printer. Code
+	tagged as EXCPT
+
+	* Added top down makefile system. To build, first make tools; make
+	tools-install in irix5.3 environment. Then make all in cross64
+	environment.
+
+
+

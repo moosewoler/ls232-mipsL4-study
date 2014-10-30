@@ -1,0 +1,67 @@
+\newcommand{\etalchar}[1]{$^{#1}$}
+\newcommand{\noopsort}[1]{}
+\begin{thebibliography}{WCC{\etalchar{+}}74}
+
+\bibitem[BH70]{Brinch_Hansen_70}
+Per Brinch~Hansen.
+\newblock The nucleus of a multiprogramming operating system.
+\newblock {\em Communications of the ACM}, 13:238--250, 1970.
+
+\bibitem[CB93]{Chen_Bershad_93}
+J.~Bradley Chen and Brian~N. Bershad.
+\newblock The impact of operating system structure on memory system
+  performance.
+\newblock In {\em Proceedings of the 14th ACM Symposium on OS Principles},
+  pages 120--133, Asheville, NC, USA, December 1993.
+
+\bibitem[EHL97]{Elphinstone_HL:L4rm}
+Kevin Elphinstone, Gernot Heiser, and Jochen Liedtke.
+\newblock {\em L4 Reference Manual --- {MIPS R4x00}}.
+\newblock School of Computer Science and Engineering, University of NSW, Sydney
+  2052, Australia, December 1997.
+\newblock UNSW-CSE-TR-9709. Latest version available from
+  \textsf{http://www/cse/unsw.edu.au/\raisebox{-0.6ex}{\~{}}disy/}.
+
+\bibitem[HHL{\etalchar{+}}97]{Hartig_HLSW_97}
+Herrmann H{\"a}rtig, Michael Hohmuth, Jochen Liedtke, Sebastian Sch{\"o}nberg,
+  and Jean Wolter.
+\newblock The performance of $\mu$-kernel-based systems.
+\newblock In {\em Proceedings of the 16th ACM Symposium on OS Principles},
+  pages 66--77, St. Malo, France, October 1997. ACM.
+
+\bibitem[Lie92]{Liedtke_92}
+Jochen Liedtke.
+\newblock Clans \& chiefs.
+\newblock In {\em 12. GI/ITG-Fachtagung Architektur von Rechensystemen}, pages
+  294--305, Kiel, 1992. Springer Verlag.
+
+\bibitem[Lie93]{Liedtke_93}
+Jochen Liedtke.
+\newblock Improving {IPC} by kernel design.
+\newblock In {\em Proceedings of the 14th ACM Symposium on OS Principles},
+  pages 175--88, Asheville, NC, USA, December 1993.
+
+\bibitem[Lie95]{Liedtke_95}
+Jochen Liedtke.
+\newblock On {\(\mu\)}-kernel construction.
+\newblock In {\em Proceedings of the 15th ACM Symposium on OS Principles},
+  pages 237--250, Copper Mountain, CO, USA, December 1995.
+
+\bibitem[Lie96]{Liedtke_96}
+Jochen Liedtke.
+\newblock Towards real microkernels.
+\newblock {\em Communications of the ACM}, 39(9):70--77, September 1996.
+
+\bibitem[RTY{\etalchar{+}}88]{Rashid_TYGBBBC_88}
+Richard Rashid, Avadis Tevanian, Jr., Michael Young, David Golub, Robert Baron,
+  David Black, William~J. Bolosky, and Jonathan Chew.
+\newblock Machine-independent virtual memory management for paged uniprocessor
+  and multiprocessor architectures.
+\newblock {\em IEEE Transactions on Computers}, C-37:896--908, 1988.
+
+\bibitem[WCC{\etalchar{+}}74]{Wulf_CCJLPP_74}
+W.~Wulf, E.~Cohen, W.~Corwin, A.~Jones, R.~Levin, C.~Pierson, and F.~Pollack.
+\newblock {HYDRA}: The kernel of a multiprocessor operating system.
+\newblock {\em Communications of the ACM}, 17:337--345, 1974.
+
+\end{thebibliography}

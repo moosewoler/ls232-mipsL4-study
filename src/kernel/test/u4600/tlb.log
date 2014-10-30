@@ -1,0 +1,11 @@
+Interrupt Serial I0, thread id 0x1002000000060001
+TLB test thread id is 0x1002000000080001
+Probing 0xc0000 region at 0xa00000
+Probing 0xc0000 region at 0xa00000
+Probing 0xc0000 region at 0xa00000
+Probing 0xc0000 region at 0xa00000
+Probing 0xc0000 region at 0xa00000
+Probing 0xc0000 region at 0xa00000
+Probing 0xc0000 region at 0xa00000
+L4 KERNEL DEBUGGER: break
+TCB BASE: 0xc000000000000000

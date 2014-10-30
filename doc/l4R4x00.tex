@@ -1,0 +1,3652 @@
+%     $Id: l4R4x00.tex,v 1.17 1999/09/17 05:46:14 gernot Exp $
+%     Copyright (C) 1997, 1998 Jochen Liedtke, Kevin Elphinstone, Gernot
+%     Heiser
+%
+%     This file is part of the L4/MIPS micro-kernel distribution.
+%
+%     This program is free software; you can redistribute it and/or
+%     modify it under the terms of the GNU General Public License
+%     as published by the Free Software Foundation; either version 2
+%     of the License, or (at your option) any later version.
+%     
+%     This program is distributed in the hope that it will be useful,
+%     but WITHOUT ANY WARRANTY; without even the implied warranty of
+%     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+%     GNU General Public License for more details.
+%     
+%     You should have received a copy of the GNU General Public License
+%     along with this program; if not, write to the Free Software
+%     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+
+
+\documentclass[a4paper,11pt,twoside,dvips]{book} 
+\usepackage{verbatim}
+\usepackage{changebar}
+\usepackage{rcs}
+\usepackage{epsfig}
+\usepackage{times}
+
+\RCS$Revision: 1.17 $
+\RCS$Date: 1999/09/17 05:46:14 $
+
+\title{~\\[-20mm] \Huge L4 Reference Manual\\[20pt] 
+       MIPS R4x00\\[20pt] 
+       {\LARGE Version \RCSRevision \\
+         Kernel Version \input{l4version.tex}}} 
+ 
+\author{Kevin Elphinstone, Gernot Heiser\\
+       {\normalsize School of Computer Science and Engineering}\\
+       {\normalsize The University of New South Wales}\\ 
+       {\normalsize Sydney 2052, Australia}\\ 
+       {\normalsize gernot@cse.unsw.edu.au} \\[20pt]
+       Jochen Liedtke\\
+       {\normalsize IBM T. J. Watson Research Center}\\ 
+       {\normalsize 30 Saw Mill River Road, Hawthorne, NY 10532, USA}\\ 
+       {\normalsize liedtke@ira.uka.de} \\[20pt]
+       }
+\date{\RCSDate\\ Change bars indicate modifications relative to
+       UNSW-CSE-TR-9709\\ (December
+        1997, Reference Manual Version 1.0, Kernel Version 70)\\ \vfill\sf
+	\epsfig{file=l4uman/eps/unicrest-screen.eps,height=25mm}\\[2ex]
+	School of Computer Science and Engineering\\
+	The University of New South Wales\\
+	Sydney 2052, Australia \vspace{-10mm}}
+
+
+
+\pagestyle{empty}
+\sloppy
+\setlength{\textwidth}{6.0in} 
+\setlength{\textheight}{9.25in} 
+\setlength{\columnsep}{0.33in} 
+\setlength{\oddsidemargin}{-1in} 
+\addtolength{\oddsidemargin}{0.75in} 
+\addtolength{\oddsidemargin}{2cm} 
+\setlength{\evensidemargin}{\oddsidemargin}
+\addtolength{\evensidemargin}{-20pt} 
+\setlength{\topmargin}{-2in} 
+\addtolength{\topmargin}{0.80in} 
+\addtolength{\topmargin}{1.4cm} 
+ 
+
+%addtolength\topmargin{-27pt}
+ 
+ 
+
+
+\newcommand{\micro}{$\mu$} 
+\newcommand{\Tilde}{\raisebox{-0.6ex}{\~{}}}
+ 
+ 
+ 
+\newcommand{\smaller}[1]{{\mathchoice 
+           {\raisebox{1pt}{$\scriptstyle #1$}} 
+           {\raisebox{1pt}{$\scriptstyle #1$}} 
+           {\raisebox{0.5pt}{$\scriptscriptstyle #1$}} 
+           {\raisebox{0.5pt}{$\scriptscriptstyle #1$}} 
+}} 
+\newcommand{\smallerlow}[1]{{\mathchoice 
+           {\mbox{$\scriptstyle \,#1\,$}} 
+           {\mbox{$\scriptstyle \,#1\,$}} 
+           {\mbox{$\scriptscriptstyle \,#1\,$}} 
+           {\mbox{$\scriptscriptstyle \,#1\,$}} 
+}} 
+\newcommand{\IN}{\smaller{\in}} 
+\newcommand{\LT}{\smaller{<}} 
+\newcommand{\LE}{\smaller{\le}} 
+\newcommand{\GT}{\smaller{>}} 
+\newcommand{\GE}{\smaller{\ge}} 
+\newcommand{\EQ}{\smaller{=}} 
+\newcommand{\NE}{\smaller{\neq}} 
+\newcommand{\CUP}{\smallerlow{\cup}} 
+\newcommand{\PLUS}{\smaller{+}} 
+ 
+\newcommand{\nil}{--nil--\ } 
+\newcommand{\never}{--never--\ } 
+\newcommand{\undef}{$\sim$} 
+ 
+\newcommand{\stdtabs}{\sf\=XX\=XX\=XX\=XX\=XX\=XX\=XX\=Xx\=Xx\=Xx\=Xx\=XXXXX\=\kill\+\+\\} 
+
+\newcommand{\alg}[1] 
+ {{\noindent 
+ \begin{minipage}{\textwidth} 
+ \begin{tabbing}\stdtabs\+ #1 \end{tabbing} 
+ \end{minipage}}} 
+ 
+\newcommand{\asmtabs}{\sf\=XYYXXXX\=XYYXXXX\=XXXXX\=XXXXXXXXXXXX\=\kill\+\+\\[-5pt]} 
+ 
+\newcommand{\asm}[1] 
+ {{\noindent\tt 
+ \begin{minipage}{\textwidth} 
+ \begin{tabbing}\asmtabs #1 \end{tabbing} 
+ \end{minipage}}} 
+ 
+ 
+\newcommand{\WHILE}{{\bf while}\ } 
+\newcommand{\UNTIL}{{\bf until}\ } 
+\newcommand{\DO}{{\bf do}\ \+} 
+\newcommand{\OD}{{\<\bf od}\ \-} 
+\newcommand{\IF}{{\bf if}\ \+} 
+\newcommand{\FI}{{\<\<\<\bf fi}\ \-\-\-} 
+\newcommand{\THEN}{{\bf then}\ \>\>\+\+} 
+\newcommand{\ELSE}{{\<\<\bf else}\>\>} 
+\newcommand{\ELIF}{{\<\<\<\bf elif}\ \-\-} 
+ 
+\newcommand{\While}{{\bf while}\ } 
+\newcommand{\Until}{{\bf until}\ } 
+\newcommand{\Do}{{\bf do}\ } 
+\newcommand{\Od}{{\bf od}\ } 
+\newcommand{\If}{{\bf if}\ } 
+\newcommand{\Fi}{{\bf fi}\ } 
+\newcommand{\Then}{{\bf then}\ } 
+
+ 
+\newcommand{\dd}{D} 
+\newcommand{\dci}{d_{c_i}} 
+\newcommand{\Dci}{d_{c_i,\dot{v}}} 
+\newcommand{\dv}{V} 
+\newcommand{\ddv}{V'} 
+\newcommand{\vci}{v_{c_i}} 
+\newcommand{\cj}{c_j} 
+ 
+\newcommand{\dw}{\mbox{\it write}} 
+\newcommand{\ndw}{\overline{\mbox{\it write}}} 
+ 
+\newcommand{\allj}{\forall_{j\neq i}:\ \alias\mapsto\cj} 
+ 
+\newcommand{\rdy}{\ \Box} 
+\newcommand{\sync}{\ \Box} 
+ 
+\newcommand{\high}{\mbox{\rule{0pt}{\baselineskip}}} 
+\newcommand{\High}{\mbox{$\frac{\high}{\high}$}} 
+ 
+\newlength{\Xlen} 
+\settowidth{\Xlen}{0} 
+\newcommand{\X}{\makebox[\Xlen]{}} 
+ 
+ 
+\newlength{\Up}\setlength{\Up}{-\baselineskip} 
+\newlength{\Upp}\setlength{\Upp}{\Up}\addtolength{\Upp}{\Upp} 
+\newlength{\Upppp}\setlength{\Upppp}{\Upp}\addtolength{\Upppp}{\Upppp} 
+
+\newlength{\PPre} 
+\newlength{\Params} 
+ 
+\newif\ifintel
+\intelfalse 
+\newlength{\scindent}
+%\setlength{\scindent}{140pt} 
+\setlength{\scindent}{140pt} 
+ 
+\newcommand{\generalsc}[1]{\intelfalse\setlength{\scindent}{#1}} 
+\newcommand{\intelsc}[1]{\inteltrue\setlength{\scindent}{#1}} 
+ 
+\newcommand{\sccode}[1]{\global\def\syscode{#1}} 
+ 
+
+\newcommand{\scin}[1]{(#1)\ } 
+\newcommand{\scout}[1]{{\Large\ $\rightarrow$\ } (#1)\\} 
+ 
+
+
+ 
+ 
+\newcommand{\EAX}[2]{{\em #1}&{\footnotesize EAX}&&{\footnotesize EAX}&{\em #2}\\} 
+\newcommand{\EBX}[2]{{\em #1}&{\footnotesize EBX}&&{\footnotesize EBX}&{\em #2}\\} 
+\newcommand{\ECX}[2]{{\em #1}&{\footnotesize ECX}&&{\footnotesize ECX}&{\em #2}\\} 
+\newcommand{\EDX}[2]{{\em #1}&{\footnotesize EDX}&&{\footnotesize EDX}&{\em #2}\\} 
+\newcommand{\ESI}[2]{{\em #1}&{\footnotesize ESI}&&{\footnotesize ESI}&{\em #2}\\} 
+\newcommand{\EDI}[2]{{\em #1}&{\footnotesize EDI}&&{\footnotesize EDI}&{\em #2}\\} 
+\newcommand{\EBP}[2]{{\em #1}&{\footnotesize EBP}&&{\footnotesize EBP}&{\em #2}\\} 
+\newcommand{\EAL}[2]{{\em #1}&{\footnotesize  AL}&&{\footnotesize EAX}&{\em #2}\\} 
+\newcommand{\EAH}[1]{{\em #1}&{\footnotesize  AH}&&&\\} 
+\newcommand{\EBL}[2]{{\em #1}&{\footnotesize  BL}&&{\footnotesize EBX}&{\em #2}\\} 
+\newcommand{\BH}[1]{{\em #1}&{\footnotesize  BH}&&&\\} 
+\newcommand{\ECL}[2]{{\em #1}&{\footnotesize  CL}&&{\footnotesize ECX}&{\em #2}\\} 
+\newcommand{\CH}[1]{{\em #1}&{\footnotesize  CH}&&&\\} 
+ 
+\newcommand{\EAXX}[3]{{\em #1}&{\footnotesize EAX}&&{\footnotesize EAX}&{\em #2}&~~{\scriptsize /}~~~{\em #3}\\} 
+\newcommand{\EBXX}[3]{{\em #1}&{\footnotesize EBX}&&{\footnotesize EBX}&{\em #2}&~~{\scriptsize /}~~~{\em #3}\\} 
+\newcommand{\ECXX}[3]{{\em #1}&{\footnotesize ECX}&&{\footnotesize ECX}&{\em #2}&~~{\scriptsize /}~~~{\em #3}\\} 
+\newcommand{\EDXX}[3]{{\em #1}&{\footnotesize EDX}&&{\footnotesize EDX}&{\em #2}&~~{\scriptsize /}~~~{\em #3}\\} 
+\newcommand{\ESIX}[3]{{\em #1}&{\footnotesize ESI}&&{\footnotesize ESI}&{\em #2}&~~{\scriptsize /}~~~{\em #3}\\} 
+\newcommand{\EDIX}[3]{{\em #1}&{\footnotesize EDI}&&{\footnotesize EDI}&{\em #2}&~~{\scriptsize /}~~~{\em #3}\\} 
+\newcommand{\EBPX}[3]{{\em #1}&{\footnotesize EBP}&&{\footnotesize EBP}&{\em #2}&~~{\scriptsize /}~~~{\em #3}\\} 
+ 
+\newcommand{\USP}[2]{{\em #2}&% 
+\multicolumn{5}{l}{{\footnotesize $\langle$SP#1$\rangle$}}\\} 
+ 
+\newcommand{\Or}{\ {\scriptsize /}\ \ } 
+ 
+\newenvironment{param}[1] 
+{% 
+%\setlength{\Params}{\textwidth}\addtolength{\Params}{-120pt}%
+\setlength{\Params}{\textwidth}\addtolength{\Params}{-140pt}% 
+\par\vspace{5pt}% 
+\noindent\begin{minipage}{\textwidth} 
+\noindent {\em #1}\\[\Up]% 
+\noindent\begin{tabular}{@{\hspace*{75pt}}lp{\Params}}% 
+\hspace*{30pt}&\\[\Up]% 
+} 
+{% 
+\end{tabular}\end{minipage}\par\vspace{5pt}% 
+} 
+ 
+ 
+ 
+\newlength{\bboxw} 
+%\newcommand{\bbox}[2]{\setlength{\bboxw}{#2pt}\addtolength{\bboxw}{\bboxw}% 
+%\addtolength{\bboxw}{\bboxw}\addtolength{\bboxw}{\bboxw}% 
+%\ifdim\bboxw>10pt% 
+%\framebox[\bboxw]{{\footnotesize #1$_{\ (#2)}$\rule[-4pt]{0pt}{14pt}}}% 
+%\else% 
+%\framebox[\bboxw]{{\footnotesize #1\rule[-4pt]{0pt}{14pt}}}% 
+%\fi%
+%} 
+ 
+\newcommand{\Bbox}[2]{\setlength{\bboxw}{#2pt}\addtolength{\bboxw}{\bboxw}% 
+\addtolength{\bboxw}{#2pt}% 
+\addtolength{\bboxw}{\bboxw}\addtolength{\bboxw}{\bboxw}\addtolength{\bboxw}{\bboxw}% 
+\framebox[\bboxw]{{\footnotesize #1\rule[-4pt]{0pt}{14pt}}}% 
+} 
+ 
+\newenvironment{vwg}{\par\vspace{10pt}% 
+\noindent\begin{tabular}{llll}\hspace*{80pt}&\hspace*{200pt}\\[\Up]} 
+{\end{tabular}\par\vspace{10pt}} 
+ 
+%\newcommand{\Pentium}{Pentium$^{^{\ \mbox{\begin{picture}(0,0)(0,0)% 
+%\put(0,0){\makebox(0,0){\small$\bigcirc$}}% 
+%\put(0,0){\makebox(0,0){\tiny\sc R}}% 
+%\end{picture}}}}\ \ $% 
+%} 
+ 
+\def\registered{{\ooalign{\hfil\raise.07ex\hbox{\sc r}\hfil\crcr\mathhexbox20D}}} 
+ 
+\newcommand{\Pentium}{Pentium$^{\footnotesize\registered}$} 
+ 
+\setlength{\unitlength}{0.5pt} 
+ 
+\newcommand{\repl}{\leftarrow} 
+\newcommand{\PT}{P} 
+ 
+ 
+\renewcommand{\textfraction}{0.05} 
+\renewcommand{\topfraction}{0.95} 
+\renewcommand{\bottomfraction}{0.95} 
+ 
+\hyphenation{ca-che} 
+\hyphenation{bench-mark} 
+ 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newcommand{\impnote}[1]{\framebox{\textbf{MIPS Implementation Note:}} #1}
+\newcommand{\reg}[1]{\mbox{\textbf{#1}}}
+\newcommand{\regs}[3]{{\em #2}&{\footnotesize \reg{#1}}&&{\footnotesize
+    \reg{#1}}&{\em #3}\\} 
+\newcommand{\regx}[4]{{\em #2}&{\footnotesize \reg{#1}}&&{\footnotesize
+    \reg{#1}}&{\em #3}&~~{\scriptsize /}~~~{\em #4}\\} 
+
+\newcommand{\abox}[2]{\setlength{\bboxw}{#2pt}\addtolength{\bboxw}{\bboxw}% 
+\addtolength{\bboxw}{\bboxw}\addtolength{\bboxw}{\bboxw}% 
+\framebox[\bboxw]{{\footnotesize #1\rule[-1ex]{0pt}{4ex}}}} 
+
+\newcommand{\bbox}[2]{\setlength{\bboxw}{#2pt}\addtolength{\bboxw}{\bboxw}% 
+\addtolength{\bboxw}{\bboxw}\addtolength{\bboxw}{\bboxw}% 
+\framebox[\bboxw]{{\footnotesize #1$_{\ (#2)}$\rule[-1ex]{0pt}{4ex}}}} 
+
+\newcommand{\cbox}[3]{\setlength{\bboxw}{#3pt}\addtolength{\bboxw}{\bboxw}% 
+\addtolength{\bboxw}{\bboxw}\addtolength{\bboxw}{\bboxw}% 
+\framebox[\bboxw]{{\footnotesize #1$_{\ (#2)}$\rule[-1ex]{0pt}{4ex}}}} 
+
+\newenvironment{SC}[1]% 
+{% 
+\ifintel\clearpage\markboth{\uppercase{#1}}{\uppercase{#1}}\addcontentsline{toc}{subsection}{#1}\fi% 
+\vspace*{30pt}\noindent% 
+\ifintel% 
+% 
+{\LARGE\bf #1\\[\Up]}% 
+\noindent\hspace*{\fill}\begin{tabular}{rl|c|ll@{}l}% 
+%\hspace*{\scindent}&&&&\multicolumn{2}{c}{\hspace*{130pt}}\\&&&&\\&&&&\\%
+\hspace*{\scindent}&&&&\multicolumn{2}{c}{\hspace*{93pt}}\\&&&&\\&&&&\\%
+&&{\Large $-$} \reg{AT} 0x\syscode {\Large $\rightarrow$}&&\\[\Upppp]% 
+\else% 
+{\Large\bf #1\\[\Up]}% 
+\noindent\hspace*{\scindent}\begin{tabular}{l}% 
+\fi% 
+}% 
+{% 
+\end{tabular}\par\vspace{20pt}% 
+}
+
+\newenvironment{SC*}[1]% 
+{% 
+\vspace*{20pt}% 
+\noindent\begin{minipage}{\textwidth}% 
+\noindent{\large\sc #1\\}% 
+\ifintel% 
+% 
+\noindent\hspace*{\fill}\begin{tabular}{rl|c|ll}% 
+%\hspace*{180pt}&&&&\hspace*{120pt}\\&&&&\\&&&&\\%
+\hspace*{150pt}&&&&\hspace*{115pt}\\&&&&\\&&&&\\%
+&&{\large $-$} \reg{AT} 0x\syscode {\Large $\rightarrow$}&&\\[\Upppp]% 
+\else% 
+\noindent\hspace*{\scindent}\begin{tabular}{l}% 
+\fi% 
+}% 
+{% 
+\end{tabular}\end{minipage}\par\vspace{20pt}% 
+} 
+
+\newcommand{\sigz}{\mbox{$\sigma_{0}$}}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+ 
+ 
+\begin{document} 
+\setcounter{page}{1} 
+ 
+ 
+\pagestyle{empty}
+\thispagestyle{empty} 
+\setcounter{page}{1} 
+ 
+ 
+\maketitle
+
+\pagestyle{headings}
+\thispagestyle{empty} 
+ 
+ 
+\mbox{} 
+\clearpage 
+\thispagestyle{headings} 
+\setcounter{page}{3} 
+ 
+\section*{Note} 
+
+This document describes release 1.0 of the L4 microkernel for the MIPS
+R4x00 microprocessor family. It is based on the L4/x86 reference manual
+Version 2.0 by Jochen Liedtke and has been modified to describe the MIPS
+implementation. Some material has been added to clarify the L4 message
+structure. Comments and critiques, as well as proposed additions and
+alternatives for future versions are most welcome.
+
+The source code for L4/R4x00 is available
+free of charge under the terms of the GNU General Public License. To
+obtain the source contact \textsf{disy@cse.unsw.edu.au}. Future versions
+of this document, as well as related documents and tools, will be
+available from URL \textsf{http://www.cse.unsw.edu.au/{\Tilde}disy/}.
+ 
+\vspace{\fill} 
+ 
+\section*{How To Read This Manual} 
+ 
+ 
+This reference manual consists of two parts, (1) a processor-independent
+description of the principles and mechanisms of L4 and (2) a more detailed
+processor-specific description. Part 2 refers to the IDT R4x00. 
+
+Where L4/MIPS differs from L4/x86 significantly, or something is
+partially or completely unimplemented, then an implementation note
+appears as below. There is also a summary of various implementation
+details in section~\ref{impnotes}.
+
+
+\impnote{This is what an implementation note looks like.}  
+
+\vspace{\fill} 
+ 
+\section*{Acknowledgements} 
+The original L4 reference manual was written by Jochen Liedtke, who
+would like to thank many people for their helpful contributions for
+improving the reference manual and the L4 interface. Particular thanks
+go to Bryan Ford, Hermann H\"{a}rtig, Michael Hohmuth, Sebastian
+Sch\"{o}nberg and Jean Wolter. For the MIPS version we would like to
+thank in particular Jerry Vochteloo for testing the kernel, Alan Au for
+contributions to the manual, as well as the 1997 class of UNSW COMP9242
+``guinea pigs'' who built their operating systems on top of the MIPS
+version of the kernel.
+ 
+ 
+\vspace*{\fill} 
+{\small
+\noindent\hrulefill\\
+%
+Permission to make digital/hard copy of part or all of this work for
+personal or classroom use is granted without fee provided that copies
+are not made or distributed for profit or commercial advantage, the
+copyright notice, the title of the publication and its date appear, and
+notice is given that copying is by permission of the authors. To copy
+otherwise, to republish, to post on servers, or to redistribute to lists
+requires prior specific permission and/or a fee.\\[2ex]
+%
+Copyright \copyright 1997, 1998 by Gernot Heiser, The University of New South Wales.
+}
+ 
+\clearpage 
+ 
+\thispagestyle{headings} 
+ 
+\tableofcontents 
+ 
+\thispagestyle{headings} 
+ 
+%\listoffigures 
+ 
+\thispagestyle{headings} 
+ 
+%\listoftables 
+ 
+\thispagestyle{headings} 
+ 
+\cleardoublepage 
+ 
+ 
+ 
+ 
+ 
+ 
+\chapter{L4 in General} 
+ 
+ 
+\section{Basic Concepts}              \label{concepts} 
+ 
+The following section contains excerpts from~\cite{persistent,sosp,sosp2}. 
+ 
+\vspace{10pt} 
+ 
+\noindent 
+We reason about the minimal concepts or ``primitives'' that
+a \micro-kernel should implement.\footnote{ 
+    Proving minimality, necessarity and completeness would be nice but
+    is impossible, since there is no agreed-upon  metric and all is
+    Turing-equivalent.} 
+The determining criterion used is functionality,
+not performance. More precisely, a concept is tolerated inside the
+\micro-kernel only if moving it outside the kernel, i.e.\ permitting
+competing implementations, would prevent the implementation of the system's
+required functionality. 
+ 
+We assume that the target system has to support interactive and/or not
+completely trustworthy applications, i.e.\ it has to deal with protection. We
+further assume that the hardware implements page-based virtual memory. 
+ 
+ 
+One inevitable requirement for such a system is that a programmer must be
+able to implement an arbitrary subsystem $S$ in such a way that it cannot be
+disturbed or corrupted by other subsystems $S'$. This is the principle of
+independence: $S$ can give guarantees independent of $S'$. The second
+requirement is that other subsystems must be able to rely on these
+guarantees. This is the principle of integrity: there must be a way for $S_1$
+to address $S_2$ and to establish a communication channel which can neither
+be corrupted nor eavesdropped by $S'$. 
+ 
+Provided hardware and kernel are trustworthy, further
+security services, like those described by \cite{gasser:secarch}, can be
+implemented by servers. Their integrity can be ensured by system
+administration or by user-level boot servers. 
+For illustration: a key server should deliver public-secret RSA key pairs on
+demand. It should guarantee that each pair has the desired RSA property and
+that each pair is delivered only once and only to the demander. The key
+server can only be realized if there are mechanisms which (a) protect its
+code and data, (b) ensure that nobody else reads or modifies the
+key and (c) enable the demander to check whether the key comes from the key
+server. Finding the key server can be done by means of a name server and
+checked by public key based authentication.
+ 
+ 
+ 
+\subsection{Address Spaces}                           \label{addsp} 
+ 
+At the hardware level, an {\em address space} is a mapping which associates
+each virtual page to a physical page frame or marks it `non-accessible'. For
+the sake of simplicity, we omit access attributes like read-only and read/write.
+The mapping is implemented by TLB hardware and page tables. 
+ 
+The \micro-kernel, the mandatory layer common to all subsystems, has to hide
+the hardware concept of address spaces, since otherwise, implementing
+protection would be impossible. The \micro-kernel concept of address spaces
+must be tamed, but must permit the implementation of arbitrary protection
+(and
+non-protection) schemes on top of the \micro-kernel. It should be simple and
+similar to the hardware concept. 
+ 
+The basic idea is to support recursive construction of address spaces outside
+the kernel. By magic, there is one address space $\sigma_{_0}$ which
+essentially represents the physical memory and is controlled by the first
+subsystem $S_{_0}$. At system start time, all other address spaces are
+empty. For constructing and maintaining further address spaces on top of
+$\sigma_{_0}$, the \micro-kernel provides three operations: 
+% 
+\begin{list}{}{ 
+               \setlength{\leftmargin}{0pt}
+               \setlength{\labelwidth}{0pt}
+               \addtolength{\labelwidth}{-\labelsep} 
+               } 
+\item[\bf Grant.] The owner of an address space can {\em grant} any of its pages
+         to another space, provided the recipient agrees. The granted page
+         is removed from the granter's address space and included into the
+         grantee's address space. The important
+         restriction is that instead of physical page frames, the
+         granter can only grant pages which are already accessible to
+         itself. 
+% 
+\item[\bf Map.] The owner of an address space can {\em map} any of its pages
+         into another address space, provided the recipient agrees.
+         Afterwards,
+         the page can be accessed in both address spaces. In contrast
+         to granting, the page is not removed from the mapper's address
+         space. Comparable to the granting case, the
+         mapper can only map pages which itself already can access. 
+% 
+\item[\bf Flush.] The owner of an address space can {\em flush} any of its pages. 
+         The flushed page remains accessible in the flusher's address space,
+         but is removed from all other address spaces which had
+         received the page directly or indirectly from the flusher.
+         Although explicit consent of the affected address-space owners is
+         not required, the operation is safe, since it is restricted to own
+         pages. The users of these pages already agreed to accept a potential
+         flushing, when they received the pages by mapping or granting. 
+\end{list} 
+ 
+ 
+ 
+ 
+\subsubsection*{Reasoning} 
+ 
+The described address-space concept leaves memory management and paging
+outside the \micro-kernel; only the grant, map and flush operations are
+retained inside the kernel.
+Mapping and flushing are required to implement memory managers and pagers on
+top of the \micro-kernel.
+ 
+The grant operation is required only in very special situations:
+consider a pager $F$ which combines 
+two underlying file systems (implemented as pagers $f_1$ and $f_2$,
+operating on top of the standard pager)
+into one unified file system (see figure~\ref{nestedfiles}). 
+% 
+\begin{figure}[htbp]\begin{center}\begin{picture}(460,230)(0,-60) 
+\footnotesize 
+ 
+\put(0,160){\framebox(150,20){\em user A}} 
+\thicklines 
+\put(15,161){\framebox(16,17){}} 
+\thinlines 
+\put(225,160){\makebox(0,20){$\cdots\cdots$}} 
+\put(300,160){\framebox(150,20){\em user X}} 
+ 
+\put(150,80){\framebox(150,20){$F$}} 
+ 
+\put(50,0){\framebox(150,20){$f_1$}} 
+\thicklines 
+\put(90,1){\framebox(16,17){}} 
+\thinlines 
+\put(250,0){\framebox(150,20){$f_2$}} 
+ 
+%\put(110,-80){\framebox(230,20){$\sigma_1$}} 
+\put(110,-80){\framebox(230,20){\em std pager}} 
+\thicklines 
+\put(125,-79){\framebox(16,17){}} 
+\thinlines 
+ 
+\thicklines 
+\put(125,30){\vector(1,1){40}} 
+\put(170,45){\bf map} 
+\put(165,110){\vector(-2,1){90}} 
+\put(170,125){\bf grant} 
+\put(215,-50){\vector(-2,1){90}} 
+\put(220,-35){\bf map} 
+\thinlines 
+ 
+\put(93,20){\line(-1,2){70}} 
+\put(133,-60){\line(-1,2){30}} 
+ 
+%\put(20,-70){\oval(40,10)} 
+%\put(0,-80){\line(0,1){10}} 
+%\put(40,-80){\line(0,1){10}} 
+%\put(20,-80){\oval(40,10)[b]} 
+ 
+\put(20,-70){\circle{50}} 
+\put(20,-70){\makebox(0,0){disk}} 
+\put(40,-50){\vector(1,1){45}} 
+ 
+ 
+\end{picture}\end{center}\caption{\em A Granting Example.\label{nestedfiles}}\end{figure} 
+% 
+In this example, $f_1$ maps one of its pages to $F$ which grants the
+received page to {\em user A}. By granting, the page disappears from $F$ so
+that it is then available only in $f_1$ and
+{\em user A}; the resulting mappings are denoted by the thin line: the page
+is mapped in {\em user A}, $f_1$ and the standard pager. Flushing the page by
+the standard pager would affect $f_1$ and {\em user A}, flushing by $f_1$
+only {\em
+user A}. $F$ is not affected by either flush (and cannot flush itself),
+since it used the page only transiently.
+If $F$ had used mapping instead of granting, it would have needed to
+replicate most of the bookkeeping which is already done in $f_1$ and
+$f_2$. Furthermore, granting avoids a potential address-space overflow of
+$F$.
+ 
+In general, granting is used when
+page mappings should be passed through a controlling subsystem without
+burdening the controller's address space by all pages mapped through it.
+
+ 
+ 
+The model can easily be extended to access rights on pages. Mapping and
+granting copy the source page's access right or a subset of them, i.e., can
+restrict the access but not widen it. Special flushing operations may remove
+only specified access rights. 
+ 
+ 
+ 
+\subsubsection*{I/O} 
+ 
+An address space is the natural abstraction for incorporating device
+ports. This is obvious for memory mapped I/O, but I/O ports can also be
+included. The granularity of control depends on the given processor.
+The 386 and its successors permit control per port (one very small page
+per port) but no mapping of port addresses (it enforces mappings with $v\EQ
+v'$); the PowerPC uses pure memory mapped I/O, i.e., device ports can be
+controlled and mapped with 4K granularity. 
+Controlling I/O rights and device drivers is thus also done by memory
+managers and pagers on top of the \micro-kernel. 
+ 
+ 
+ 
+ 
+\subsubsection*{An Abstract Model of Address Spaces} 
+ 
+We describe address spaces as mappings.
+$\sigma_{_0}: V \rightarrow R \CUP \{\phi\}$ is the initial
+address space, where $V$ is the set of virtual pages, $R$ the set of
+available physical (real) pages and $\phi$ the nilpage which cannot be
+accessed.
+Further address spaces are defined recursively as mappings
+$\sigma: V \rightarrow (\Sigma \times V)\CUP\{\phi\}$, where
+$\Sigma$ is the set of address spaces. It is convenient to regard each
+mapping as a one column table which contains $\sigma(v)$ for all $v\IN V$
+and can be indexed by $v$. We denote the elements of this table by
+$\sigma_v$. 
+ 
+All modifications of address spaces are based on the
+replacement operation: we write $\sigma_v \repl x$ to describe a change of
+$\sigma$ at $v$, precisely: 
+% 
+\[       \mbox{flush}\ (\sigma,v) \quad ; \quad \sigma_v\ :=\ x  \quad . \] 
+% 
+A page potentially mapped at $v$ in $\sigma$ is flushed, and the new value
+$x$ is copied into $\sigma_v$.
+This operation is internal to the \micro-kernel. We use it only for
+describing the three exported operations. 
+
+
+
+A subsystem $S$ with address space $\sigma$ can {\em grant}
+any of its pages $v$ to a subsystem $S'$ with address space
+$\sigma'$ provided $S'$ agrees: 
+% 
+\[ \sigma'_{v'}\ \repl\ \sigma_v \quad,\quad \sigma_v\ \repl\ \phi \quad .\] 
+% 
+Note that $S$ determines which of its pages should be granted, whereas $S'$
+determines at which virtual address the granted page should be mapped in
+$\sigma'$. The granted page is transferred to $\sigma'$ and removed from
+$\sigma$. 
+ 
+ 
+A subsystem $S$ with address space $\sigma$ can {\em map}
+any of its pages $v$ to a subsystem $S'$ with address space
+$\sigma'$ provided $S'$ agrees: 
+% 
+\[ \sigma'_{v'}\ \repl\ ( \sigma, v) \quad . \] 
+% 
+In contrast to grant, the mapped page remains in the mapper's space $\sigma$
+and {\em a link to the page in the mapper's address space $(\sigma,v)$ is
+stored in the receiving address space $\sigma'$}, instead of transferring the
+existing link from $\sigma_v$ to $\sigma'_{v'}$. This operation permits to
+construct address spaces recursively, i.e.\ new spaces based on existing
+ones.
+ 
+
+Flushing, the reverse operation, can be executed without explicit agreement
+of the mappees, since they agreed implicitly when accepting the prior map
+operation. $S$ can {\em flush} any of its pages: 
+% 
+\[ \forall_{\sigma'_{v'}\,\EQ\,(\sigma,v)} :\ \sigma'_{v'}\ \repl\ \phi \quad . \] 
+% 
+Note that $\repl$ and {\em flush} are defined recursively. Flushing recursively
+affects also all mappings which are indirectly derived from $\sigma_v$.
+ 
+ 
+No cycles can be established by these three
+operations, since $\repl$ flushes the destination prior to copying. 
+ 
+ 
+ 
+\subsubsection*{Implementing the Model} 
+ 
+At a first glance, deriving the physical address of page $v$ in address space
+$\sigma$ seems to be rather complicated and expensive: 
+% 
+\[   \sigma(v) = \left\{\begin{array}{cl} 
+% 
+                   \sigma'(v')   & \mbox{~if~}\ \sigma_v \EQ (\sigma',v') \\ 
+                   r             & \mbox{~if~}\ \sigma_v \EQ r            \\ 
+                   \phi          & \mbox{~if~}\ \sigma_v \EQ \phi 
+% 
+                 \end{array}\right. \] 
+% 
+Fortunately, a recursive evaluation of $\sigma(v)$ is never required. The
+three basic operations guarantee that the physical address of a virtual page
+will never change, except by flushing. For implementation, we therefore
+complement each $\sigma$ by an additional table $\PT$, where $\PT_v$
+corresponds to $\sigma_v$ and holds either the physical address of $v$
+or $\phi$. Mapping and granting then include 
+% 
+\[    \PT'_{v'}\ :=\ \PT_v  \quad \] 
+% 
+and each replacement $\sigma_v \repl \phi$ invoked by a flush operation
+includes 
+% 
+\[    \PT_{v}\ :=\ \phi  \quad . \] 
+% 
+$\PT_v$ can always be used instead of evaluating $\sigma(v)$.
+In fact, $\PT$ is equivalent to a hardware page table. \micro-kernel
+address spaces can be implemented straightforward by means of
+the hardware-address-translation facilities. 
+ 
+The recommended implementation of $\sigma$ is to use one mapping tree per
+physical page frame which describes all actual mappings of the frame.
+Each node contains $(\PT,v)$, where $v$ is the according virtual page in
+the address space which is implemented by the page table $\PT$. 
+ 
+Assume that a grant-, map- or flush-operation deals with a page $v$
+in address space $\sigma$ to which the page table $\PT$ is associated. In a
+first step, the operation selects the according tree by $\PT_v$, the
+physical page. In the next step, it selects the node of the tree that
+contains $(\PT,v)$. (This selection can be done by parsing the tree or in
+a single step, if $\PT_v$ is extended by a link to the node.) Granting then
+simply replaces the values stored in the node and map creates a new child
+node for storing ($\PT',v')$. Flush lets the selected node unaffected but
+parses and erases the complete subtree, where $\PT_v'\,:=\,\phi$ is
+executed for each node $(\PT',v')$ in the subtree. 
+ 
+ 
+ 
+ 
+\subsection{Threads and IPC} 
+ 
+A {\em thread} is an activity executing inside an address space. A thread
+$\tau$ is
+characterised by a set of registers, including at least an instruction
+pointer, a stack pointer and a state information. A thread's state also
+includes the address space $\sigma^{(\tau)}$ in
+which $\tau$ currently executes. This dynamic or static association
+to address spaces is the decisive reason for including the thread
+concept (or something equivalent) in the \micro-kernel. To prevent
+corruption of address spaces, all changes to a thread's address space
+($\sigma^{(\tau)}\ :=\ \sigma'$) must be controlled by the kernel. This
+implies that the \micro-kernel includes the notion of some $\tau$ that
+represents the above mentioned activity. 
+In some operating systems, there may be additional reasons for
+introducing threads as a basic abstraction, e.g.\ preemption. 
+Note that choosing a concrete thread concept
+remains subject to further OS-specific design decisions. 
+ 
+Consequently, cross-address-space communication, also called inter-process
+communication (IPC), must be supported by the \micro-kernel. The classical
+method is transferring messages between threads by the \micro-kernel. 
+ 
+IPC always enforces a certain agreement between both parties of a
+communication: the sender decides to send information and determines its
+contents; the receiver determines whether it is willing to receive information
+and is free to interpret the received message. Therefore, IPC is not only
+the basic concept for communication between subsystems but also, together
+with address spaces, the foundation of independence. 
+ 
+Other forms of communication, remote procedure call (RPC) or controlled
+thread migration between address spaces, can be constructed from
+message-transfer based IPC. 
+ 
+Note that the {\em grant} and {\em map} operations
+(section~\ref{addsp}) need IPC, since
+they require an agreement between granter/mapper and recipient of the
+mapping.
+ 
+ 
+ 
+ 
+ 
+\subsubsection*{Interrupts} 
+ 
+The natural abstraction for hardware interrupts is the IPC message. The
+hardware is regarded as a set of threads which have special thread ids
+and send empty messages (only consisting of the sender id) to
+associated software threads. A receiving thread concludes from the message
+source id, whether the message comes from a hardware interrupt and from
+which interrupt: 
+ 
+{\footnotesize 
+\alg{driver thread:\\ 
+      \DO \\ 
+         wait for (msg, sender) ; \\ 
+         \IF sender = my hardware interrupt \\ 
+           \THEN read/write io ports ; \\ 
+                 reset hardware interrupt \\ 
+           \ELSE \dots \\ 
+         \FI \\ 
+       \OD .\\ 
+       } 
+} 
+ 
+Transforming the interrupts into messages must be done by the kernel,
+but the \micro-kernel is not involved in device-specific interrupt handling.
+In
+particular, it does not know anything about the interrupt semantics. On some
+processors, resetting the interrupt is a device specific action which can be
+handled by drivers at user level. The {\tt iret}-instruction then is
+used solely for popping status information from the stack and/or switching
+back to user mode and can be hidden by the kernel. However, if a processor
+requires a privileged operation for releasing an interrupt, the kernel
+executes this action
+implicitly when the driver issues the next IPC operation. 
+ 
+ 
+ 
+\subsection{Clans \& Chiefs} 
+ 
+Within all systems based on direct message transfer,
+protection is essentially a matter of message control. Using access control lists (acl) this
+can be done at the server level, but maintenance of large distributed acls becomes hard when access
+rights change rapidly. So \cite{haertig:birlixsec} have
+proposed that object (passive entity) protection be complemented
+by subject (active entity) restrictions. In this approach the kernel is able to restrict the
+outgoing messages of a task (the subject) by means of a list of permitted receivers. 
+ 
+The clan concept \cite{clans} is an algorithmic
+generalisation of this idea: 
+ 
+\setlength{\unitlength}{0.5pt} 
+\begin{center}\begin{picture}(320,240)(0,-50) 
+ 
+\put(170,170){\circle{20}} 
+\put(70,120){\circle{20}} 
+\put(90,60){\circle{20}} 
+\put(40,30){\circle{20}} 
+ 
+\put(250,120){\circle{20}} 
+\put(200,85){\circle{20}} 
+\put(200,25){\circle{20}} 
+\put(270,40){\circle{20}} 
+ 
+\thicklines 
+\put(105,55){\vector(3,-1){80}} 
+\thinlines
+ 
+\put(85,75){\vector(-1,3){10}} 
+\put(85,120){\vector(1,0){150}} 
+\put(245,110){\vector(-2,-1){30}} 
+\put(200,70){\vector(0,-1){30}} 
+ 
+\put(70,60){\oval(100,100)} 
+ 
+\put(200,40){\oval(60,70)} 
+ 
+\put(250,50){\oval(190,120)} 
+
+\put(170,60){\oval(380,200)} 
+
+\end{picture}\end{center} 
+
+A \label{s:c+c} {\em clan} (denoted as an oval) is a set of tasks (denoted as a circle)
+headed by a {\em chief} task. Inside the clan all messages are transferred freely and
+the kernel guarantees message integrity.
+But whenever a message tries to cross a clan's borderline,
+regardless of whether it is outgoing or incoming, it is redirected to the clan's chief. This chief may inspect
+the message (including the sender and receiver ids as well as the contents)
+and decide whether or not it should be passed to
+the destination to which it was addressed. As demonstrated in the figure
+above, these rules apply to nested clans as well. 
+Obviously subject restrictions and local reference monitors can be implemented outside the kernel by
+means of clans. Since chiefs are tasks at user level, the clan concept allows more sophisticated and
+user definable checks as well as active control. 
+Typical clan structures are 
+ 
+\begin{description} 
+ 
+\item[Clan per machine:] 
+     In this simple model there is only one clan per machine covering all
+     tasks. Local communication is handled directly by the kernel without
+     incorporating a chief, whereas cross machine communication involves the
+     chief of the sending and the receiving machine. Hence, the clan
+     concept is used for implementing remote ipc by user level tasks. 
+ 
+\item[Clan per system version:] 
+     Sometimes chiefs are used for adapting different versions. The servers
+     of the old or new versions are encapsulated by a clan so that its
+     chief can translate the messages. 
+ 
+\item[Clan per user:] 
+     Surrounding the tasks of each user or user group by a clan is a typical
+     method when building security systems. Then the chiefs are used to
+     control and enforce the requested security policy. 
+ 
+\item[Clan per task:] 
+     In the extreme case there are single tasks each controlled by a
+     specific chief. For example these one-task-clans are used for debugging
+     and supervising suspicious programs.
+ 
+\end{description} 
+ 
+In the case of intra-clan communication (no chief involved),
+the additional costs of the clan concept are
+negligible (below 1\% of minimal ipc time). Inter-clan communication
+however multiplies the ipc operations by the number of chiefs involved. This
+can be tolerated, since (i) L4 ipc is very fast (see above) and (ii) crossing
+clan boundaries occurs seldom enough in practice. Note that many security
+policies can be implemented simply by checking the client id in the server
+and do not need clans. 
+ 
+ 
+ 
+\subsection{Unique Identifiers} 
+ 
+A \micro-kernel must supply unique identifiers (uid) for something, either
+for threads or tasks or communication channels. Uids are required for
+reliable and efficient local communication. If $S_1$ wants to send a message
+to $S_2$, it needs to specify the destination $S_2$ (or some channel
+leading to $S_2$). Therefore, the \micro-kernel must know which uid
+relates to $S_2$. On the other hand, the receiver $S_2$ wants to be sure
+that the message comes from $S_1$. Therefore the identifier must be unique,
+both in space and time. 
+ 
+In theory, cryptography could also be used. In practice, however,
+enciphering messages for local communication is far too expensive and the
+kernel must be trusted anyway.
+$S_2$ can also not rely on purely user-supplied capabilities, since
+$S_1$ or some other instance could duplicate and pass them to untrusted
+subsystems without control of $S_2$. 
+ 
+ 
+ 
+ 
+\subsection{Flexibility}                 \label{flexibility} 
+ 
+To illustrate the flexibility of the basic concepts, we sketch some
+applications which typically belong to the basic operating system but can
+easily be implemented on top of the \micro-kernel.
+ 
+ 
+\paragraph{Memory Manager.} 
+A server managing the initial address space
+$\sigma_{_0}$ is a classical main memory manager, but outside the
+\micro-kernel. Memory managers can easily be stacked: $M_0$ maps or grants
+parts of the physical memory ($\sigma_{_0}$) to $\sigma_{_1}$, controlled by
+$M_1$, other parts to $\sigma_{_2}$, controlled by $M_2$. Now we have two
+coexisting main memory managers. 
+ 
+ 
+\paragraph{Pager.} 
+A Pager may be integrated with a memory manager or use a memory 
+managing server. Pagers use the \micro-kernel's grant, map and flush
+primitives. The remaining interfaces, pager -- client, pager -- memory server
+and pager -- device driver, are completely based on IPC and are user-level
+defined.
+ 
+Pagers can be used to implement traditional paged virtual memory and
+file/database mapping into user address spaces as well as unpaged resident
+memory for device drivers and/or real time systems. Stacked pagers, i.e.\
+multiple layers of pagers, can be used for combining access control with
+existing pagers or for combining various pagers (e.g.\ one per disk) into one
+composed object. User-supplied paging
+strategies~\cite{lee:HiPEC,cao:file-caching} are handled at the user level
+and are in no way restricted by the \micro-kernel. Stacked file systems
+\cite{khalidi:extfiles} can be realized accordingly. 
+ 
+%\cite{young:duality,harty:extpager} 
+ 
+ 
+\paragraph{Multimedia Resource Allocation.} 
+Multimedia and other real-time applications require memory resources to
+be allocated in a way that allows predictable execution times.
+The above mentioned user-level memory managers and pagers permit e.g.\ fixed
+allocation of physical memory for specific data or locking data in memory
+for a given time.
+
+Note that resource allocators for multimedia and for timesharing can
+coexist. Managing allocation conflicts is part of the servers' jobs. 
+ 
+\paragraph{Device Driver.} 
+A device driver is a process which directly accesses hardware
+I/O ports mapped into its address space and receives messages from the
+hardware
+(interrupts) through the standard IPC mechanism. Device-specific memory,
+e.g.\ a screen, is handled by means of appropriate memory managers.
+Compared to other user-level processes, there is nothing special about a
+device driver. No device driver has to be integrated into the
+\micro-kernel.\footnote{ 
+In general, there is no reason for integrating boot drivers into
+the kernel. The booter, e.g.\ located in ROM, simply loads a bit image into
+memory that contains the micro-kernel and perhaps some set of initial pagers
+and drivers (running in user mode and {\em not} linked but simply
+appended to the kernel). Afterwards, the boot drivers are no longer
+used.} 
+ 
+ 
+\paragraph{Second Level Cache and TLB.} 
+Improving the hit rates of a secondary cache by means of page allocation or
+reallocation~\cite{kessler:page-placement,romer:dynmap} can be implemented by
+means of a pager which applies some cache-dependent (hopefully conflict
+reducing) policy when allocating virtual pages in physical memory. 
+ 
+In theory, even a software TLB handler could be implemented like this. In
+practice, the first-level TLB handler will be implemented in the
+hardware or in the \micro-kernel. However, a second-level TLB handler, e.g.\
+handling misses of a hashed page table, might be implemented as a user-level
+server. 
+ 
+ 
+\paragraph{Remote Communication.} 
+Remote IPC is implemented by communication
+servers which translate local messages to external communication protocols
+and vice versa. The communication hardware is accessed by device drivers.
+If special sharing of communication
+buffers and user address space is required, the communication server will
+also act as a special pager for the client. The \micro-kernel is not involved. 
+ 
+ 
+\paragraph{Unix Server.} 
+Unix\footnote{Unix is a registered trademark of UNIX System Laboratories.}
+system calls
+are implemented by IPC. The Unix server can act as a pager for its clients
+and also use memory sharing for communicating with its clients. The Unix
+server itself can be page-able or resident. 
+ 
+ 
+\paragraph{Conclusion.} 
+A small set of \micro-kernel concepts lead to abstractions
+which stress flexibility, provided they perform well enough. The only thing
+which cannot be implemented on top of these abstractions is the processor
+architecture, registers, first-level caches and first-level TLBs. 
+ 
+ 
+ 
+\clearpage 
+ 
+ 
+\section{Data Types} 
+ 
+\subsection{Unique Ids} 
+ 
+Unique ids identify tasks, threads and hardware interrupts. They are also
+unique in time. Unique ids are 64-bit values. 
+ 
+ 
+\subsection{User-Level Operations on Uids} 
+ 
+\begin{tabular}{ll} 
+% 
+a = b  :             &    a = b  \\[15pt] 
+% 
+task(a) = task (b) : &    (a AND NOT lthread mask) = (b AND NOT lthread mask)\\[15pt] 
+% 
+chief(a) = chief (b) : &  (a AND NOT chief mask) = (b AND NOT chief mask)\\[15pt] 
+% 
+site(a) = site (b) : &    (a AND NOT site mask) = (b AND NOT site mask)\\[15pt] 
+% 
+% 
+lthread no(a) :      &  (a AND lthread mask) SHR lthread shift\\
+		     &  \em extract lthread no from thread id
+		     \emph{a}\\[15pt] 
+%
+thread(a,n) :        &  (a AND NOT lthread mask) + (n SHL lthread shift)\\
+		     &  \em construct thread id from task id
+		     \emph{a} and lthread no \emph{n} \\[15pt] 
+% 
+task no(a) :         &  (a AND task mask) SHR task shift  \\[15pt] 
+% 
+chief no(a) :        &  (a AND chief mask) SHR chief shift \\[15pt] 
+% 
+site no(a) :         &  (a AND site mask) SHR site shift
+% 
+\end{tabular} 
+
+
+
+\subsection{Fpages} 
+ 
+Fpages (Flexpages) are regions of the virtual address space. An fpage
+consists of all pages actually mapped in this region. The minimal fpage size
+is the minimal hardware-page size. 
+
+An fpage of size
+$2^s$ has a $2^s$-aligned base address $b$, i.e.\ $b \bmod 2^s \EQ 0$.
+An fpage with base address $b$ and size $2^s$ is denoted by the 64-bit value
+ 
+\[ b + 4s .\] 
+ 
+\noindent On R4x00 processors, the smallest possible value for $s$ is 12,
+since the hardware page size is 4K.
+ 
+ 
+\subsection{Messages} 
+ 
+\begin{vwg} 
+S :: snd ; EMPTY . \\[8pt] 
+R :: rcv ; EMPTY . \\[8pt] 
+EMPTY :: . 
+\end{vwg} 
+ 
+\begin{vwg} 
+S R message: & rcv fpage option ,\\ 
+             & size dope ,\\ 
+             & S R msg dope ,\\ 
+             & S R mwords ,\\ 
+             & S R string dopes . 
+\end{vwg} 
+ 
+ 
+\begin{vwg} 
+rcv fpage option: & rcv fpage:fpage ;\\ 
+                  & zero:word. 
+\end{vwg} 
+ 
+ 
+ 
+\begin{vwg} 
+size dope: & reserved:byte ,              \\ 
+           & string dope number:5bits ,   & $= S$ &\\ 
+           & mwords number:19bits .       & $= W$ & 
+\end{vwg} 
+ 
+\begin{vwg} 
+snd R msg  dope: & undefined:byte ,         \\ 
+                 & string dope number:5bits ,& $= s$ &  $s\ \LE\ S$ \\ 
+                 & mwords number:19bits .    & $= w$ &  $w\ \LE\ W$ \\[8pt] 
+% 
+rcv msg  dope: & undefined:word .         \\ 
+\end{vwg} 
+ 
+\begin{vwg} 
+snd R mwords:  & $w\ \times$ send receive word ,  \\ 
+               & $(W-w)\ \times$ receive word ;       \\[5pt] 
+% 
+               & $m\ \times$ snd fpage receive double word , & $2m\,\LE\,w$\\ 
+               & $w-2m\ \times$ send receive words ,  \\ 
+               & $(W-w)\ \times$ receive word .       \\[8pt] 
+% 
+rcv mwords:    & $W\ \times$ receive word . 
+\end{vwg} 
+ 
+\begin{vwg} 
+snd R string dopes: & $s\ \times$ snd R string dope ,  \\ 
+                    & $(S-s)\ \times$ R string dope .  \\[8pt] 
+% 
+rcv string dopes:   & $S\ \times$ rcv string dope . 
+\end{vwg} 
+ 
+ 
+\begin{vwg} 
+snd rcv string dope:   & snd addr:word ,     \\ 
+                       & snd size:word ,     & $\LE\ $4MB\\ 
+                       & rcv addr:word ,     \\ 
+                       & rcv size:word .     & $\LE\ $4MB\\[8pt] 
+% 
+snd string dope:       & snd addr:word ,     \\ 
+                       & snd size:word ,     & $\LE\ $4MB\\ 
+                       & undefined:word ,    \\ 
+                       & undefined:word .    \\[8pt] 
+% 
+rcv string dope:       & undefined:word ,    \\ 
+                       & undefined:word ,    \\ 
+                       & rcv addr:word ,     \\ 
+                       & rcv size:word .     & $= s_r$ & $s_r\ \LE\ $4MB 
+% 
+\end{vwg} 
+ 
+ 
+\begin{vwg} 
+snd map fpage:           & grant flag:1bit , \\ 
+                         & write flag:1bit , \\ 
+                         & snd base:30bits , \\ 
+                         & snd fpage:fpage . \\[8pt] 
+\end{vwg} 
+ 
+ 
+ 
+\clearpage 
+ 
+\section{\micro-Kernel Calls} 
+ 
+\generalsc{120pt} 
+ 
+ 
+\begin{SC}{ipc}   \scin {dest option, snd descriptor option, rcv descriptor option, timeouts}\\ 
+                  \scout{source option, result code} 
+\end{SC} 
+ 
+ 
+\begin{SC*}{call} \scin {dest, snd descriptor, closed rcv descriptor, timeouts} \\ 
+                  \scout{dest option, result code} 
+\end{SC*} 
+ 
+ 
+\begin{SC*}{\cbstart reply\&wait \cbend} 
+                  \scin {dest, snd descriptor, open rcv descriptor, timeouts}\\ 
+                  \scout{source option, result code} 
+\end{SC*} 
+ 
+ 
+\begin{SC*}{send} \scin {dest, snd descriptor, \nil, timeouts} 
+                  \scout{\undef, result code} 
+\end{SC*} 
+ 
+\begin{SC*}{receive from} 
+                  \scin {source, \nil, closed rcv descriptor, timeouts} \\
+                  \scout{source option, result code} 
+\end{SC*} 
+ 
+\begin{SC*}{\cbstart wait \cbend} 
+                  \scin {\undef, \nil, open rcv descriptor, timeouts} \\ 
+                  \scout{source option, result code} 
+\end{SC*} 
+ 
+\begin{SC*}{receive intr} 
+                  \scin {intr, \nil, closed rcv descriptor, timeouts} \\
+                  \scout{source option, result code} 
+\end{SC*} 
+ 
+\begin{SC*}{sleep} 
+                  \scin {\nil, \nil, closed rcv descriptor, timeouts} 
+                  \scout{\undef, result code} 
+\end{SC*} 
+ 
+ 
+ 
+ 
+ 
+ 
+\begin{SC}{id\_nearest}    \scin  {dest id} 
+                           \scout {nearest id} 
+\end{SC} 
+ 
+ 
+ 
+\begin{SC}{fpage\_unmap}   \scin  {fpage, map mask} 
+                           \scout {} 
+\end{SC} 
+ 
+ 
+ 
+ 
+\begin{SC}{thread\_switch}{}  \scin {dest} 
+                              \scout{}
+\end{SC} 
+ 
+\begin{SC}{lthread\_ex\_regs} \scin  {lthread no, SP, IP, excpt, pager}\\ 
+                              \scout {FLAGS, SP, IP, excpt, pager} 
+\end{SC} 
+
+\noindent\impnote{Added exception handler identifier (see section~\ref{exrpc}), and
+  removed preempter which is currently not supported in L4/MIPS}
+ 
+ 
+\begin{SC}{thread\_schedule}{}\scin {dest, prio, timeslice, ext preempter}\\ 
+                              \scout{prio, timeslice, state, ext preempter, partner, time} 
+\end{SC} 
+
+\cbdelete
+ 
+\begin{SC}{task\_new}         \scin  {dest task id, mcp/new chief, SP, IP,
+                                      pager id, excpt id} \\ 
+                              \scout {new task id} 
+\end{SC} 
+ 
+\noindent\impnote{Added an exception handler identifier (see
+  section~\ref{exrpc})}
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+\pagestyle{headings} 
+ 
+ 
+\chapter{L4/MIPS} 
+ 
+\vspace{\fill} 
+ 
+{\LARGE\bf L4/R4x00} \\ 
+ 
+\vspace{\fill} 
+
+\section{Implementation Notes}
+\label{impnotes}
+What follows is a list of implementation details of the current L4/MIPS
+implementation. It is here to serve as a quick reference as to what may
+or may not be implemented for those that are familiar with L4/x86.
+
+\subsection{Cache}
+
+The R4600 has 16KB data cache and 16KB instruction cache. Both are
+two-way associative, virtually indexed with physical tags. The data
+cache has either a write-through or write-back policy.
+
+To avoid aliasing problems, shared memory regions must lie at the same
+offset from a 8KB boundary in the virtual address space.
+
+%Write-back caching is not used in the current version (other
+%than in the L4 kernel itself) as there is potential for the cache
+%to write-back data from a recycled page no longer used at its original
+%address, ie when it appears elsewhere in the cache.
+
+I envisage adding a MIPS specific system call in the future to perform
+cache management functions. This will allow write-back caching to once
+again be re-enabled.
+
+\subsection{IPC}
+
+\begin{itemize}
+\item Granting is not supported.
+\item Sending multiple fpages is supported in registers only, i.e.\ up to 3
+  valid fpages plus the terminating nil fpage. Sending fpages in memory
+  based messages is not supported.
+\item Dwords sent in memory based messages are 64-bit, not 32-bit as in
+  L4/x86. This allows sending direct messages of up to 4MB in size.
+\item Indirect strings can be up to 4MB in size.
+\end{itemize}
+
+\subsection{Scheduling}
+
+\begin{itemize}
+ 
+\item \cbstart The current scheduler uses a multi-level round robin
+  scheme with absolute priorities (0-255). \cbend
+\item Internal and external preempters are not supported.
+\item Constant interrupts will prevent other threads from running.
+\end{itemize}
+
+
+\subsection{\sigz}
+
+\begin{itemize}
+\item Multiple mappings of the same physical frame is not supported.
+\item The RPC protocol is slightly different, see section~\ref{sigz} for
+  details.
+\end{itemize}
+ 
+
+\subsection{Exceptions}
+
+Exceptions are handled using IPC. Each thread has it's own exception
+handling thread, see section~\ref{exrpc} for details.
+
+\cbstart
+\subsection{Interrupts}
+
+Interrupts are handled using IPC. Each level of interrupt may have an
+associated handler thread, see the ipc part of
+section~\ref{mkernel_calls} for how this is done. When an interrupt
+occurs, the associate handler (if any) is notified via ipc.
+\cbend
+
+\section{Notational conventions} 
+ 
+\vspace{30pt} 
+\begin{center}\begin{tabular}{cp{200pt}} 
+% 
+\undef                & If this refers to an input parameter, its value is
+                        meaningless. If it refers to an output parameter,
+                        its value is undefined.\\[10pt] 
+% 
+                        \reg{a0},\reg{a1}\dots & denote the processor's
+                        general registers. Note that the SGI 64-bit ABI register names are used.\\[10pt] 
+% 
+\end{tabular}\end{center} 
+ 
+ 
+\section{Data Types} 
+ 
+\subsection{Unique Ids} 
+
+Unique ids identify tasks, threads and hardware interrupts. Each unique id
+is a 64-bit value which is unique in time. A unique id in R4x00 format
+consists of a single 64-bit word: 
+ 
+\vspace{12pt} 
+ 
+\begin{tabular}{lcr} 
+\hspace*{80pt}&\\[\Up] 
+% 
+\emph{thread id} & \bbox{nest}{4}\bbox{chief}{11}\bbox{site}{17}\\
+                 &
+                 \bbox{ver1}{4}\bbox{task}{11}\bbox{lthread}{7}\bbox{ver0}{10}
+% 
+\end{tabular} 
+ 
+\vspace{20pt} 
+ 
+\begin{tabular}{lcr} 
+\hspace*{80pt}&\\[\Up] 
+% 
+\emph{task id} & \bbox{nest}{4}\bbox{chief}{11}\bbox{site}{17}\\
+ & \bbox{ver1}{4}\bbox{task}{11}\bbox{0}{7}\bbox{ver0}{10}
+% 
+\end{tabular} 
+ 
+\vspace{20pt} 
+ 
+\begin{tabular}{lcr} 
+\hspace*{80pt}&\\[\Up] 
+% 
+% 
+\emph{interrupt id} &\cbox{0}{61}{24}\cbox{intr + 1}{3}{8}
+% 
+\end{tabular} 
+ 
+\vspace{20pt} 
+ 
+\begin{tabular}{lcr} 
+\hspace*{80pt}&\\[\Up] 
+% 
+\emph{nil id} & \cbox{0}{64}{32}
+% 
+\end{tabular} 
+ 
+\vspace{20pt} 
+
+\begin{tabular}{lcr} 
+\hspace*{80pt}&\\[\Up] 
+% 
+\emph{invalid id} & \cbox{0xFFFFFFFFFFFFFFFF}{64}{32}
+% 
+\end{tabular} 
+ 
+\vspace{20pt} 
+ 
+ 
+ 
+ 
+\subsection{\label{s:fpage}Fpages} 
+ 
+Fpages (Flexpages) are regions of the virtual address space. An fpage
+designates all pages actually mapped in this region. The minimal fpage size
+is 4 K, the minimal hardware-page size. 
+ 
+An fpage of size
+$2^s$ has a $2^s$-aligned base address $b$, i.e.\ $b \bmod 2^s \EQ 0$.
+On the R4x00 processors, the smallest possible value for $s$ is 12,
+since hardware pages are at least 4K. 
+The complete user address space (base address 0, size $2^{64}-K$, where $K$
+is the size of the kernel area) is denoted by $b=0, s=64$. 
+An fpage with base address $b$ and size $2^s$ is denoted by a 64-bit word: 
+ 
+\vspace{12pt} 
+ 
+\begin{tabular}{ll} 
+\hspace*{80pt}&\\[\Up] 
+% 
+fpage$(b,2^{s})$ &
+\cbox{$b/4096$}{52}{20}\bbox{0}{3}\cbox{$s$}{7}{7}\abox{\undef{}}{1}\abox{\undef{}}{1}\\[20pt]
+fpage$(0,2^{64}-K)$ &
+\cbox{0}{52}{20}\bbox{0}{3}\cbox{64}{7}{7}\abox{\undef{}}{1}\abox{\undef{}}{1}\\[20pt]
+% 
+\end{tabular} 
+
+
+\vspace{12pt} 
+ 
+\impnote{The user address space on the R4600 is one terabyte ($2^{40}$)
+  beginning at 0x0. Values of $s \geq 40$ are equivalent, however if the
+  intention is to specifiy the whole address space one should of course
+  use $s = 64$ for future compatibility.}
+
+
+\vspace{20pt} 
+ 
+ 
+ 
+\subsection{Messages}                \label{messages}
+
+
+
+A message contains between \(2^6\) and \(2^{22}+2^6\) bytes of in-line
+data (\textbf{mwords}). The first 64 bytes (eight dwords) are transfered
+via registers, the (optional) remainder is contained in a dword-aligned
+memory buffer pointed to by a \emph{message descriptor}. Every
+successful IPC operation will always copy at least eight dwords to the
+receiver.
+
+The buffer pointed to by the optional message descriptor contains a 3
+dword message header, followed by a number of mwords, followed by a
+number of \emph{string dopes}. The number of mwords (in 64-bit dwords,
+excluding those copied in registers) and string dopes is specified in
+the message header.
+
+ \vspace{15pt}
+\noindent\begin{tabular}{lcr} 
+ \hspace*{100pt}  & \abox{string dopes}{32} \\
+		  & \abox{mwords}{32}\\
+message:	  & \abox{msg header}{32}\\
+\end{tabular}
+
+ \vspace{15pt}
+
+The beginning of the message buffer has the following format:
+
+
+
+ \vspace{15pt}
+\noindent\begin{tabular}{lcr} 
+          & \vdots & \\
+ \hspace*{100pt}  & \cbox{dword 1}{64}{32} & +32 \\
+msg dwords: & \cbox{dword 0}{64}{32} & +24 \\
+msg snd dope:  &
+          \cbox{0}{32}{9}\cbox{dwords}{19}{10}\cbox{strings}{5}{5}\cbox{\undef}{8}{8} & +16\\
+msg size dope:  &
+          \cbox{0}{32}{9}\cbox{dwords}{19}{10}\cbox{strings}{5}{5}\cbox{\undef}{8}{8} & +8\\
+msg rcv fpage option: & \cbox{fpage}{64}{32} & +0\\
+\end{tabular}
+
+
+ \vspace{15pt}
+
+The \emph{receive fpage} describes the address range in which the caller
+is willing to accept fpage mappings or grants in the receive part (if
+any) of the IPC. The \emph{size dope} defines the size (in dwords) of
+the mword buffer (and hence the offset of the string dopes from the end
+of the header), and the number of string dopes.
+
+The \emph{send dope} specifies how many dwords and strings are actually
+to be sent. (Specifying send dope values less than the size dope values
+makes sense when the caller is willing to receive more data than
+sending.)
+
+\emph{Strings} are out-of-line by-value data. Their size and location is
+specified by the corresponding string dopes. The string dope format is:
+
+ \vspace{15pt}
+
+
+\noindent\begin{tabular}{lcr}
+ \hspace*{100pt} 
+ & \cbox{*rcv string}{64}{32} & +24\\
+ & \cbox{rcv string size}{64}{32} & +16\\
+ & \cbox{*snd string}{64}{32} & +8\\
+string dope: & \cbox{snd string size}{64}{32} & +0\\
+\end{tabular}
+
+
+ \vspace{15pt}
+The first part of the string dope specifies the size and location of the
+string the caller wants sent to the destination, while the second part
+specifies the size and location of a buffer where the caller is willing
+to receive a string. \textbf{Note} that strings do not have to be
+aligned, and that their size is  specified in \emph{bytes}.
+
+The in-line part of the message consists of the eight dwords passed in
+registers followed by any dwords specified by the message
+descriptor. This part consists of optional \emph{fpage descriptors}
+followed by by-value data. If the receiver of an IPC has specified a
+valid \emph{receive fpage}, the kernel will interpret each pair of
+dwords of the in-line part as fpage descriptors, until an invalid
+descriptor is encountered. This and any further dwords are then passed
+by value.
+ 
+\impnote{Presently at most four fpages can be passed on the R4600.}
+
+ \vspace{15pt}
+
+The format of an fpage descriptor is:
+
+ \vspace{15pt}
+
+
+\noindent\begin{tabular}{lcr}
+ \hspace*{100pt} 
+ & \cbox{snd fpage}{62}{30}\abox{w}{1}\abox{g}{1} & +8\\
+snd fpage: & \cbox{snd base}{64}{32} & +0\\
+\end{tabular}
+
+\vspace{30pt} 
+
+
+The first word contains the address of the \emph{hot spot}, while the
+second word describes the sender's fpage in the format given in
+Sect.~\ref{s:fpage}. The \(g\)-bit, if set, indicates that the fpage is
+to be \emph{granted} to the receiver, otherwise it is just
+\emph{mapped}. The \(w\)-bit indicates whether the receiver will be
+given write or read-only access to the address-space region.
+
+Each fpage specified by the sender is mapped individually into the
+address-space window specified by the receiver's \emph{receive
+fpage}. If the sender and receiver specify different fpage sizes, the
+hot-spot specification is used to determine how the mapping between the
+two different size fpages occurs: If \(2^s\) is the size of the larger,
+and \(2^t\) the size of the smaller fpage, then the larger fpage can be
+thought as being tiled by \(2^{s-t}\) fpages of the smaller size. One of
+these is uniquely identified as containing the hot spot address
+(mod \(2^s\)). This is the fpage which will actually be mapped.  
+
+\cbstart The kernel refuses to map or grant a page over an existing
+mapping in the receiver's address space; an attempt to perform such a
+mapping will be treated as a no-op. There is one exception: If the
+receiver's page is already mapped to the same page as the present IPC
+attempts to map it (i.e.\ the mapping operation would not change the
+association of the receiver's page with physical memory) then the write
+permission on the receiver's page is set according to the \(w\)-bit of
+the sender's fpage descriptor. In other words, such an operation can be
+used to change a mapping from R/O to writable or vice versa.
+
+If the sender provides several fpage descriptors which attempt to define
+conflicting mappings for one of the receiver's pages, the result is
+undefined.  \cbend
+
+\impnote{The current message headers are not as compact as they could
+  be. They will be optimised in a future version.} 
+ 
+
+
+
+\subsection{Timeouts}                        \label{timeouts} 
+ 
+Timeouts are used to control ipc operations. The {\em send timeout}
+determines how long ipc should try to send a message. If the specified
+period is exhausted without that message transfer could start, ipc fails.
+The {\em receive timeout} specifies how long ipc should wait for an incoming
+message. Both timouts specify the maximum period of time {\em before message
+transfer starts}. Once started, message transfer is no longer influenced by
+send or receive timeout. 
+ 
+Pagefaults occuring during ipc are controlled by {\em send} and {\em receive
+pagefault timeout}. A pagefault is translated to an RPC by the kernel. In
+the case of a pagefault in the receiver's address space, the
+corresponding RPC to the pager uses {\em
+send pagefault timeout} (specified by the sender) for both send and receive
+timeout. In the case of a pagefault in the sender's address space, {\em
+receive pagefault timeout} specified by the receiver is taken. 
+ 
+Besides the special timeouts 0 (do not wait at all) and $\infty$
+(wait forever), periods from 1 \micro s up to approximately 19 hours can be
+specified.
+The complete quadruple is packed into one 32-bit word: 
+ 
+\vspace{15pt} 
+
+\cbstart 
+
+\begin{center} 
+\bbox{$m_r$}{8}\bbox{$m_s$}{8}\bbox{$p_r$}{4}\bbox{$p_s$}{4}\bbox{$e_s$}{4}\bbox{$e_r$}{4} 
+\end{center} 
+
+\cbend
+
+\vspace{15pt} 
+
+%Note that for efficiency reasons the highest bit of any mantissa
+%               $m$ {\em must} be 1, except for $m\EQ 0$.
+
+\begin{center}\footnotesize\setlength{\jot}{0pt} 
+\begin{eqnarray*} 
+% 
+\mbox{snd timeout} & = & \left\{\begin{array}{ll} 
+% 
+              \infty                     &  \mbox{if}\quad e_s \EQ 0\\[10pt] 
+              4^{15-e_s} m_s\ \mu s\quad &  \mbox{if}\quad e_s \GT 0\\[10pt] 
+              0                          &  \mbox{if}\quad m_s \EQ 0, e_s \NE 0 
+% 
+                         \end{array}\right. \\[20pt] 
+% 
+\mbox{rcv timeout} & = & \left\{\begin{array}{ll} 
+% 
+              \infty                     &  \mbox{if}\quad e_r \EQ 0 \\[10pt] 
+              4^{15-e_r} m_r\ \mu s\quad &  \mbox{if}\quad e_r \GT 0 \\[10pt] 
+              0                          &  \mbox{if}\quad m_r \EQ 0, e_r \NE 0 
+% 
+                         \end{array}\right. \\[20pt] 
+% 
+\mbox{snd pagefault timeout} & = & \left\{\begin{array}{ll} 
+% 
+              \infty                 &  \mbox{if}\quad p_s \EQ 0 \\[10pt]
+              4^{15-p_s} \mu s\quad\quad\ &  \mbox{if}\quad 0 \LT p_s \LT 15\\[10pt] 
+              0                      &  \mbox{if}\quad p_s \EQ 15 
+% 
+                         \end{array}\right. \\[20pt] 
+\cbstart
+\mbox{rcv pagefault timeout} & = & \left\{\begin{array}{ll} 
+% 
+              \infty                 &  \mbox{if}\quad p_r \EQ 0   \\[10pt] 
+              4^{15-p_r} \mu s\quad\quad &  \mbox{if}\quad 0 \LT p_r \LT 15\\[10pt] 
+              0                      &  \mbox{if}\quad p_r \EQ 15 
+% 
+                         \end{array}\right. \\ 
+\cbend
+\end{eqnarray*} 
+\end{center} 
+
+\vspace{10pt}
+ 
+\begin{center}\footnotesize
+\begin{tabular}{|c|r@{ }l@{ \dots }r@{ }l|cr@{ }l|} 
+\hline
+\multicolumn{8}{|c|}{}\\[-6pt] 
+\multicolumn{8}{|c|}{approximate timeout ranges}\\[10pt] 
+\hline 
+$e_s,e_r,p_s,p_r$ &\multicolumn{4}{|c|}{\rule{0pt}{12pt}snd/rcv timeout}   &
+\multicolumn{3}{|c|}{pf timeout}\\[5pt] 
+\hline 
+% 
+0        &\multicolumn{4}{|c|}{$\infty$}&\multicolumn{3}{|c|}{$\infty$\rule{0pt}{12pt}}\\[5pt] 
+1        & 256 & s        &  19 & h        & & 256 & s         \\ 
+2        &  64 & s        &  55 & h        & &  64 & s         \\ 
+3        &  16 & s        &  71 & m        & &  16 & s         \\ 
+4        &   4 & s        &  17 & m        & &   4 & s         \\ 
+5        &   1 & s        &   4 & m        & &   1 & s         \\ 
+6        & 262 & ms       &  67 & s        & & 256 & ms        \\ 
+7        &  65 & ms       &  17 & s        & &  64 & ms        \\ 
+8        &  16 & ms       &   4 & s        & &  16 & ms        \\ 
+9        &   4 & ms       &   1 & s        & &   4 & ms        \\ 
+10       &   1 & ms       & 261 & ms       & &   1 & ms        \\ 
+11       & 256 & \micro s &  65 & ms       & & 256 & \micro s  \\ 
+12       &  64 & \micro s &  16 & ms       & &  64 & \micro s  \\ 
+13       &  16 & \micro s &   4 & ms       & &  16 & \micro s  \\ 
+14       &   4 & \micro s &   1 & ms       & &   4 & \micro s  \\ 
+15       &   1 & \micro s & 255 & \micro s & &   0 &           \\[5pt] 
+$m\EQ 0, e\GT 0$& \multicolumn{4}{|c|}{0}&& --- &           \\[5pt] 
+\hline 
+\end{tabular} 
+\end{center}
+
+\cbstart
+\impnote{Timeouts presently have millisecond granularity.  Specified
+microsecond timeouts are therefore rounded down (truncated) to the
+nearest millisecond, say \(x\). Actual timeout will then occur anywhere
+in the interval \([ct+x-1, ct+x]\), where \(ct\) is the current time in
+milliseconds.}
+\cbend
+
+\clearpage 
+ 
+\section{\micro-Kernel Calls} 
+\label{mkernel_calls}
+
+System calls are implemented using the \texttt{syscall} instruction in
+conjunction with the \reg{AT} register which is set to the system call
+number prior to the call. All registers, unless otherwise stated, are
+returned undefined after the system call except for the stack pointer
+\reg{sp}.
+
+ 
+This section describes the 7 system calls of L4:
+ 
+\begin{center}\begin{minipage}{200pt} 
+\begin{itemize} 
+\item ipc               \hfill \reg{AT} 0 
+\item id\_nearest       \hfill \reg{AT} 2 
+\item fpage\_unmap      \hfill \reg{AT} 1 
+\item thread\_switch    \hfill \reg{AT} 4 
+\item thread\_schedule  \hfill \reg{AT} 5 
+\item lthread\_ex\_regs \hfill \reg{AT} 6 
+\item task\_new         \hfill \reg{AT} 7
+\end{itemize} 
+\end{minipage}\end{center} 
+
+\vspace{20pt}
+\impnote{The system call numbers will be cleaned up some time in the
+  future.}
+ 
+\pagestyle{myheadings} 
+ 
+\intelsc{140pt} 
+ 
+\sccode{0} 
+ 
+\begin{SC}{ipc}    
+  \regs  {a0} {snd descriptor}    {\undef}
+  \regs  {a1} {rcv descriptor}    {\undef}
+  \regs  {a2} {timeouts}          {\undef}
+  \regs {a4} {dest id}            {\cbstart real dest id\cbend} 
+  \regs {a5} {waiting for id / 0}     {\undef} 
+  \regs {a6} {virtual sender id / \undef}  {\undef} 
+  \regx {s0} {msg.w0}             {msg.w0}      {\undef} 
+  \regx {s1} {msg.w1}             {msg.w1}      {\undef} 
+  \regx {s2} {msg.w2}             {msg.w2}      {\undef} 
+  \regx {s3} {msg.w3}             {msg.w3}      {\undef} 
+  \regx {s4} {msg.w4}             {msg.w4}      {\undef} 
+  \regx {s5} {msg.w5}             {msg.w5}      {\undef} 
+  \regx {s6} {msg.w6}             {msg.w6}      {\undef} 
+  \regx {s7} {msg.w7}             {msg.w7}      {\undef} 
+  \regx {v0} {\undef}             {msgdope + cc} {cc}
+  \regs {v1} {\undef}             {source id}
+\end{SC} 
+ 
+ 
+ 
+ 
+\noindent This is the basic system call for inter-process communication and
+synchronisation. It may
+be used for intra- as inter-address-space communication. All
+communication is synchronous and unbuffered: a message is transferred from
+the sender to the recipient if and only if the recipient has invoked a
+corresponding ipc operation. The sender blocks until this happens or
+a period specified by the sender elapsed without that the destination
+became ready to receive. 
+ 
+Ipc can be used to copy data as well as to {\em map} or {\em grant} fpages
+from the sender to the recipient. For the description of messages see
+section~\ref{messages}. 
+ 
+64-byte messages (plus 64-bit sender id) can be
+transferred solely via the registers and are thus specially optimised. If
+possible, short messages should therefore be reduced to 64-byte messages. 
+ 
+\vspace{10pt} 
+ 
+ 
+\noindent A single ipc call combines an optional send operation with an
+optional receive operation. Whether it includes a send and/or
+a receive is determined by the actual parameters. If the send or
+receive address is specified as $nil$ (0xFFFFFFFFFFFFFFFF), the
+corresponding operation is skipped.
+ 
+No time is required for the transition between send and receive phase of one
+ipc operation (i.e., the destination can reply with a timeout
+of zero). 
+ 
+ 
+ 
+\subsection*{Parameters} 
+ 
+\begin{param}{snd descriptor} 
+% 
+{\em ``nil''}& \cbox{0xFFFFFFFFFFFFFFFF}{64}{32} \\[8pt] 
+           &   Ipc does not include a send operation.\\[10pt] 
+%
+{\em ``mem''}& \cbox{*snd msg/4}{62}{30}\abox{$m$}{1}\abox{$d$}{1} \\[8pt] 
+          &    Ipc includes sending a message to the destination
+               specified by {\em dest id}. *snd msg must point
+               to a valid message. The first 8 64-bit words of the
+               message ({\em msg.w0} to {\em msg.w7}) are {\em not}
+               taken from the message data structure but must be contained
+               in registers \reg{s0} through \reg{s7}. \\[10pt] 
+\end{param} 
+
+\begin{param}{snd descriptor} 
+% 
+{\em ``reg''}& \cbox{0}{62}{30}\abox{$m$}{1}\abox{$d$}{1} \\[8pt] 
+          &    Ipc includes sending a message to the destination
+               specified by {\em dest id}. The message consists solely
+               of the 8 64-bit words {\em msg.w0} to {\em msg.w7}
+               in registers \reg{s0} through \reg{s7}.\\[10pt] 
+% 
+  $m\EQ 0$&    Value-copying send operation; the dwords of the
+               message are simply copied to the recipient. \\[8pt] 
+% 
+  $m\EQ 1$&    Fpage-mapping send operation. The dwords of the message to be 
+               sent are treated as 'send fpages'. The described fpages
+               are mapped or granted (depending on the \(g\)
+               bit in the fpage descriptor) /cbend into the recipient's
+               address space. Mapping/granting stops when either the end
+               of the dwords is reached or when an invalid fpage denoter
+               is found, in particular 0. The send fpage descriptors and
+               all potentially following words are also transferred by
+               simple copy to the recipient.  Thus a message may contain
+               some fpages and additional value parameters. The
+               recipient can use the received fpage descriptors to
+               determine what has been mapped or granted into its
+               address space, including location and access rights.
+               \\[10pt]
+% 
+  $d\EQ 0$&    Normal send operation. The recipient gets the true sender
+               id. \\[8pt] 
+  $d\EQ 1$&    Deceiving send operation. A \cbstart sender \cbend can
+	       specify the {\em virtual sender id} which the recipient
+               should get instead of the real sender's id. The {\em
+               virtual sender id} parameter contained in \reg{a6} is
+               only required if $d\EQ 1$.  Recall that deceiving is
+               secure, since only {\em direction-preserving deceit} is
+               possible, see Section~\ref{s:c+c},
+               page~\pageref{s:c+c}. \cbstart (Note that
+               ``direction-preserving'' relates to the task structure,
+               not to threads within tasks. If a message can be sent to
+               or from a particular thread in a task, it can also be
+               sent to or from any other thread of the same task, and
+               deceiving is always possible if it only changes the
+               thread number while leaving the task ID unchanged.)
+               \cbend If the specified {\em virtual-sender id} does not
+               fulfil this constraint, the send operation works like
+               $d\EQ 0$.
+\end{param} 
+
+\begin{param}{rcv descriptor} 
+% 
+{\em ``nil''}& \cbox{0xFFFFFFFFFFFFFFFF}{64}{32} \\[8pt] 
+           &   Ipc does not include a receive operation.\\[10pt] 
+%
+{\em ``mem''}& \cbox{*rcv msg/4}{62}{30}\abox{0}{1}\abox{$o$}{1} \\[8pt] 
+          &    Ipc includes receiving a message or 
+               waiting to receive a message. *rcv msg must point
+               to a valid message. The 8 64-bit words of the
+               received message ({\em msg.w0} to {\em msg.w7}) are {\em not}
+               stored in the message data structure but are returned
+               in registers \reg{s0} through \reg{s7}. \\[10pt] 
+% 
+{\em ``reg''}& \cbox{0}{62}{30}\abox{0}{1}\abox{$o$}{1} \\[8pt] 
+          &    Ipc includes receiving a message or 
+               waiting to receive a message. However, only messages up to 8
+               64-bit words {\em msg.w0} to {\em msg.w7} are accepted. The
+               received message is returned in registers \reg{s0}
+          through \reg{s7}.\\[10pt]
+\end{param}
+
+~	% required to prevent some bizarre page formatting...
+
+\begin{param}{rcv descriptor}
+% 
+{\em ``rmap''}& \cbox{rcv fpage}{62}{30}\abox{1}{1}\abox{$o$}{1} \\[8pt] 
+          &    Ipc includes receiving a message or 
+               waiting to receive a message. However, only send-fpage
+               messages or up to 8
+               64-bit words {\em msg.w0} to {\em msg.w7} are accepted. The
+               received message is returned in registers  \reg{s0}
+               through \reg{s7}.
+               If a map message is received, ``rcv fpage'' describes the
+               receive fpage (instead of ``rcv fpage option'' in a memory
+               message buffer). Thus fpages can also be received without a
+               message buffer in memory. 
+               \\[10pt] 
+% 
+  $o$        & \impnote{$o$ is currently not used in L4/MIPS. See
+               \emph{waiting for id} below}.\\[8pt]
+  $o\EQ 0$&     Only messages from the thread specified as {\em dest id} are
+               accepted (``closed wait''). Any send operation from a
+               different thread (or
+               hardware interrupt) will be handled exactly as if the actual
+               thread would be busy. \\[8pt] 
+  $o\EQ 1$&    Messages from any thread will be accepted (``open wait''). If
+               the actual
+               thread is associated to a hardware interrupt, also messages
+               from this hardware interrupt can arrive. 
+\end{param} 
+
+\begin{param}{dest id} 
+                     &    Sending is directed to the specified thread, if
+                          it resides in the sender's clan.
+                          If the destination is outside the sender's clan,
+                          the message is sent to the sender's chief. If the
+                          destination is in an inner clan (a clan whose chief
+                          resides in the sender's clan), it is redirected to
+                          that chief. (See also \cbstart `id nearest'
+                          \cbend operation,
+                          page~\pageref{s:id_nearest}.) \\
+                     &    \cbstart This parameter is irrelevant if the
+                          ipc does not contain a send part.\cbend\\
+\end{param}
+
+
+ 
+\begin{param}{waiting for id} 
+    $\NE 0, \NE nil$ &    \cbstart Closed receive:
+			  receiving from the specified thread (in
+			  the case of a hardware interrupt the interrupt
+			  id). This parameter is irrelevant if the ipc
+			  does not contain a receive part.\\
+          $\EQ 0$    &    Open receive: receiving from any sender.\\
+          $\EQ nil$  &    Although specifying $nil$ as the
+                          destination for a
+                          send operation is illegal (error: `destination not
+                          existent'), it can be legally specified as the
+			  source of a
+                          receive-only operation. In this case, ipc will not
+                          receive any message but will wait the specified
+                          {\em rcv timeout} and then terminate with error
+                          code `receive timeout'. \cbend \\
+		     &    \impnote{``Open'' and ``closed'' waits are not
+			  specified in bit zero of \emph{rcv descriptor}
+			  as in L4/x86. \cbdelete
+		 	  % This will likely change back to
+			  % the way L4/x86 does it (using $o$) in the
+			  % future.
+			  } \\
+\end{param} 
+
+
+\begin{param}{virtual sender id} 
+		     &    \cbstart
+			  If deceiving ({\em snd descriptor.}$d=1$) this
+			  is the \emph{source id} delivered to the
+			  receiver. \\
+		     &    The parameter is irrelevant if the IPC does
+			  not include a deveiving send part.\\ \cbend
+\end{param} 
+
+
+\begin{param}{real dest id} 
+		     &    \cbstart If a message was received, this is
+                          the id of the intended recipient
+                          of the message (which is different from the
+                          actual recipient if redirection took place).
+                          The parameter is undefined if no message was
+                          received.\cbend \\
+\end{param} 
+ 
+ 
+ 
+\begin{param}{source id} 
+		     &    If a message was received this is the id of its
+                          sender \cbstart (or the \emph{virtual sender
+                          id} if the message received used a deceiving
+                          send operation). \cbend If a hardware
+                          interrupt was received this is the interrupt id.
+                          The parameter is undefined if no message was
+                          received.\\ 
+\end{param} 
+ 
+ 
+ 
+\begin{param}{msg.w0 \dots w7} 
+  {\em ``snd''}      &    First 8 64-bit words of message to be sent.
+                          These message words are taken directly from
+                          registers \reg{s0} through \reg{s7}. {\em They are not read from
+                          the message data structure.} \\[5pt] 
+  {\em ``rcv''}      &    First 8 64-bit words of received message,
+                          undefined if no message was received. 
+                          {\em These message words are available only in
+                          registers \reg{s0} through \reg{s7}.} The \micro-kernel does not
+                          store it in the receive message buffer. The user
+                          program may store it or use it directly in the
+                          registers.
+\end{param} 
+ 
+ 
+\begin{param}{msg.dope + cc} 
+                     &    \cbox{0}{32}{10}\cbox{mwords}{19}{9}\bbox{strings}{5}% 
+                          \bbox{$cc$}{8}\\[8pt] 
+                     &    Message dope describing received message. If no
+                          message was received, only $cc$ is delivered. 
+                          {\em The dope word of the received message is
+                          available only in register \reg{v0}.} The \micro-kernel
+                          does not store it in the receive message buffer.
+                          The user program may store it or use it directly
+                          in the register. (Note that the lowermost 8 bits
+                          of msg dope and size dope in the message data
+                          structure are undefined. So it is legal to store
+                          \reg{v0} in the msg-dope field, even if $cc\NE 0$.) \\
+\end{param}
+
+\begin{param}{cc}      &  \bbox{$ec$}{4}\abox{$i$}{1}\abox{$r$}{1}\abox{$m$}{1}\abox{$d$}{1}\\[8pt] 
+% 
+             $d\EQ 0$  &  The received message is transferred directly
+                          (``undeceived'') from {\em source id}.\\ 
+% 
+             $d\EQ 1$  &  The received message is ``deceived'' by a chief.
+                          {\em source id} is the virtual source id which was
+                          specified by the sending chief.\\ 
+% 
+             $m\EQ 0$  &  The received message did not contain fpages.\\ 
+% 
+             $m\EQ 1$  &  The sender mapped or granted fpages. The sender's
+                          fpage descriptors were also (besides
+                          mapping/granting) transferred as mwords.\\ 
+% 
+             $r\EQ 0$  &  The received message was directed to the actual
+                          recipient, not redirected to a chief. I.e.\ sender
+                          and receiver a part of the same clan. The $i$-bit
+                          has no meaning in this case and is zero.\\ 
+% 
+             $r\EQ 1$  &  The received message was redirected to the chief
+                          which was next on the path to the true
+                          destination. Sender and addressed recipient belong
+                          to different clans.\\ 
+% 
+             $i\EQ 0$  &  If $r\EQ 1$: the received message comes
+                          from outside the own clan.\\ 
+% 
+             $i\EQ 1$  &  If $r\EQ 1$: the received message comes
+                          from an inner clan.\\ 
+\end{param} 
+ 
+~	% required to prevent some bizarre page formatting...
+
+\begin{param}{ec} 
+     $ \EQ\ 0$         &  {\em ok}: the optional send operation
+                          was successful, and if a receive operation was also
+                          specified ({\em rcv descriptor $\NE nil$}) a
+                          message was also received correctly.\\[5pt] 
+% 
+     $    \NE\ 0$      &  If ipc fails the completion code is in
+                          the range 0x10\dots 0xF0. If the send operation
+                          fails, ipc is terminated without
+                          attemtping any receive operation.
+                          $s$ specifies whether the error occurred
+                          during the receive $(s\,\EQ\,0)$ operation or
+                          during the send $(s\,\EQ\,1)$ operation:\\[5pt] % 
+% 
+ \hspace*{\fill}1     &   {\em Non-existing} destination or source.\\[5pt] 
+%
+ \hspace*{\fill}$2+s$~&  {\em Timeout}.\\[5pt] 
+% 
+ \hspace*{\fill}$4+s$~&  {\em Cancelled} by another thread (system call
+                         lthread\_ex\_regs).\\[5pt] 
+% 
+ \hspace*{\fill}$6+s$~&  {\em Map failed} due to a shortage of page
+ tables.\\[5pt] 
+% 
+ \hspace*{\fill}$8+s$~&  {\em Send pagefault timeout}.\\[5pt] 
+% 
+ \hspace*{\fill}$A+s$~&  {\em Receive pagefault timeout}.\\[5pt] 
+% 
+ \hspace*{\fill}$C+s$~&  {\em Aborted} by another thread (system call
+                         lthread\_ex\_regs or task\_new).\\[5pt] 
+% 
+ \hspace*{\fill}$E+s$~&  {\em Cut} message. Potential reasons are (a) the
+                         recipient's mword buffer is too small; (b) the
+                         recipient does not accept enough strings; 
+                         (c) at least one of the recipient's string
+                         buffers is too small.\\[8pt]
+% 
+% 
+\hspace*{\fill}1\dots 5~&The respective operation was
+                         terminated before a 
+                         real message transfer started. No
+                         partner was directly involved.\\[5pt] 
+\hspace*{\fill}6\dots F~&The respective operation was
+                         terminated while a 
+                         message transfer was running. The message
+                         transfer was aborted. The current
+                         partner (sender or receiver) was involved and
+                         received 
+                         the corresponding error code. It is not defined
+                         which
+                         parts of the message are already transferred and
+                         which parts are not yet transferred. 
+                         The source id returned to the receiver is also
+                         undefined. \\
+\end{param} 
+ 
+ 
+ 
+\begin{param}{timeouts} 
+                     &    This 32-bit word specifies all 4 timeouts, the
+                          quadruple ({\em snd, rcv, snd pf, rcv pf}).
+                          For A detailed description see section~\ref{timeouts}. 
+                          Frequently used values are\\[-15pt] 
+                     &{\footnotesize \begin{center}\begin{tabular}{|l|cccc|} 
+                      \hline 
+                                      &  snd   &   rcv  & snd pf & rcv pf \\ 
+                      \hline 
+                        0x00000000    &$\infty$&$\infty$&$\infty$&$\infty$\\ 
+                        0x00000001    &$  0   $&$\infty$&$\infty$&$\infty$\\ 
+                        0x00000011    &$  0   $&$  0   $&$\infty$&$\infty$\\ 
+                      \hline 
+                      \end{tabular}\end{center}}\\ 
+% 
+  {\em ``snd''}      &    If the required send operation cannot start
+                          transfer data within the specified time, ipc is
+                          terminated and fails with completion code `send
+                          timeout' (0x18). If ipc does not include a send
+                          operation, this parameter is meaningless.\\ 
+  {\em ``rcv''}      &    If ipc includes a receive operation and no
+                          message transfer starts within the specified time,
+                          ipc is terminated and fails with completion code
+                          `receive timeout' (0x20). If ipc does not include a
+                          receive operation, this parameter is meaningless.\\ 
+  {\em ``spf''}      &    If during sending data a pagefault {\em in the
+                          receiver's address space} occurs, {\em snd pf}
+                          specified by the sender is used as send and
+                          receive timeout for the pagefault RPC.\\ 
+  {\em ``rpf''}      &    If during receiving data a pagefault {\em in the
+                          sender's address space} occurs, {\em rcv pf}
+                          specified by the receiver is used as send and
+                          receive timeout for the pagefault RPC. 
+\end{param} 
+
+
+\cbstart
+\impnote{The specification of \emph{dest id} and \emph{waiting for id}
+in separate registers allows sending to a thread and performing a closed
+receive from a different thread. This implements a \emph{superset} of
+the standard L4 IPC semantics.}
+\cbend
+
+
+\subsection*{Basic Ipc Types}
+ 
+\begin{SC*}{call}
+  \regs {a0} {*snd msg / 0} {\undef}
+  \regs {a1} {*rcv msg / 0} {\undef}
+  \regs {a2} {timeouts}     {\undef}
+  \regs {a4} {dest id}      {\cbstart real dest id\cbend} 
+  \regs {a5} {dest id}      {\undef} 
+  \regs {a6} {\cbstart virt sndr / \undef\cbend}       {\undef} 
+  \regs {s0} {msg.w0}             {msg.w0}
+  \regs {s1} {msg.w1}             {msg.w1}
+  \regs {s2} {msg.w2}             {msg.w2}
+  \regs {s3} {msg.w3}             {msg.w3}
+  \regs {s4} {msg.w4}             {msg.w4}
+  \regs {s5} {msg.w5}             {msg.w5}
+  \regs {s6} {msg.w6}             {msg.w6}
+  \regs {s7} {msg.w7}             {msg.w7}
+  \regs {v0} {\undef}             {msgdope + cc}
+  \regs {v1} {\undef}              {dest id}
+\end{SC*} 
+
+\noindent This is the usual blocking RPC.
+{\em snd msg} is sent to {\em dest id} and the invoker waits for a 
+reply from {\em dest id}. Messages from other sources are not accepted.
+Note that since the send/receive transition needs no time, the destination
+can reply with {\em snd timeout $\EQ$} 0. 
+ 
+This operation can also be used for a server with one dedicated client. It
+sends the reply to the client and waits for the client's next order. 
+
+\begin{SC*}{\cbstart reply\&wait \cbend}
+  \regs {a0} {*snd msg / 0} {\undef}
+  \regs {a1} {*rcv msg / 0} {\undef}
+  \regs {a2} {timeouts}     {\undef}
+  \regs {a4} {dest id}      {\cbstart real dest id\cbend} 
+  \regs {a5} {0}      	{\undef} 
+  \regs {a6} {\cbstart virt sndr / \undef\cbend}      {\undef}
+  \regs {s0} {msg.w0}             {msg.w0}
+  \regs {s1} {msg.w1}             {msg.w1}
+  \regs {s2} {msg.w2}             {msg.w2}
+  \regs {s3} {msg.w3}             {msg.w3}
+  \regs {s4} {msg.w4}             {msg.w4}
+  \regs {s5} {msg.w5}             {msg.w5}
+  \regs {s6} {msg.w6}             {msg.w6}
+  \regs {s7} {msg.w7}             {msg.w7}
+  \regs {v0} {\undef}             {msgdope + cc}
+  \regs {v1} {\undef}             {source id}
+\end{SC*} 
+ 
+\noindent {\em snd msg} is sent to {\em dest id} and the invoker waits for a 
+reply from any source. This is the standard server operation: it sends a
+reply to the actual client and waits for the next order which may come from
+a different client. 
+ 
+ 
+\begin{SC*}{send}
+  \regs {a0} {*snd msg / 0} {\undef}
+  \regs {a1} {0xFFFFFFFFFFFFFFFF} {\undef}
+  \regs {a2} {timeouts}     {\undef}
+  \regs {a4} {dest id}      {\undef} 
+\cbstart  \regs {a5} {\undef}      {\undef}  \cbend
+\cbstart  \regs {a6} {virt sndr / \undef}      {\undef} \cbend
+  \regs {s0} {msg.w0}             {\undef}
+  \regs {s1} {msg.w1}             {\undef}
+  \regs {s2} {msg.w2}             {\undef}
+  \regs {s3} {msg.w3}             {\undef}
+  \regs {s4} {msg.w4}             {\undef}
+  \regs {s5} {msg.w5}             {\undef}
+  \regs {s6} {msg.w6}             {\undef}
+  \regs {s7} {msg.w7}             {\undef}
+  \regs {v0} {\undef}             {msgdope + cc}
+\end{SC*} 
+ 
+\noindent {\em snd msg} is sent to {\em dest id}. There is no receive phase
+included. The invoker continues working after sending the message. 
+ 
+ 
+ 
+\begin{SC*}{receive from}
+  \regs {a0} {0xFFFFFFFFFFFFFFFF} {\undef}
+  \regs {a1} {*rcv msg / 0} {\undef}
+  \regs {a2} {timeouts}     {\undef}
+  \regs {a4} {\undef}       {\cbstart real dest id\cbend} 
+  \regs {a5} {\cbstart source id \cbend}      {\undef}
+\cbstart  \regs {a6} {\undef}      {\undef} \cbend
+  \regs {s0} {\undef}             {msg.w0}
+  \regs {s1} {\undef}             {msg.w1}
+  \regs {s2} {\undef}             {msg.w2}
+  \regs {s3} {\undef}             {msg.w3}
+  \regs {s4} {\undef}             {msg.w4}
+  \regs {s5} {\undef}             {msg.w5}
+  \regs {s6} {\undef}             {msg.w6}
+  \regs {s7} {\undef}             {msg.w7}
+  \regs {v0} {\undef}             {msgdope + cc}
+  \cbstart  \regs {v1} {\undef}             {source id} \cbend
+\end{SC*} 
+ 
+\noindent This operation includes no send phase. The invoker waits for a 
+message from {\em source id}. Messages from other sources are not accepted.
+Note that also a hardware interrupt might be specified as source. 
+ 
+ 
+ 
+\begin{SC*}{\cbstart wait \cbend}
+  \regs {a0} {0xFFFFFFFFFFFFFFFF} {\undef}
+  \regs {a1} {*rcv msg / 0} {\undef}
+  \regs {a2} {timeouts}     {\undef}
+  \regs {a4} {\undef}       {\cbstart real dest id\cbend} 
+ \regs {a5} {0}            {\undef}
+\cbstart  \regs {a6} {\undef}      {\undef} \cbend
+  \regs {s0} {\undef}             {msg.w0}
+  \regs {s1} {\undef}             {msg.w1}
+  \regs {s2} {\undef}             {msg.w2}
+  \regs {s3} {\undef}             {msg.w3}
+  \regs {s4} {\undef}             {msg.w4}
+  \regs {s5} {\undef}             {msg.w5}
+  \regs {s6} {\undef}             {msg.w6}
+  \regs {s7} {\undef}             {msg.w7}
+  \regs {v0} {\undef}             {msgdope + cc}
+  \regs {v1} {\undef}             {source id}
+\end{SC*} 
+ 
+\noindent This operation includes no send phase. The invoker waits for a 
+message from any source (including a hardware interrupt). 
+ 
+
+\begin{SC*}{receive intr}
+  \regs {a0} {0xFFFFFFFFFFFFFFFF} {\undef}
+  \regs {a1} {*rcv msg / 0} {\undef}
+  \regs {a2} {timeouts}     {\undef}
+  \regs {a4} {\undef}       {\cbstart real dest id\cbend} 
+  \regs {a5} {intr + 1}     {\undef}
+\cbstart  \regs {a6} {\undef}      {\undef} \cbend
+  \regs {s0} {\undef}             {\undef}
+  \regs {s1} {\undef}             {\undef}
+  \regs {s2} {\undef}             {\undef}
+  \regs {s3} {\undef}             {\undef}
+  \regs {s4} {\undef}             {\undef}
+  \regs {s5} {\undef}             {\undef}
+  \regs {s6} {\undef}             {\undef}
+  \regs {s7} {\undef}             {\undef}
+  \regs {v0} {\undef}             {msgdope + cc}
+  \regs {v1} {\undef}             {intr + 1}
+\end{SC*} 
+ 
+\noindent This operation includes no send phase. The invoker waits for an
+interrupt message coming from interrupt source {\em intr}. Note that
+interrupt messages come {\em only} from the interrupt which is currently
+associated with this thread \cbstart and the interrupt is disabled until
+the next receive by the handles. \cbend 
+ 
+The {\em intr} parameter is only evaluated if
+{\em rcv timeout} $\EQ$ 0 is specified, see `associate intr'.
+
+\cbstart
+See the include file \verb+<kernel/u4600.h>+ for a list of the available
+interrupts.
+\cbend 
+ 
+ 
+\begin{SC*}{associate intr}
+  \regs {a0} {0xFFFFFFFFFFFFFFFF} {\undef}
+  \regs {a1} {*rcv msg / 0} {\undef}
+  \regs {a2} {rcv timeout = 0}     {\undef}
+  \regs {a4} {\undef}       {\cbstart real dest id\cbend} 
+  \regs {a5} {intr + 1}     {\undef}
+\cbstart  \regs {a6} {\undef}      {\undef} \cbend
+  \regs {s0} {\undef}             {\undef}
+  \regs {s1} {\undef}             {\undef}
+  \regs {s2} {\undef}             {\undef}
+  \regs {s3} {\undef}             {\undef}
+  \regs {s4} {\undef}             {\undef}
+  \regs {s5} {\undef}             {\undef}
+  \regs {s6} {\undef}             {\undef}
+  \regs {s7} {\undef}             {\undef}
+  \regs {v0} {\undef}             {msgdope + cc}
+  \regs {v1} {\undef}             {intr + 1}
+\end{SC*} 
+
+The {\em intr} parameter is evaluated if {\em rcv timeout} $\EQ$ 0 is
+specified. If no (currently associated) interrupt is pending, the current
+thread is (1) detached from its currently associated interrupt (if any) and
+(2) associated to the specified interrupt provided that this one is free,
+i.e.\ not associated to another thread. If the association succeeds, the
+completion code is {\em receive timeout} (0x20) and no interrupt is
+received.
+ 
+If an interrupt from the currently associated interrupt was pending, this
+one is delivered together with completion code {\em ok} (0x00); the interrupt
+association
+is {\em not} modified. If the requested new interrupt is already associated
+to another thread or is not existing, completion code {\em non existing}
+(0x10) is delivered and the interrupt association is not modified. 
+ 
+Dissociating an interrupt without associating a new one is done by
+issuing a receive from {\em nilthread} (0) with {\em rcv timeout}
+$\EQ$ 0.
+ 
+\cbstart
+See the include file \verb+<kernel/u4600.h>+ for a list of available
+interrupts.
+\cbend  
+ 
+\begin{SC*}{sleep}
+  \regs {a0} {0xFFFFFFFFFFFFFFFF} {\undef}
+  \regs {a1} {0} {\undef}
+  \regs {a2} {timeouts}     {\undef}
+  \regs {a4} {\cbstart \undef \cbend}     {\undef} 
+  \regs {a5} {\cbstart 0xFFFFFFFFFFFFFFFF \cbend}     {\undef}
+\cbstart  \regs {a6} {\undef}      {\undef} \cbend
+  \regs {s0} {\undef}             {\undef}
+  \regs {s1} {\undef}             {\undef}
+  \regs {s2} {\undef}             {\undef}
+  \regs {s3} {\undef}             {\undef}
+  \regs {s4} {\undef}             {\undef}
+  \regs {s5} {\undef}             {\undef}
+  \regs {s6} {\undef}             {\undef}
+  \regs {s7} {\undef}             {\undef}
+  \regs {v0} {\undef}             {cc = 0x20}
+  \regs {v1} {\undef}             {\undef}
+\end{SC*} 
+ 
+\noindent This operation includes no send phase. Since
+\cbstart $invalid$ (-1) \cbend is specified as source, no message
+can arrive and the ipc will be terminated with `receive timeout' after
+the time specified by the {\em rcv-timeout} parameter is elapsed.
+
+
+ 
+\intelsc{200pt} 
+
+\sccode{2}
+ 
+\begin{SC}{id\_nearest} 
+  \regs {a0} {dest id}    {\undef}
+  \regs {v0} {\undef}      {type}
+  \regs {v1} {\undef}      {nearest id}
+\end{SC}
+\label{s:id_nearest}
+ 
+\noindent If {\em nil} is specified as destination, the system call delivers
+the uid of the current thread. Otherwise, it delivers the nearest partner
+which would be engaged when sending a message to the specified destination. 
+If the destination does not belong to the invoker's
+clan, this call delivers the chief that is nearest to the invoker on the
+path from the invoker to the destination. 
+
+\begin{itemize} 
+\item If the destination resides outside the invoker's clan, it delivers the
+      invoker's own chief. 
+ 
+\item If the destination is inside a clan or a clan nesting whose chief $C$
+      is direct member of the invoker's clan, the call delivers $C$. 
+ 
+\item If the destination is a direct member of the invoker's clan, the call
+      delivers the destination itself. 
+ 
+\item If the destination is {\em nil}, the call delivers the current
+      thread's id. 
+\end{itemize} 
+
+\noindent Concluding: id nearest ({\em dest id $\NE$ nil}) delivers exactly that
+partner to which the
+kernel would physically send a message which is targeted to {\em dest id}.
+On the other hand, a message from {\em dest id} would physically come
+from exactly this partner. 
+ 
+ 
+\subsection*{Parameters} 
+ 
+\begin{param}{dest id} 
+                   &   Id of the destination.\\ 
+\end{param} 
+ 
+\begin{param}{type} 
+                   &   Note that the {\em type} values correspond exactly
+                       to the completion codes of ipc.\\ 
+           $\EQ 0$ &   Destination resides in the same clan. {\em dest id}
+                       is delivered as {\em nearest id}.\\ 
+           $\EQ C$ &   Destination is in an inner clan. The chief of this
+                       clan or clan nesting is delivered as {\em nearest id}.\\ 
+           $\EQ 4$ &   Destination is outside the invoker's clan. The
+                       invoker's chief is delivered as {\em nearest id}.
+\end{param} 
+ 
+\begin{param}{nearest id} 
+                   &   Either the current thread's id or the id of the
+                       nearest partner towards {\em dest id}.
+\end{param} 
+ 
+ 
+ 
+\sccode{1}
+ 
+ 
+\begin{SC}{fpage\_unmap}
+  \regs {a0} {fpage}    {\undef}
+  \regs {a1} {map mask}      {\undef}
+\end{SC} 
+ 
+\vspace{40pt} 
+\noindent The specified {\em fpage} is unmapped in all address spaces into
+which the invoker mapped it directly or indirectly. 
+ 
+\subsection*{Parameters} 
+ 
+\begin{param}{fpage} 
+% 
+               &   Fpage to be unmapped. 
+\end{param} 
+ 
+\begin{param}{map mask} 
+% 
+               &   \abox{$f$}{1}\cbox{0}{61}{29}\abox{$w$}{1}\abox{0}{1}\\[8pt] 
+% 
+ $w\EQ 0$      &   Fpage will be partially unmapped. Already read/write mapped 
+                   parts will be set to read only. Read only mapped parts
+                   are not affected.\\ 
+ $w\EQ 1$      &   Fpage will be completely unmapped.\\[3pt] 
+%
+ $f\EQ 0$      &   Unmapping happens in all address spaces into which pages
+                   of the specified fpage have been mapped directly or
+                   indirectly. The {\em original} pages in the own task
+                   remain mapped.\\ 
+ $f\EQ 1$      &   Additionally, also the original pages in the own
+                   task are unmapped (flushing). 
+\end{param} 
+ 
+ 
+ 
+ 
+\sccode{4} 
+ 
+\begin{SC}{thread\_switch}  \regs {a0} {dest id}    {\undef}
+\end{SC} 
+ 
+\vspace{40pt}
+\noindent The invoking thread releases the processor (non-preemtively) so
+that another ready thread can be processed. 
+ 
+\subsection*{Parameters} 
+ 
+\begin{param}{dest id} 
+% 
+             $\EQ nil$ &  ($ \EQ 0$) Processing switches to an undefined
+                          ready thread which is selected by the scheduler.
+                          (It might be the invoking thread.) 
+                          Since this is ``ordinary'' scheduling, the thread
+                          gets a new timeslice.\\ 
+             $\NE nil$ &  If {\em dest id} is ready, processing
+                          switches to this thread. In this ``extraordinary''
+                          scheduling, the invoking thread donates its
+                          remaining timeslice to the destination thread.
+                          (This one gets the donation additionally to its
+                          ordinary scheduled timeslices.)\\ 
+                       &  If the destination thread is not ready, the system
+                          call operates as described for {\em dest id $\EQ
+                          nil$}. 
+\end{param} 
+ 
+ 
+ 
+ 
+ 
+
+\sccode{5}
+ 
+\begin{SC}{thread\_schedule}
+\cbstart
+  \regs {a0} {dest id}    {\undef}
+  \regs {a1} {param word}      {old param word}
+  \regs {a2} {ext preempter}      {old ext preempter}
+  \regs {a3} {\undef}      {partner}
+  \regs {v0} {\undef}      {time}
+\cbend
+\end{SC} 
+
+\vspace{40pt}
+ 
+\noindent The system call can be used by schedulers to define the
+{\em priority}, {\em timeslice length} and {\em external preempter} of other
+threads. Furthermore, it delivers thread states. Note that due to security
+reasons, thread state information must be retrieved through the appropriate
+scheduler.
+ 
+The system call is only effective if the current \cbstart (and the new)
+\cbend priority of the specified destination is less or equal than the
+current task's {\em maximum controlled priority (mcp)}.
+ 
+ 
+ 
+\subsection*{Parameters} 
+ 
+\begin{param}{dest id} 
+                     &     Destination thread id. The destination thread
+                           must currently exist and run on a priority level
+                           less than or equal to the current thread's {\em mcp}.
+                           Otherwise, the destination thread is not affected
+                           by this system call and all result parameters
+                           except {\em old param word} are undefined. 
+\end{param} 
+ 
+\begin{param}{param word} 
+            valid    & 
+                     \bbox{$m_t$}{8}\bbox{$e_t$}{4}\bbox{0}{4}\bbox{small}{8}\bbox{prio}{8}\\[12pt] 
+         {\em prio}  &     New priority for destination thread. Must be less
+                           than or equal to current thread's {\em
+                           mcp}.\\[5pt] 
+% 
+         {\em small} &     (Only effective for Pentium.) Sets the {\em small address space number}
+                           for the addressed {\em task}. On Pentium, small address spaces from 1 
+                           to 127 currently available. A value of 0 or 255 in this field does
+                           not change the current setting for the task. This field is currently
+                           ignored for 486, PPro \cbstart and R4x00\cbend.\\[5pt]
+%
+              $m_t,e_t$&   New timeslice length for the destination thread.
+                           The timeslice quantum is encoded like a timeout:
+                           $4^{15-e_t}m_t\ \mu s$.\\ 
+                       &   The kernel rounds this
+                           value up towards the nearest possible value. Thus
+                           the timeslice granularity can be determined by
+                           trying to set the timeslice to 1 \micro s. Note,
+                           however, that the timeslice granularity may depend on
+                           the priority.\\ 
+                       &   Timeslice length 0 ($m_t\,\EQ\,0 ,
+                           e_t\,\NE\,0$) is always a possible value. It
+                           means that the thread will get no ordinary
+                           timeslice, i.e. is blocked.
+                           However, even a blocked thread may execute in a
+                           timeslice donated to it by ipc.\\[8pt] 
+%
+       {\em ``inv''}   &   (0xFFFFFFFF) The current priority and timeslice
+                           length of the thread is not modified. 
+\end{param} 
+ 
+ 
+\begin{param}{ext preempter} 
+% 
+           valid       &   Defines the external preempter for the
+                           destination thread. (Nilthread is a valid
+                           id.)\\[5pt] 
+%
+       {\em ``inv''}   &   (0xFFFFFFFF,\undef) The current external
+                           preempter of the thread is not changed. \\[5pt] 
+%
+		       &   \cbstart\impnote{External preempters are
+		       	   currently not implemented in L4/MIPS.}\cbend
+\end{param}
+ 
+\begin{param}{old param word} 
+            valid    &     \bbox{$m_t$}{8}\bbox{$e_t$}{4}\bbox{$ts$}{4}% 
+                           \bbox{\undef}{8}\bbox{prio}{8}\\[12pt] 
+% 
+         {\em prio}  &     Old priority of destination thread.\\[5pt] 
+% 
+              $m_t,e_t$&   Old timeslice length of the destination thread:
+                           $4^{15-e_t}m_t\ \mu s$.\\[5pt] 
+% 
+         $ts\ \EQ$   &     Thread state:\\ 
+% 
+         $\quad 0+k$ &     {\em Running.} The thread is ready to execute
+                           at user-level.\\
+% 
+         $\quad 4+k$ &     {\em Sending.} A user-invoked ipc send operation
+                           currently transfers an outgoing message.\\ 
+% 
+         $\quad 8+k$ &     {\em Receiving.} A user-invoked ipc
+                           receive operation
+                           currently receives an incoming message.\\ 
+% 
+         $\quad$C    &     {\em Waiting} for receive. A user-invoked ipc
+                           receive operation currently waits for an
+                           incoming message.\\
+% 
+         $\quad$D    &     {\em Pending} send. A user-invoked ipc send
+                           operation currently waits for the destination
+                           (recipient) to become ready to receive.\\ 
+% 
+         $\quad$E    &     Reserved.\\ 
+% 
+         $\quad$F    &     {\em Dead.} The thread is unable to
+                           execute.\\[8pt]
+% 
+% 
+  $\quad\ \ k\ \EQ$\hspace*{\fill} 0   &  {\em Kernel inactive.} The kernel
+                           does
+                           not execute an automatic RPC for the thread.\\
+% 
+  \hspace*{\fill}1   &     {\em Pager}. The kernel executes a pagefault
+                           RPC to the thread's pager.\\
+% 
+  \hspace*{\fill}2   &     {\em Internal preempter.} The kernel executes a
+                           preemption RPC to the thread's internal
+                           preempter.\\
+% 
+  \hspace*{\fill}3   &     {\em External preempter.} The kernel executes a
+                           preemption RPC to the thread's external
+                           preempter.\\
+% 
+		     &     \cbstart\impnote{Presently, \(k\) is always zero in L4/MIPS.}\cbend\\[8pt]
+
+%
+       {\em ``inv''}   &   (0xFFFFFFFF) The addressed thread does either not
+                           exist or has a priority which exceeds
+                           the current thread's {\em mcp}. All other return
+                           parameters are undefined (\undef). 
+\end{param} 
+ 
+ 
+ 
+\begin{param}{old ext preempter} 
+                     &     \cbstart\noindent\impnote{External preempters
+                     	   are currently not implemented in L4/MIPS.}\cbend\\
+
+		     &	   Old external preempter of the
+                           destination thread. 
+\end{param} 
+
+ 
+ 
+\begin{param}{partner}  &  Partner of an active user-invoked ipc operation.
+                           This parameter is only valid if the thread's
+                           user state is {\em sending, receiving, pending}
+                           or {\em waiting} (4\dots D). 
+                           An invalid thread id (0xFFFFFFFF,\undef) is
+                           delivered if there is no specific partner, i.e.\
+                           if the thread is in an open receive state. 
+\end{param} 
+ 
+ 
+\begin{param}{time} 
+                        &  \bbox{$m_w$}{8}\bbox{$e_w$}{4}\bbox{$e_p$}{4}% 
+                           \bbox{$T_{high}$}{16}~~~~\\ 
+                        &  \bbox{$T_{low}$}{32}~~~~\\[8pt] 
+% 
+            $T$         &  Cpu time (48-bit value) in microseconds which
+                           has been consumed by the destination
+                           thread.\\[8pt]
+%
+              $m_w,e_w$&   Current user-level wakeup of the destination
+                           thread, encoded like a timeout. The value
+                           denotes the remaining timeout interval.
+                           Valid only if the user state is {\em waiting}
+                           (C) or {\em pending} (D).\\[8pt] 
+% 
+              $e_p$&       Effective pagefault wakeup of the destination
+                           thread, encoded like a 4-bit pagefault timeout.
+                           The value denotes the remaining timeout
+                           interval. Valid only if the kernel state is
+                           {\em pager} ($k\,\EQ\,1$).
+\end{param} 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+\sccode{6} 
+ 
+\begin{SC}{lthread\_ex\_regs} 
+ \regs {a0} {lthread no}    {\undef}
+\regs {a1} {IP} {old IP}
+\regs {a2} {SP} {old SP}
+\regs {a3} {excpt id} {old excpt id}
+\regs {a4} {pager id} {old pager id}
+\end{SC} 
+ 
+\noindent This function reads and writes some register values of a thread in
+the current task. 
+ 
+It also creates threads. Conceptually, creating a task includes creating
+all of its threads. Except lthread 0, all these threads run an idle loop.
+Of course, the kernel does
+neither allocate control blocks nor time slices etc.\ to them. Setting stack
+and instruction pointer of such a thread to valid values then really
+generates the thread. 
+ 
+Note that this operation reads and writes the {\em user-level} registers
+(SP and IP). Ongoing kernel activities are not affected. However 
+an ipc operation is cancelled or aborted. If the \cbstart thread \cbend is either waiting to
+send a message or waiting to receive a message, i.e.\ a message transfer is
+not yet running, ipc is cancelled (completion code 0x40 or 0x50). If a
+message transfer is currently running, ipc is aborted (completion code 0xC0
+or 0xD0). 
+ 
+\impnote{The L4/x86 \emph{int preempter} is currently not supported in
+  L4/MIPS and has been removed from the arguments. \emph{excpt id} has
+  been added to L4/MIPS to specify the exception handling thread for the
+  thread, see section~\ref{exrpc} for details.}
+ 
+ 
+\subsection*{Parameters} 
+ 
+\begin{param}{lthread no}& \cbox{0}{57}{25}\bbox{lthread}{7}\\[8pt] 
+                     &     Number of addressed lthread (0\dots 127) inside
+                           the current task.\\[8pt] 
+% 
+\end{param} 
+ 
+\begin{param}{SP} 
+          valid      &     New stack pointer (SP) for the thread. It must
+                           point into the user-accessible part of the address
+                           space.\\[5pt] 
+% 
+      {\em ``inv''}  &     (0xFFFFFFFFFFFFFFFF) The existing stack pointer is not
+                           modified. 
+\end{param} 
+ 
+\begin{param}{IP} 
+          valid      &     New instruction pointer (IP) for the thread. 
+                           It must point into
+                           the user-accessible part of the address
+                           space.\\[5pt] 
+% 
+      {\em ``inv''}  &     (0xFFFFFFFFFFFFFFFF) The existing instruction pointer is
+                           not modified. 
+\end{param} 
+ 
+\begin{param}{excpt id} 
+           valid     &     Defines the exception handling thread used by the thread.\\[4pt] 
+      {\em ``inv''}  &     (0xFFFFFFFFFFFFFFFF) The existing excpt id is not
+                           modified. 
+\end{param} 
+  
+\begin{param}{pager} 
+           valid     &     Defines the pager used by the thread.\\[4pt] 
+      {\em ``inv''}  &     (0xFFFFFFFFFFFFFFFF) The existing pager id is not
+                           modified. 
+\end{param} 
+ 
+\begin{param}{old SP} 
+                     &     Old stack pointer (SP) of the thread. 
+\end{param} 
+ 
+ 
+\begin{param}{old SP} 
+                     &     Old instruction pointer (IP) of the thread. 
+\end{param} 
+ 
+\begin{param}{old excpt id} 
+                     &     Id of the thread's old exception handler. 
+\end{param} 
+ 
+\begin{param}{old pager} 
+                     &     Id of the thread's old pager. 
+\end{param} 
+ 
+ 
+\vspace{20pt} 
+ 
+ 
+ 
+ 
+\subsection*{Example} 
+ 
+\noindent Signalling can be implemented as follows: 
+ 
+ 
+\alg{signal (lthread) :\\ 
+ 
+         sp := receive signal stack ; \\ 
+         ip := receive signal ; \\ 
+         mem [sp -- --] := 0 ; \\ 
+         lthread ex regs (lthread, sp, ip, --, --) ; \\ 
+         mem [sp -- --] := ip ; \\ 
+         mem [idle stack -- wordlength] := sp . } 
+ 
+\alg{receive signal :\\ 
+ 
+         push all regs ; \\ 
+         \WHILE mem [sp + 8 $\times$ wordlength] = 0 \DO \\ 
+             thread switch (nilthread) \\ 
+         \OD ; \\ 
+         pop all regs ; \\ 
+         pop (sp) ; \\ 
+         jmp (signal ip) .} 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+\sccode{7} 
+ 
+\begin{SC}{task\_new}
+\regs {a0} {IP} {\undef}
+\regs {a1} {pager}    {\undef}
+\regs {a2} {SP}    {\undef}
+\regs {a3} {dest task}    {\undef}
+\regs {a4} {mcp / new chief}    {\undef}
+\regs {a5} {excpt id}    {\undef}
+\regs {v0} {\undef}    {new task id}
+\end{SC} 
+ 
+\noindent This function deletes and/or creates a task. Deletion of a task
+means that the address space of the task and all threads of the task
+disappear. The cputime of all deleted threads is added to the cputime of
+the deleting thread. If the deleted task was chief of a clan, all tasks of
+the clan are deleted as well. 
+ 
+Tasks may be created as {\em active} or {\em inactive}, as
+defined by the \emph{pager} attribute. For an active task,
+a new address space is created together with 128 threads. Lthread 0 is
+started, the other ones wait for a ``real'' creation by lthread\_ex\_regs. 
+An inactive task is empty. It occupies no resources, has no
+address space and no threads. Communication with inactive tasks is not
+possible. Loosely speaking, inactive tasks are not really existing but
+represent only the right to create an active task. 
+ 
+A newly created task gets the creator as its chief, i.e.\ it is created
+inside the creator's clan. \cbstart A task can only be deleted either
+directly by its chief (its creator) or indirectly by (a higher-level
+chief) deleting the task's chief. \cbend
+ 
+ 
+\subsection*{Parameters} 
+ 
+ 
+\begin{param}{dest task} 
+                     & Task id of an {\em existing} task (active or
+                           inactive) whose chief is the current task. If
+                           one of these preconditions is not fulfilled,
+                           the system call has no effect. Otherwise,
+                           {\em dest task} is deleted and simultaneously
+                           a new task is created {\em with the same task
+                           number}.  The new task may be active or
+                           inactive (see next parameter).
+\end{param} 
+ 
+ 
+\begin{param}{pager} 
+         $\NE$ {\em nil} & The new task is created as {\em active}. 
+                           The specified pager is associated with lthread 0.\\ 
+% 
+         $\EQ$ {\em nil} & (0) The new task is created as {\em
+                           inactive}. Lthread 0 is not created. \\ 
+\end{param} 
+ 
+ 
+\begin{param}{SP}   &     Initial stack pointer for lthread 0 if the new
+                           task is created as an active one. Ignored
+                           otherwise. 
+% 
+\end{param} 
+ 
+\begin{param}{IP}   &     Initial instruction pointer for lthread 0 if the
+                           new task is created as an active one. Ignored
+                           otherwise. 
+% 
+\end{param} 
+ 
+ 
+ 
+\begin{param}{mcp}   &     Maximum controlled priority (mcp) defines the
+                           highest priority which can be ruled by the
+                           new task acting as a scheduler. The new task's
+                           effective mcp is the minimum of the creator's mcp and the
+                           specified mcp.\\ 
+                     &     \reg{a4} contains this parameter, if the newly
+                           generated task is an {\em active} task, i.e.\ has
+                           a pager and at least lthread 0. 
+\end{param} 
+ 
+ 
+\begin{param}{new chief}&  Specifies the chief of the new inactive task.
+                           This mechanism permits to transfer inactive
+                           (``empty'') tasks to other tasks. Transferring an
+                           inactive task to the specified chief means to
+                           transfer the related right to create a task. Note
+                           that the task number remains unchanged.\\ 
+                     &     \reg{a4} contains this parameter, if the newly
+                           generated task is an {\em inactive} task, i.e.\
+                           has no pager and no threads. \\
+		     &     The lthread no of the chief id is ignored,
+                           the effective chief (as far as ipc delivery
+                           is concerned) is the chief tasks' lthread 0.
+\end{param} 
+ 
+ 
+ 
+\begin{param}{new task id} 
+            $\NE nil$ & Task creation succeeded. If the new task is
+                           active, the new task id will have a new
+                           version number so that it differs from all
+                           task ids used earlier. Chief and task number
+                           are the same as in {\em dest task}.
+
+			   \cbstart However, if the new task is created
+                           inactive, the chief is taken from the {\em
+                           chief} parameter and the task number remains
+                           unchanged. The version is in this case
+                           undefined \cbend so that the new task id
+                           might be identical with a formerly (but not
+                           currently and not in future) valid task
+                           id. This is safe since communication with
+                           inactive tasks is impossible.\\[5pt]
+% 
+            $\EQ nil$ &    (0) The task creation failed. 
+\end{param} 
+ 
+
+\begin{param}{excpt id} 
+              & Specifies the default exception handler thread id for
+              new task.
+\end{param}
+ 
+ 
+\markboth{CHAPTER 2. ~L4/X86}{CHAPTER 2. ~L4/X86} 
+\pagestyle{headings} 
+ 
+\clearpage 
+ 
+\section{Exception Handling}
+\label{exrpc}
+Exceptions in L4/MIPS are handled with IPC, unlike L4/x86 which handles
+exceptions via x86 mirrored exception handling using a per thread IDT.
+
+In L4/MIPS a thread which raises an exception which is caught by L4,
+has a RPC done on it's behalf to an exception handling thread, which can
+be specified per thread.
+
+The thread that took the exception is left waiting, the exception
+handling thread can either shut down the offending thread, or generate a
+signal, or implement any other model the OS designer chooses.
+
+When a thread takes an exception, the kernel sends the following to the
+thread's exception handler.
+
+\vspace{1ex}
+\begin{center}\begin{tabular}{ll}
+\emph{msg.w0} (\reg{s0}) & \cbox{0}{32}{16}\cbox{Cause}{32}{16} \\
+\emph{msg.w1} (\reg{s1}) & \cbox{EPC}{64}{32}\\
+\emph{msg.w2} (\reg{s2}) & \cbox{BVA}{64}{32}\\
+\end{tabular}\end{center}
+
+\begin{description}
+\item[Cause] Contents of the R4000 Cause register. It describes what
+  type of exception was taken.
+\item[EPC] Contents of the  R4000 EPC register. It contains the address of the
+  instruction that caused the exception, except when the instruction is
+  in the branch delay slot, in which case it contains the address of the
+  preceding branch instruction.
+\item[BVA] Contents of the  R4000 BVA register. It contains the virtual
+  address that caused the exception.
+\end{description}
+
+See the R4600 processor manual\cite{r4ref} for more details of these
+registers including how and when they are set.
+
+ 
+\clearpage 
+ 
+ 
+\section{\label{s:kip}The Kernel-Info Page} 
+ 
+ 
+The kernel-info page contains kernel-version data,
+memory descriptors {\em and the clock}. The remainder of the page is
+undefined. The kernel-info page is
+mapped {\em read-only} in the $\sigma_0$-address space. $\sigma_0$ can use
+the memory descriptors for its memory management. $\sigma_0$ can map the
+page read-only to other address spaces. 
+ 
+\vspace{20pt} 
+The kernel information page contains information useful for the initial
+servers to find out about the environment they were started in. Its
+layout is as follows.
+
+\vspace{1ex}
+\begin{center}\begin{tabular}{ll}
+\cbox{kernel data}{64}{32} & +40 \\
+\cbox{dit header}{64}{32} & +32 \\
+\cbox{kernel}{64}{32} & +24 \\
+\cbox{memory size}{64}{32} & +16 \\
+\cbox{clock}{64}{32} & +8 \\
+\cbox{build}{16}{8}\cbox{version}{16}{8}\cbox{``L4uK''}{32}{16} & +0\\
+\end{tabular}\end{center}
+
+\vspace{1ex}
+\begin{param}{version} 
+              & L4/R4600 version number.\\
+\end{param}
+\begin{param}{build} 
+              & L4/R4600 build number of above version\\
+\end{param}
+\begin{param}{clock} 
+              & Number of 1 milliseconds ticks since L4 booted.\\
+\end{param}
+\begin{param}{memory size} 
+  & The amount of RAM installed on machine L4 is running on.\\ 
+\end{param}
+\begin{param}{kernel} 
+  & The address + 1 of last byte reserved by the kernel of low physical
+  memory.\\ 
+\end{param}
+\begin{param}{dit header} 
+  & The address of the DIT header which maps out what was loaded with
+  the kernel image.\\ 
+\end{param}
+\begin{param}{kernel data} 
+  & The address of the start of kernel reserved memory in the upper
+  physical memory region.
+\end{param}
+
+\vspace{1ex}
+The physical memory initially available for applications lies between
+\emph{kernel} and \emph{kernel data}.
+
+ 
+\clearpage 
+ 
+\section{Page-Fault and Preemption RPC} 
+ 
+\vspace{20pt} 
+ 
+\subsection*{Page Fault RPC} 
+ 
+\vspace{20pt} 
+ 
+\begin{param}{\bf kernel sends:} 
+ 
+            w0 (\reg{s0})     &  \cbox{fault address / 4}{62}{30}\abox{$w$}{1}\abox{\undef}{1}\\ 
+% 
+            w1 (\reg{s1})     &  \cbox{faulting user-level IP}{64}{32}\\[12pt] 
+% 
+            $w\,\EQ\,0$  &  Read page fault.\\ 
+            $w\,\EQ\,1$  &  Write page fault. 
+\end{param} 
+ 
+ 
+\begin{param}{\bf kernel receives:} 
+ 
+                         &  The kernel provides a receive fpage
+                            covering the complete user address
+                            space. The kernel accepts mappings or grants
+                            into this region. Only a short (i.e.,
+                            register-only) message is accepted, and its
+                            contents are ignored.
+\end{param} 
+ 
+ 
+%\begin{center} 
+%\begin{tabular}{|c|cccc|} 
+%\hline 
+%page fault       &\multicolumn{4}{|c|}{timeouts used for Kernel RPC} \\ 
+%origin           &  snd   &   rcv   &   snd pf   &    rcv pf    \\ 
+%\hline 
+%user level       &$\infty$&$\infty$ &$\infty$    &$\infty$      \\ 
+%ipc, receiver's space&sender's snd pf &sender's snd pf &sender's snd pf &sender's snd pf\\ 
+%ipc, sender's space  &receiver's rcv pf &receiver's rcv pf &receiver's rcv pf &receiver's rcv pf\\ 
+%\hline 
+%\end{tabular} 
+%\end{center} 
+ 
+ 
+\begin{center} 
+\begin{tabular}{|c|ccc|} 
+\hline 
+timeouts   & PF at       & PF at ipc in          & PF at ipc in  \\ 
+used for   & user        & receiver's            & sender's      \\ 
+pagefault RPC & level    & space                 & space
+\\ 
+\hline 
+ snd       &  $\infty$   &   sender's snd pf     & receiver's rcv pf  \\ 
+ rcv       &  $\infty$   &   sender's snd pf     & receiver's rcv pf  \\ 
+ snd pf    &  $\infty$   &   sender's snd pf     & receiver's rcv pf  \\ 
+ rcv pf    &  $\infty$   &   sender's snd pf     & receiver's rcv pf  \\ 
+\hline 
+\end{tabular} 
+\end{center} 
+ 
+ 
+\vspace{30pt} 
+ 
+ 
+ 
+\subsection*{Preemption RPC} 
+\impnote{Preemption RPC is yet to be implemented in L4/MIPS.}
+\vspace{20pt} 
+ 
+\begin{param}{\bf kernel sends:} 
+ 
+            w0     &  \bbox{user-level ESP}{32}\\ 
+% 
+            w1     &  \bbox{user-level EIP}{32}\\[12pt] 
+% 
+\end{param}
+ESP and EIP are the R4x00's exception stack pointer and
+exception instruction pointer registers, respectively. 
+ 
+ 
+\begin{param}{\bf kernel receives:} 
+ 
+                         &  The kernel only accepts a short
+                            (in-register) message, whose contents
+                            are ignored.
+\end{param} 
+ 
+\begin{center} 
+\begin{tabular}{|c|c|} 
+\hline 
+timeouts   &\\
+used for   &\\ 
+preemption RPC &\\ 
+\hline 
+ snd       &  $\infty$   \\ 
+ rcv       &  $\infty$   \\ 
+ snd pf    &  $\infty$   \\ 
+ rcv pf    &  $\infty$   \\ 
+\hline 
+\end{tabular} 
+\end{center} 
+ 
+ 
+ 
+ 
+\clearpage 
+ 
+ 
+\section{$\sigma_0$ RPC protocol} 
+\label{sigz}
+
+$\sigma_0$ is the initial address space. Although \sigz\ may
+not be part of the kernel its basic protocol is defined by  the
+\micro-kernel. Special $\sigma_0$ implementations may extend this
+protocol.
+ 
+The address space $\sigma_0$ is idempotent, i.e.
+all virtual addresses in this address space are identical to the
+corresponding physical address. Note that pages requested from $\sigma_0$
+continue to be mapped idempotently if the receiver specifies its complete
+address space as receive fpage. 
+ 
+$\sigma_0$ gives pages to the kernel and to arbitrary tasks, but only once.
+The idea is that all pagers request the memory they need in the startup
+phase of the system so that afterwards $\sigma_0$ has spent all its memory.
+Further requests will then automatically denied (by sending a
+null reply). 
+ 
+\impnote{L4/MIPS \sigz\ behaves similar to L4/x86 \sigz, however the
+  actual RPC protocol is slightly modified and defined below. \sigz\
+  handles device mappings via a special case in the page fault protocol
+  only recognised in general by \sigz. This special case when used to
+  map a page, will map it with ``uncacheable'' attributes
+  suitable for doing device I/O.
+
+  A page mapped as above, when passed on to another task via fpage ipc,
+  will continue to retain its uncacheable attributes.}
+
+
+\subsection*{General Memory Mapping}
+
+
+\subsubsection{Physical memory}
+
+\begin{tabular}{ll}
+\emph{msg.w0} (\reg{s0}) & \cbox{address}{64}{32}\\
+\emph{msg.w1} (\reg{s1}) & \cbox{\undef}{64}{32}\\
+\end{tabular}
+\vspace{1ex}
+
+If \emph{address} is in the available memory range and not previously
+mapped, \sigz\ sends a writable mapping to the requester.
+
+Unlike L4/x86, multiple mappings of the same physical frame is
+not supported, any frame is only mapped once.
+
+\subsubsection{Kernel information page}
+
+\begin{tabular}{ll}
+\emph{msg.w0} (\reg{s0}) & \cbox{0xFFFFFFFFFFFFFFFD}{64}{32}\\
+\emph{msg.w1} (\reg{s1}) & \cbox{\undef}{64}{32}\\
+\end{tabular}
+\vspace{1ex}
+
+Maps the kernel info page to the requester read-only. The requester
+receives the address of the info page in \reg{s0} assuming a one to one
+mapping. Multiple mappings to multiple requesters are
+supported. Note that the address of the dit header can be found
+in the kernel information page (Sect.~\ref{s:kip}).
+
+\subsubsection{Dit header page}
+
+\begin{tabular}{ll}
+\emph{msg.w0} (\reg{s0}) & \cbox{dit header address}{64}{32}\\
+\emph{msg.w1} (\reg{s1}) & \cbox{\undef}{64}{32}\\
+\end{tabular}
+\vspace{1ex}
+
+Maps the dit header page read-only. Multiple mappings to multiple
+requesters are supported.
+
+\subsubsection{Devices}
+
+\begin{tabular}{ll}
+\emph{msg.w0} (\reg{s0}) & \cbox{0xFFFFFFFFFFFFFFFE}{64}{32}\\
+\emph{msg.w1} (\reg{s1}) & \cbox{address}{64}{32}\\
+\end{tabular}
+\vspace{1ex}
+
+If address is not in the normal memory range, \sigz\ maps \emph{address}
+writable and uncacheable so as to enable access to device registers etc.
+The current implementation supports multiple mappings to any of the
+initial servers started (that is anyone in \sigz's
+clan).
+
+It is expected that initial servers protect devices from untrusted
+access via the clans and chiefs mechanism. Device mappings retain their
+cacheability attributes if passed on via mapping IPC.
+ 
+%\clearpage 
+% 
+% 
+%\section{$\sigma_1$ RPC protocol} 
+% 
+% 
+%\begin{center} 
+%To be defined. 
+%\end{center} 
+ 
+\clearpage
+\section{DIT header}
+
+DIT is the tool used to build kernel images for download. Like the L4
+kernel itself, it has an information page describing the layout of
+various programs and data that were part of the downloaded kernel
+image. It consists of two parts, the initial header followed by zero of
+more file headers as specified by the initial
+header. The initial headers format follows below.
+
+\vspace{2ex}
+\begin{center}\begin{tabular}{ll}
+\cbox{vaddr end}{32}{32} & +20 \\
+\cbox{file end}{32}{32} & +16 \\
+\cbox{phdr num}{32}{32} & +12 \\
+\cbox{phdr size}{32}{32} & +8 \\
+\cbox{phdr off}{32}{32} & +4 \\
+\cbox{``dhdr''}{32}{32} & +0\\
+\end{tabular}\end{center}
+
+\begin{param}{phdr off} 
+  & The offset from the beginning of this header to where the file 
+  headers start.\\ 
+\end{param}
+\begin{param}{phdr size} 
+              & The size of each of the file headers.\\
+\end{param}
+\begin{param}{phdr num} 
+              & The number of file headers that follow.\\
+\end{param}
+\begin{param}{file end} 
+  & The offset to the end of the kernel image file. For DIT internal use
+  only.\\ 
+\end{param}
+\begin{param}{vaddr end} 
+  & The end of currently used physical memory space. This includes the
+  L4 kernel and all other programs and data in the downloaded kernel
+  image.\\ 
+\end{param}
+
+\noindent Each of the file headers is laid out as follows.
+
+\vspace{2ex}
+\begin{center}\begin{tabular}{ll}
+\cbox{flags}{32}{32} & +28 \\
+\cbox{entry}{32}{32} & +24 \\
+\cbox{size}{32}{32} & +20 \\
+\cbox{base}{32}{32} & +16\\
+\cbox{name string}{32}{32} & +12 \\
+\cbox{name string}{32}{32} & +8 \\
+\cbox{name string}{32}{32} & +4 \\
+\cbox{name string}{32}{32} & +0 \\
+\end{tabular}\end{center}
+
+\begin{param}{name string} 
+  & Null terminated string containing name of program or data 
+  file (truncated to 16 characters).\\ 
+\end{param}
+\begin{param}{base} 
+  & The base address of the program or data file .\\ 
+\end{param}
+\begin{param}{size} 
+  & The size of the program or data.\\ 
+\end{param}
+\begin{param}{entry} 
+              & The start address of the program if it is executable,
+              zero otherwise.\\
+\end{param}
+\begin{param}{flags} 
+              & Miscellaneous flags defined below.\\
+\end{param}
+
+
+\vspace{2ex}
+\begin{center}\begin{tabular}{l}
+\cbox{\undef}{31}{31}\abox{r}{1}\\
+\end{tabular}\end{center}
+
+\begin{param}{r} 
+  & If set the kernel runs this program as part of the initial servers
+  upon startup. If not set, the program or data has simply been loaded
+  into memory and has not been invoked.\\ 
+\end{param}
+
+ 
+\clearpage 
+ 
+\appendix 
+\chapter{DIT}
+
+Downloadable Image Tool (DIT) is used to construct downloadable images
+that contain several parts. It exists as the boot monitor on several
+systems we use only supports the download of a single 32-bit ELF file.
+The L4-kernel is 64-bit ELF and we also needed to append various initial
+servers, so dit was created to achieve this.
+
+DIT does this by ``massaging'' the L4 64-bit elf header into something
+that fools the boot monitor into thinking it is 32-bit elf. It also
+appends an ELF program segment containing the dit header.
+
+Appending arbitrary files to the image is achieved by copying the file
+into the newly added program segment and noting it in the dit header.
+
+DIT has the following arguments.
+\begin{description}
+\item[\texttt{-i l4\_kernel kernel\_image}] Transforms the initial
+  64-bit kernel \texttt{l4\_kernel} into a 32-bit downloable image
+  \texttt{kernel\_image}. Also adds the dit header.
+\item[\texttt{-l kernel\_image}] Prints out the next available address
+  in the physical memory space that a program to be appended should be
+  linked at. This is also the default address that unstructured data is
+  appended at.
+\item[\texttt{-m kernel\_image}] Prints out a map of what is in the
+  current kernel image.
+\item[\texttt{-a file kernel\_image}] Appends \texttt{file} to
+  \texttt{kernel\_image}. If the \texttt{file} is 64-bit elf, 32-bit
+  elf, or 32-bit ecoff, then dit acts as a program loader laying out the
+  contents of the executable (.text, .data, .bss etc.) inside the kernel
+  image such that it forms a runnable image once downloaded.
+
+  If the file is not of the above format, it is simply appended as is.
+  Note that dit enforces page alignment of 4 kbytes and rounds file size
+  up accordingly.
+\item[\texttt{-h addr}] Used in conjunction with \texttt{-a}. Instead of
+  the image being appended at the default address, it is appended at
+  address \texttt{addr} in the physical address space.
+\item[\texttt{-n}] Used in conjunction with \texttt{-a}, it unsets the
+  run flag for the image being appended so it is not started by L4 as
+  one of the initial servers. This is default for unstructured data.
+\item[\texttt{-f}] Used in conjunction with \texttt{-a}. Forces the the
+  file to be appended as unstructured data even if it is a coff or elf
+  format executable.
+\item[\texttt{-z}] Does not include the bss section in the
+image. Expects bss to be allocated and zeroed at load time.
+\end{description}
+ 
+\chapter{Serial Port Server}
+
+This is a description of the simple serial port server we are currently
+using on L4/MIPS. It could be described as ``focused on fast
+implementation'', or in other words ``a quick hack''.
+
+We use a serial port server, rather than access the hardware directly as
+it provides reliable output unaffected by unreliable servers that are
+under development. Any ``real'' system would use a more efficient method
+than the simple method described below.
+
+\section{Output}
+
+The server waits for IPC (short, 64-byte message only) 
+and upon receiving it, converts the received message
+into a string buffer and sends the null terminated string out the serial
+port. A simple code fragment to print ``hello world'' follows.
+
+{\small
+\begin{verbatim}
+const l4_threadid_t SERIAL_TID = {0x1002000000060001LL};
+l4_ipc_reg_msg_t msg;
+l4_msgdope_t result;
+char *c;
+
+c = (char *) &msg.reg[0];
+sprintf(c,"Hello World\n");
+r = l4_mips_ipc_send(SERIAL_TID, 
+                     L4_IPC_SHORT_MSG,&msg,
+                     L4_IPC_NEVER, &result);
+\end{verbatim}
+}
+
+The maximum string length is 64 bytes, which is the maximum
+amount of data that can be transfered in registers. Strings of
+less than 64 bytes are null-terminated. Also note the threadid
+assumes it is the first task loaded after \sigz.
+
+
+
+\section{Input}
+
+The simple server also supports receiving input from the serial
+port. Upon receiving a character from the serial port, the server will
+IPC the single character to whoever is registered as the receiver.
+
+To register as the receiver, one should send a message to the server
+with the first 64-bit word being zero, and the second word being the
+thread id of the thread that is to receive the input characters.
+
+A sample code fragment follows.
+
+{\small
+\begin{verbatim}
+/* register to receive serial input */
+id = l4_myself();
+msg.reg[0] = 0;
+msg.reg[1] = id.ID; 
+r = l4_mips_ipc_send(SERIAL_TID, L4_IPC_SHORT_MSG, &msg,
+                     L4_IPC_NEVER, &result);
+\end{verbatim}
+
+\begin{verbatim}
+/* loop receiving input */
+  while (1)
+  {
+    r = l4_mips_ipc_wait(&id, L4_IPC_SHORT_MSG, &msg,
+                         L4_IPC_NEVER, &result);
+    rcv_buffer[i++] = (char) msg.reg[0];
+  }
+\end{verbatim}
+}
+
+Note that thread 0 is used to receive IPC for output and registration,
+and thread 1 is used to send input characters to the registered
+receiver.
+
+\chapter{Kernel Debugger}
+
+The L4 kernel debugger, as it's name suggests, is used for debugging the
+L4 kernel itself. It is not intended to be used for debugging
+applications, though it can be used to if one understands enough of the
+internals of L4.
+
+The debugger is very primitive in functionality. It allows basic
+exploration of kernel data (both global and task specific data), memory,
+and R4600 registers including co-processor registers.
+
+The kernel debugger is contantly evolving with extra features added when
+required to assist in debugging new problems. A description of the
+current list of commands follows.
+
+\begin{description}
+\item[\texttt{?}] Print out a short help message.
+\item[\texttt{rbt}] Reboot the system.
+\item[\texttt{bl}] Print out the current busy list in the scheduler.
+\item[\texttt{ct}] Change the debuggers ``current task control block''
+  to the one specified by the given \texttt{address}.
+\item[\texttt{pm}] Print out \texttt{number} of 64-bit memory locations
+  starting at \texttt{address}. The \texttt{number} argument is
+  optional.
+\item[\texttt{pt}] Print out the state of the ``current TCB''.
+\item[\texttt{pr}] Print out the general register set. If
+  \texttt{register} argument is given, then print only the register
+  specified.
+\item[\texttt{pk}] Print out the kernel data.
+\item[\texttt{pc}] Print out co-processor \texttt{register}
+  specified. Valid register names are \texttt{bva}, \texttt{epc},
+  \texttt{ehi}, \texttt{prid}, \texttt{tlb}, \texttt{xc}, \texttt{st},
+  \texttt{cs}. 
+\item[\texttt{pgpt}] Print out the page table associated with the
+  current TCB.
+\item[\texttt{bon}] Switch on the compiled in kernel break points.
+\item[\texttt{version}] Print out the version and build number of the
+  current kernel.
+\end{description}
+
+Note when in the debugger, a \texttt{cntrl-D} will exit the debugger and
+continue L4. This is only sensible to do when the debugger was invoked
+via a kernel breakpoint, and application assertion, or by
+pressing the interrupt key.
+
+\section{assert}
+
+The supplied library \texttt{libl4.a} and header file \texttt{assert.h},
+implement the usual \texttt{assert()} function, i.e.\ if the assertion
+fails, the application stops and the file and line number of the failed
+assertion is printed. However, unlike a normal assert, after printing
+the above message the kernel debugger is called and the whole system is
+stopped.  The system can be continued as mentioned above by entering
+\texttt{cntrl-D}.
+
+\chapter{L4 C Library Headers}
+
+The following are the self documented header files for the C library
+interface to L4 on the MIPS R4x00 platform. The headers
+contain useful constants, macros, and function prototypes for
+programming in the L4 environment.
+
+
+\section{types.h}
+
+{\footnotesize
+\verbatiminput{../src/include/l4/types.h}
+
+\clearpage
+\section{syscalls.h}
+
+\verbatiminput{../src/include/l4/syscalls.h}
+
+\clearpage
+\section{ipc.h}
+
+\verbatiminput{../src/include/l4/ipc.h}
+
+\clearpage
+\section{sigma0.h}
+
+\verbatiminput{../src/include/l4/sigma0.h}
+
+\clearpage
+\section{u4600.h}
+
+\verbatiminput{../src/include/kernel/u4600.h}
+
+\clearpage
+\section{dit.h}
+
+\verbatiminput{../src/include/kernel/dit.h}
+}
+
+\bibliographystyle{alpha} 
+\bibliography{l4R4x00} 
+ 
+ 
+ 
+\end{document}

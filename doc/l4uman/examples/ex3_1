@@ -1,0 +1,25 @@
+// This example covers both sending a request to SIGMA0 for a physical frame 
+// and successfully receiving the mapping from SIGMA0.
+	
+	l4_msgdope_t result;
+	l4_ipc_reg_msg_t msg;
+	dword_t addr;
+	
+	addr = ...; /* some address */
+	msg.reg[0] = add;
+
+	l4_mips_send(SIGMA0_TID, L4_IPC_SHORT_MSG, &msg, 
+			L4_IPC_NEVER, &result);
+
+	l4_mips_receive(SIGMA0_TID, (void *) ((dword_t) L4_IPC_SHORT_FPAGE |
+			(L4_WHOLE_ADDRESS_SPACE << 2)),
+			&msg, L4_IPC_NEVER, &result);
+
+	/*** can combine last two system calls ***/
+
+	l4_mips_ipc_call(SIGMA0_TID, L4_IPC_SHORT_MSG, &msg, 
+			 (void *) ((dword_t) L4_IPC_SHORT_FPAGE | 
+				   (L4_WHOLE_ADDRESS_SPACE << 2)),
+			&msg, L4_IPC_NEVER, &result);
+
+	/****************************************/

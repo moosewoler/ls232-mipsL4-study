@@ -1,0 +1,737 @@
+Interrupt Serial IO, thread id 0x1002000000060001
+main:   Mapping tester  0x1002000000080001
+main:   This test will take a while, please be patient.
+main:   L4uK version 79 build 6
+main:   Memory size 64MB
+main:   L4 reserved below 0x63000 and above 0x3999000
+main:   serial       addr 0x63000    size 0x5000    
+main:   map_main     addr 0x68000    size 0x4000    
+main:   map_child    addr 0x80000    size 0x4000    
+main:   child map_child    addr 0x80000    size 0x4000     entry 0x82cf8   
+main:   map_gchild   addr 0x84000    size 0x3000    
+main:   grandchild map_gchild   addr 0x84000    size 0x3000     entry 0x85ed0   
+main:   got  0x80000   
+main:   got  0x81000   
+main:   got  0x82000   
+main:   got  0x83000   
+main:   got  0x84000   
+main:   got  0x85000   
+main:   got  0x86000   
+main:   got  0x87000   
+main:   got  0x88000   
+main:   got  0x89000   
+main:   got  0x8a000   
+main:   got  0x8b000   
+main:   got  0x8c000   
+main:   got  0x8d000   
+main:   got  0x8e000   
+main:   got  0x8f000   
+main:   claimed all child memory
+main:   started printer thread 0x1002000000080401
+main:   Printer ready
+main:   child stack 0x8f000    0x85ed0    0x1002000000080401
+main:   started child, id=0x20080000000a0001
+main:   page fault 0x82cf8    0x82cf8   
+main:   sending fpage   0x82cf8 0x80042
+child:  I'm 0x20080000000a0001
+child:  parent 1002000000080001 id_n 1002000000080001 4
+child:  grandchild sp=8f000 ip=85ed0
+main:   Sending mappings, offset=20000000...
+main:   done
+main:   Sent 2048 mappings, 0.145 sec (70 usec/mapping)
+
+main:   Child's tests will take a few minutes...
+
+child:  Got 2048 mappings junk=223341
+child:  started printer thread 0x20080000000a0401
+child:  Printer ready
+child:  Size=16 base=85ed0 max=ffe0000010
+
+child:  Testing fpage size 16 base 80000 step 20000000
+child:  Starting grandchild, ip=85ed0 sp=8eff8
+child:  started grandchild, id=0x300a0000000c0001
+child:  page fault 0x85ed0    0x85ed0   
+child:  sending fpage   0x85ed0 0x80042
+grandchild:     I'm 0x300a0000000c0001
+grandchild:     parent 20080000000a0001 id_n 20080000000a0001 4
+child:  Sending mappings, this may take a while...
+child:  done
+child:  Sent 16769024 mappings of size 16
+grandchild:     Got 16769025 mappings, 2049 real, junk=221292
+grandchild:     I'm done.
+child:  killing grandchild
+
+child:  Testing fpage size 17 base 80000 step 20000000
+child:  Starting grandchild, ip=85ed0 sp=8eff8
+child:  started grandchild, id=0x300a0000000c0002
+child:  page fault 0x85ed0    0x85ed0   
+child:  sending fpage   0x85ed0 0x80046
+grandchild:     I'm 0x300a0000000c0002
+grandchild:     parent 20080000000a0001 id_n 20080000000a0001 4
+child:  Sending mappings, this may take a while...
+child:  done
+child:  Sent 8384512 mappings of size 17
+grandchild:     Got 8384513 mappings, 2049 real, junk=221292
+grandchild:     I'm done.
+child:  killing grandchild
+
+child:  Testing fpage size 18 base 80000 step 20000000
+child:  Starting grandchild, ip=85ed0 sp=8eff8
+child:  started grandchild, id=0x300a0000000c0003
+child:  page fault 0x85ed0    0x85ed0   
+child:  sending fpage   0x85ed0 0x8004a
+grandchild:     I'm 0x300a0000000c0003
+grandchild:     parent 20080000000a0001 id_n 20080000000a0001 4
+child:  Sending mappings, this may take a while...
+child:  done
+child:  Sent 4192256 mappings of size 18
+grandchild:     Got 4192257 mappings, 2049 real, junk=221292
+grandchild:     I'm done.
+child:  killing grandchild
+
+child:  Testing fpage size 19 base 80000 step 20000000
+child:  Starting grandchild, ip=85ed0 sp=8eff8
+child:  started grandchild, id=0x300a0000000c0004
+child:  page fault 0x85ed0    0x85ed0   
+child:  sending fpage   0x85ed0 0x8004e
+grandchild:     I'm 0x300a0000000c0004
+grandchild:     parent 20080000000a0001 id_n 20080000000a0001 4
+child:  Sending mappings, this may take a while...
+child:  done
+child:  Sent 2096128 mappings of size 19
+grandchild:     Got 2096129 mappings, 2049 real, junk=221292
+grandchild:     I'm done.
+child:  killing grandchild
+
+child:  Testing fpage size 20 base 0 step 20000000
+child:  Starting grandchild, ip=85ed0 sp=8eff8
+child:  started grandchild, id=0x300a0000000c0005
+child:  page fault 0x85ed0    0x85ed0   
+child:  sending fpage   0x85ed0 0x52
+grandchild:     I'm 0x300a0000000c0005
+grandchild:     parent 20080000000a0001 id_n 20080000000a0001 4
+child:  Sending mappings, this may take a while...
+child:  done
+child:  Sent 1048064 mappings of size 20
+grandchild:     Got 1048065 mappings, 2048 real, junk=221184
+grandchild:     I'm done.
+child:  killing grandchild
+
+child:  Testing fpage size 21 base 0 step 20000000
+child:  Starting grandchild, ip=85ed0 sp=8eff8
+child:  started grandchild, id=0x300a0000000c0006
+child:  page fault 0x85ed0    0x85ed0   
+child:  sending fpage   0x85ed0 0x56
+grandchild:     I'm 0x300a0000000c0006
+grandchild:     parent 20080000000a0001 id_n 20080000000a0001 4
+child:  Sending mappings, this may take a while...
+child:  done
+child:  Sent 524032 mappings of size 21
+grandchild:     Got 524033 mappings, 2048 real, junk=221184
+grandchild:     I'm done.
+child:  killing grandchild
+
+child:  Testing fpage size 22 base 0 step 20000000
+child:  Starting grandchild, ip=85ed0 sp=8eff8
+child:  started grandchild, id=0x300a0000000c0007
+child:  page fault 0x85ed0    0x85ed0   
+child:  sending fpage   0x85ed0 0x5a
+grandchild:     I'm 0x300a0000000c0007
+grandchild:     parent 20080000000a0001 id_n 20080000000a0001 4
+child:  Sending mappings, this may take a while...
+child:  done
+child:  Sent 262016 mappings of size 22
+grandchild:     Got 262017 mappings, 2048 real, junk=221184
+grandchild:     I'm done.
+child:  killing grandchild
+
+child:  Testing fpage size 23 base 0 step 20000000
+child:  Starting grandchild, ip=85ed0 sp=8eff8
+child:  started grandchild, id=0x300a0000000c0008
+child:  page fault 0x85ed0    0x85ed0   
+child:  sending fpage   0x85ed0 0x5e
+grandchild:     I'm 0x300a0000000c0008
+grandchild:     parent 20080000000a0001 id_n 20080000000a0001 4
+child:  Sending mappings, this may take a while...
+child:  done
+child:  Sent 131008 mappings of size 23
+grandchild:     Got 131009 mappings, 2048 real, junk=221184
+grandchild:     I'm done.
+child:  killing grandchild
+
+child:  Testing fpage size 24 base 0 step 20000000
+child:  Starting grandchild, ip=85ed0 sp=8eff8
+child:  started grandchild, id=0x300a0000000c0009
+child:  page fault 0x85ed0    0x85ed0   
+child:  sending fpage   0x85ed0 0x62
+grandchild:     I'm 0x300a0000000c0009
+grandchild:     parent 20080000000a0001 id_n 20080000000a0001 4
+child:  Sending mappings, this may take a while...
+child:  done
+child:  Sent 65504 mappings of size 24
+grandchild:     Got 65505 mappings, 2048 real, junk=221184
+grandchild:     I'm done.
+child:  killing grandchild
+
+child:  Testing fpage size 25 base 0 step 20000000
+child:  Starting grandchild, ip=85ed0 sp=8eff8
+child:  started grandchild, id=0x300a0000000c000a
+child:  page fault 0x85ed0    0x85ed0   
+child:  sending fpage   0x85ed0 0x66
+grandchild:     I'm 0x300a0000000c000a
+grandchild:     parent 20080000000a0001 id_n 20080000000a0001 4
+child:  Sending mappings, this may take a while...
+child:  done
+child:  Sent 32752 mappings of size 25
+grandchild:     Got 32753 mappings, 2048 real, junk=221184
+grandchild:     I'm done.
+child:  killing grandchild
+
+child:  Testing fpage size 26 base 0 step 20000000
+child:  Starting grandchild, ip=85ed0 sp=8eff8
+child:  started grandchild, id=0x300a0000000c000b
+child:  page fault 0x85ed0    0x85ed0   
+child:  sending fpage   0x85ed0 0x6a
+grandchild:     I'm 0x300a0000000c000b
+grandchild:     parent 20080000000a0001 id_n 20080000000a0001 4
+child:  Sending mappings, this may take a while...
+child:  done
+child:  Sent 16376 mappings of size 26
+grandchild:     Got 16377 mappings, 2048 real, junk=221184
+grandchild:     I'm done.
+child:  killing grandchild
+
+child:  Testing fpage size 27 base 0 step 20000000
+child:  Starting grandchild, ip=85ed0 sp=8eff8
+child:  started grandchild, id=0x300a0000000c000c
+child:  page fault 0x85ed0    0x85ed0   
+child:  sending fpage   0x85ed0 0x6e
+grandchild:     I'm 0x300a0000000c000c
+grandchild:     parent 20080000000a0001 id_n 20080000000a0001 4
+child:  Sending mappings, this may take a while...
+child:  done
+child:  Sent 8188 mappings of size 27
+grandchild:     Got 8189 mappings, 2048 real, junk=221184
+grandchild:     I'm done.
+child:  killing grandchild
+
+child:  Testing fpage size 28 base 0 step 20000000
+child:  Starting grandchild, ip=85ed0 sp=8eff8
+child:  started grandchild, id=0x300a0000000c000d
+child:  page fault 0x85ed0    0x85ed0   
+child:  sending fpage   0x85ed0 0x72
+grandchild:     I'm 0x300a0000000c000d
+grandchild:     parent 20080000000a0001 id_n 20080000000a0001 4
+child:  Sending mappings, this may take a while...
+child:  done
+child:  Sent 4094 mappings of size 28
+grandchild:     Got 4095 mappings, 2048 real, junk=221184
+grandchild:     I'm done.
+child:  killing grandchild
+
+child:  Testing fpage size 29 base 0 step 20000000
+child:  Starting grandchild, ip=85ed0 sp=8eff8
+child:  started grandchild, id=0x300a0000000c000e
+child:  page fault 0x85ed0    0x85ed0   
+child:  sending fpage   0x85ed0 0x76
+grandchild:     I'm 0x300a0000000c000e
+grandchild:     parent 20080000000a0001 id_n 20080000000a0001 4
+child:  Sending mappings, this may take a while...
+child:  done
+child:  Sent 2047 mappings of size 29
+grandchild:     Got 2048 mappings, 2048 real, junk=221184
+grandchild:     I'm done.
+child:  killing grandchild
+
+child:  Testing fpage size 30 base 0 step 20000000
+child:  Starting grandchild, ip=85ed0 sp=8eff8
+child:  started grandchild, id=0x300a0000000c000f
+child:  page fault 0x85ed0    0x85ed0   
+child:  sending fpage   0x85ed0 0x7a
+grandchild:     I'm 0x300a0000000c000f
+grandchild:     parent 20080000000a0001 id_n 20080000000a0001 4
+child:  Sending mappings, this may take a while...
+child:  done
+child:  Sent 1023 mappings of size 30
+grandchild:     Got 1024 mappings, 1024 real, junk=110592
+grandchild:     I'm done.
+child:  killing grandchild
+
+child:  Testing fpage size 31 base 0 step 20000000
+child:  Starting grandchild, ip=85ed0 sp=8eff8
+child:  started grandchild, id=0x300a0000000c0010
+child:  page fault 0x85ed0    0x85ed0   
+child:  sending fpage   0x85ed0 0x7e
+grandchild:     I'm 0x300a0000000c0010
+grandchild:     parent 20080000000a0001 id_n 20080000000a0001 4
+child:  Sending mappings, this may take a while...
+child:  done
+child:  Sent 511 mappings of size 31
+grandchild:     Got 512 mappings, 512 real, junk=55296
+grandchild:     I'm done.
+child:  killing grandchild
+
+child:  Testing fpage size 32 base 0 step 20000000
+child:  Starting grandchild, ip=85ed0 sp=8eff8
+child:  started grandchild, id=0x300a0000000c0011
+child:  page fault 0x85ed0    0x85ed0   
+child:  sending fpage   0x85ed0 0x82
+grandchild:     I'm 0x300a0000000c0011
+grandchild:     parent 20080000000a0001 id_n 20080000000a0001 4
+child:  Sending mappings, this may take a while...
+child:  done
+child:  Sent 255 mappings of size 32
+grandchild:     Got 256 mappings, 256 real, junk=27648
+grandchild:     I'm done.
+child:  killing grandchild
+
+child:  Testing fpage size 33 base 0 step 20000000
+child:  Starting grandchild, ip=85ed0 sp=8eff8
+child:  started grandchild, id=0x300a0000000c0012
+child:  page fault 0x85ed0    0x85ed0   
+child:  sending fpage   0x85ed0 0x86
+grandchild:     I'm 0x300a0000000c0012
+grandchild:     parent 20080000000a0001 id_n 20080000000a0001 4
+child:  Sending mappings, this may take a while...
+child:  done
+child:  Sent 127 mappings of size 33
+grandchild:     Got 128 mappings, 128 real, junk=13824
+grandchild:     I'm done.
+child:  killing grandchild
+
+child:  Testing fpage size 34 base 0 step 20000000
+child:  Starting grandchild, ip=85ed0 sp=8eff8
+child:  started grandchild, id=0x300a0000000c0013
+child:  page fault 0x85ed0    0x85ed0   
+child:  sending fpage   0x85ed0 0x8a
+grandchild:     I'm 0x300a0000000c0013
+grandchild:     parent 20080000000a0001 id_n 20080000000a0001 4
+child:  Sending mappings, this may take a while...
+child:  done
+child:  Sent 63 mappings of size 34
+grandchild:     Got 64 mappings, 64 real, junk=6912
+grandchild:     I'm done.
+child:  killing grandchild
+
+child:  Testing fpage size 35 base 0 step 20000000
+child:  Starting grandchild, ip=85ed0 sp=8eff8
+child:  started grandchild, id=0x300a0000000c0014
+child:  page fault 0x85ed0    0x85ed0   
+child:  sending fpage   0x85ed0 0x8e
+grandchild:     I'm 0x300a0000000c0014
+grandchild:     parent 20080000000a0001 id_n 20080000000a0001 4
+child:  Sending mappings, this may take a while...
+child:  done
+child:  Sent 31 mappings of size 35
+grandchild:     Got 32 mappings, 32 real, junk=3456
+grandchild:     I'm done.
+child:  killing grandchild
+
+child:  Testing fpage size 36 base 0 step 20000000
+child:  Starting grandchild, ip=85ed0 sp=8eff8
+child:  started grandchild, id=0x300a0000000c0015
+child:  page fault 0x85ed0    0x85ed0   
+child:  sending fpage   0x85ed0 0x92
+grandchild:     I'm 0x300a0000000c0015
+grandchild:     parent 20080000000a0001 id_n 20080000000a0001 4
+child:  Sending mappings, this may take a while...
+child:  done
+child:  Sent 15 mappings of size 36
+grandchild:     Got 16 mappings, 16 real, junk=1728
+grandchild:     I'm done.
+child:  killing grandchild
+
+child:  Testing fpage size 37 base 0 step 20000000
+child:  Starting grandchild, ip=85ed0 sp=8eff8
+child:  started grandchild, id=0x300a0000000c0016
+child:  page fault 0x85ed0    0x85ed0   
+child:  sending fpage   0x85ed0 0x96
+grandchild:     I'm 0x300a0000000c0016
+grandchild:     parent 20080000000a0001 id_n 20080000000a0001 4
+child:  Sending mappings, this may take a while...
+child:  done
+child:  Sent 7 mappings of size 37
+grandchild:     Got 8 mappings, 8 real, junk=864
+grandchild:     I'm done.
+child:  killing grandchild
+
+child:  Testing fpage size 38 base 0 step 20000000
+child:  Starting grandchild, ip=85ed0 sp=8eff8
+child:  started grandchild, id=0x300a0000000c0017
+child:  page fault 0x85ed0    0x85ed0   
+child:  sending fpage   0x85ed0 0x9a
+grandchild:     I'm 0x300a0000000c0017
+grandchild:     parent 20080000000a0001 id_n 20080000000a0001 4
+child:  Sending mappings, this may take a while...
+child:  done
+child:  Sent 3 mappings of size 38
+grandchild:     Got 4 mappings, 4 real, junk=432
+grandchild:     I'm done.
+child:  killing grandchild
+
+child:  Testing fpage size 39 base 0 step 20000000
+child:  Starting grandchild, ip=85ed0 sp=8eff8
+child:  started grandchild, id=0x300a0000000c0018
+child:  page fault 0x85ed0    0x85ed0   
+child:  sending fpage   0x85ed0 0x9e
+grandchild:     I'm 0x300a0000000c0018
+grandchild:     parent 20080000000a0001 id_n 20080000000a0001 4
+child:  Sending mappings, this may take a while...
+child:  done
+child:  Sent 1 mappings of size 39
+grandchild:     Got 2 mappings, 2 real, junk=216
+grandchild:     I'm done.
+child:  killing grandchild
+
+child:  Testing fpage size 40 base 0 step 20000000
+child:  Starting grandchild, ip=85ed0 sp=8eff8
+child:  started grandchild, id=0x300a0000000c0019
+child:  page fault 0x85ed0    0x85ed0   
+child:  sending fpage   0x85ed0 0xa2
+grandchild:     I'm 0x300a0000000c0019
+grandchild:     parent 20080000000a0001 id_n 20080000000a0001 4
+child:  Sending mappings, this may take a while...
+child:  done
+child:  Sent 0 mappings of size 40
+grandchild:     Got 1 mappings, 1 real, junk=108
+grandchild:     I'm done.
+child:  killing grandchild
+
+child:  Testing fpage size 41 base 0 step 20000000
+child:  Starting grandchild, ip=85ed0 sp=8eff8
+child:  started grandchild, id=0x300a0000000c001a
+child:  page fault 0x85ed0    0x85ed0   
+child:  sending fpage   0x85ed0 0xa6
+grandchild:     I'm 0x300a0000000c001a
+grandchild:     parent 20080000000a0001 id_n 20080000000a0001 4
+child:  Sending mappings, this may take a while...
+child:  done
+child:  Sent 0 mappings of size 41
+grandchild:     Got 1 mappings, 1 real, junk=108
+grandchild:     I'm done.
+child:  killing grandchild
+
+child:  Testing fpage size 42 base 0 step 20000000
+child:  Starting grandchild, ip=85ed0 sp=8eff8
+child:  started grandchild, id=0x300a0000000c001b
+child:  page fault 0x85ed0    0x85ed0   
+child:  sending fpage   0x85ed0 0xaa
+grandchild:     I'm 0x300a0000000c001b
+grandchild:     parent 20080000000a0001 id_n 20080000000a0001 4
+child:  Sending mappings, this may take a while...
+child:  done
+child:  Sent 0 mappings of size 42
+grandchild:     Got 1 mappings, 1 real, junk=108
+grandchild:     I'm done.
+child:  killing grandchild
+
+child:  Testing fpage size 43 base 0 step 20000000
+child:  Starting grandchild, ip=85ed0 sp=8eff8
+child:  started grandchild, id=0x300a0000000c001c
+child:  page fault 0x85ed0    0x85ed0   
+child:  sending fpage   0x85ed0 0xae
+grandchild:     I'm 0x300a0000000c001c
+grandchild:     parent 20080000000a0001 id_n 20080000000a0001 4
+child:  Sending mappings, this may take a while...
+child:  done
+child:  Sent 0 mappings of size 43
+grandchild:     Got 1 mappings, 1 real, junk=108
+grandchild:     I'm done.
+child:  killing grandchild
+
+child:  Testing fpage size 44 base 0 step 20000000
+child:  Starting grandchild, ip=85ed0 sp=8eff8
+child:  started grandchild, id=0x300a0000000c001d
+child:  page fault 0x85ed0    0x85ed0   
+child:  sending fpage   0x85ed0 0xb2
+grandchild:     I'm 0x300a0000000c001d
+grandchild:     parent 20080000000a0001 id_n 20080000000a0001 4
+child:  Sending mappings, this may take a while...
+child:  done
+child:  Sent 0 mappings of size 44
+grandchild:     Got 1 mappings, 1 real, junk=108
+grandchild:     I'm done.
+child:  killing grandchild
+
+child:  Testing fpage size 45 base 0 step 20000000
+child:  Starting grandchild, ip=85ed0 sp=8eff8
+child:  started grandchild, id=0x300a0000000c001e
+child:  page fault 0x85ed0    0x85ed0   
+child:  sending fpage   0x85ed0 0xb6
+grandchild:     I'm 0x300a0000000c001e
+grandchild:     parent 20080000000a0001 id_n 20080000000a0001 4
+child:  Sending mappings, this may take a while...
+child:  done
+child:  Sent 0 mappings of size 45
+grandchild:     Got 1 mappings, 1 real, junk=108
+grandchild:     I'm done.
+child:  killing grandchild
+
+child:  Testing fpage size 46 base 0 step 20000000
+child:  Starting grandchild, ip=85ed0 sp=8eff8
+child:  started grandchild, id=0x300a0000000c001f
+child:  page fault 0x85ed0    0x85ed0   
+child:  sending fpage   0x85ed0 0xba
+grandchild:     I'm 0x300a0000000c001f
+grandchild:     parent 20080000000a0001 id_n 20080000000a0001 4
+child:  Sending mappings, this may take a while...
+child:  done
+child:  Sent 0 mappings of size 46
+grandchild:     Got 1 mappings, 1 real, junk=108
+grandchild:     I'm done.
+child:  killing grandchild
+
+child:  Testing fpage size 47 base 0 step 20000000
+child:  Starting grandchild, ip=85ed0 sp=8eff8
+child:  started grandchild, id=0x300a0000000c0020
+child:  page fault 0x85ed0    0x85ed0   
+child:  sending fpage   0x85ed0 0xbe
+grandchild:     I'm 0x300a0000000c0020
+grandchild:     parent 20080000000a0001 id_n 20080000000a0001 4
+child:  Sending mappings, this may take a while...
+child:  done
+child:  Sent 0 mappings of size 47
+grandchild:     Got 1 mappings, 1 real, junk=108
+grandchild:     I'm done.
+child:  killing grandchild
+
+child:  Testing fpage size 48 base 0 step 20000000
+child:  Starting grandchild, ip=85ed0 sp=8eff8
+child:  started grandchild, id=0x300a0000000c0021
+child:  page fault 0x85ed0    0x85ed0   
+child:  sending fpage   0x85ed0 0xc2
+grandchild:     I'm 0x300a0000000c0021
+grandchild:     parent 20080000000a0001 id_n 20080000000a0001 4
+child:  Sending mappings, this may take a while...
+child:  done
+child:  Sent 0 mappings of size 48
+grandchild:     Got 1 mappings, 1 real, junk=108
+grandchild:     I'm done.
+child:  killing grandchild
+
+child:  Testing fpage size 49 base 0 step 20000000
+child:  Starting grandchild, ip=85ed0 sp=8eff8
+child:  started grandchild, id=0x300a0000000c0022
+child:  page fault 0x85ed0    0x85ed0   
+child:  sending fpage   0x85ed0 0xc6
+grandchild:     I'm 0x300a0000000c0022
+grandchild:     parent 20080000000a0001 id_n 20080000000a0001 4
+child:  Sending mappings, this may take a while...
+child:  done
+child:  Sent 0 mappings of size 49
+grandchild:     Got 1 mappings, 1 real, junk=108
+grandchild:     I'm done.
+child:  killing grandchild
+
+child:  Testing fpage size 50 base 0 step 20000000
+child:  Starting grandchild, ip=85ed0 sp=8eff8
+child:  started grandchild, id=0x300a0000000c0023
+child:  page fault 0x85ed0    0x85ed0   
+child:  sending fpage   0x85ed0 0xca
+grandchild:     I'm 0x300a0000000c0023
+grandchild:     parent 20080000000a0001 id_n 20080000000a0001 4
+child:  Sending mappings, this may take a while...
+child:  done
+child:  Sent 0 mappings of size 50
+grandchild:     Got 1 mappings, 1 real, junk=108
+grandchild:     I'm done.
+child:  killing grandchild
+
+child:  Testing fpage size 51 base 0 step 20000000
+child:  Starting grandchild, ip=85ed0 sp=8eff8
+child:  started grandchild, id=0x300a0000000c0024
+child:  page fault 0x85ed0    0x85ed0   
+child:  sending fpage   0x85ed0 0xce
+grandchild:     I'm 0x300a0000000c0024
+grandchild:     parent 20080000000a0001 id_n 20080000000a0001 4
+child:  Sending mappings, this may take a while...
+child:  done
+child:  Sent 0 mappings of size 51
+grandchild:     Got 1 mappings, 1 real, junk=108
+grandchild:     I'm done.
+child:  killing grandchild
+
+child:  Testing fpage size 52 base 0 step 20000000
+child:  Starting grandchild, ip=85ed0 sp=8eff8
+child:  started grandchild, id=0x300a0000000c0025
+child:  page fault 0x85ed0    0x85ed0   
+child:  sending fpage   0x85ed0 0xd2
+grandchild:     I'm 0x300a0000000c0025
+grandchild:     parent 20080000000a0001 id_n 20080000000a0001 4
+child:  Sending mappings, this may take a while...
+child:  done
+child:  Sent 0 mappings of size 52
+grandchild:     Got 1 mappings, 1 real, junk=108
+grandchild:     I'm done.
+child:  killing grandchild
+
+child:  Testing fpage size 53 base 0 step 20000000
+child:  Starting grandchild, ip=85ed0 sp=8eff8
+child:  started grandchild, id=0x300a0000000c0026
+child:  page fault 0x85ed0    0x85ed0   
+child:  sending fpage   0x85ed0 0xd6
+grandchild:     I'm 0x300a0000000c0026
+grandchild:     parent 20080000000a0001 id_n 20080000000a0001 4
+child:  Sending mappings, this may take a while...
+child:  done
+child:  Sent 0 mappings of size 53
+grandchild:     Got 1 mappings, 1 real, junk=108
+grandchild:     I'm done.
+child:  killing grandchild
+
+child:  Testing fpage size 54 base 0 step 20000000
+child:  Starting grandchild, ip=85ed0 sp=8eff8
+child:  started grandchild, id=0x300a0000000c0027
+child:  page fault 0x85ed0    0x85ed0   
+child:  sending fpage   0x85ed0 0xda
+grandchild:     I'm 0x300a0000000c0027
+grandchild:     parent 20080000000a0001 id_n 20080000000a0001 4
+child:  Sending mappings, this may take a while...
+child:  done
+child:  Sent 0 mappings of size 54
+grandchild:     Got 1 mappings, 1 real, junk=108
+grandchild:     I'm done.
+child:  killing grandchild
+
+child:  Testing fpage size 55 base 0 step 20000000
+child:  Starting grandchild, ip=85ed0 sp=8eff8
+child:  started grandchild, id=0x300a0000000c0028
+child:  page fault 0x85ed0    0x85ed0   
+child:  sending fpage   0x85ed0 0xde
+grandchild:     I'm 0x300a0000000c0028
+grandchild:     parent 20080000000a0001 id_n 20080000000a0001 4
+child:  Sending mappings, this may take a while...
+child:  done
+child:  Sent 0 mappings of size 55
+grandchild:     Got 1 mappings, 1 real, junk=108
+grandchild:     I'm done.
+child:  killing grandchild
+
+child:  Testing fpage size 56 base 0 step 20000000
+child:  Starting grandchild, ip=85ed0 sp=8eff8
+child:  started grandchild, id=0x300a0000000c0029
+child:  page fault 0x85ed0    0x85ed0   
+child:  sending fpage   0x85ed0 0xe2
+grandchild:     I'm 0x300a0000000c0029
+grandchild:     parent 20080000000a0001 id_n 20080000000a0001 4
+child:  Sending mappings, this may take a while...
+child:  done
+child:  Sent 0 mappings of size 56
+grandchild:     Got 1 mappings, 1 real, junk=108
+grandchild:     I'm done.
+child:  killing grandchild
+
+child:  Testing fpage size 57 base 0 step 20000000
+child:  Starting grandchild, ip=85ed0 sp=8eff8
+child:  started grandchild, id=0x300a0000000c002a
+child:  page fault 0x85ed0    0x85ed0   
+child:  sending fpage   0x85ed0 0xe6
+grandchild:     I'm 0x300a0000000c002a
+grandchild:     parent 20080000000a0001 id_n 20080000000a0001 4
+child:  Sending mappings, this may take a while...
+child:  done
+child:  Sent 0 mappings of size 57
+grandchild:     Got 1 mappings, 1 real, junk=108
+grandchild:     I'm done.
+child:  killing grandchild
+
+child:  Testing fpage size 58 base 0 step 20000000
+child:  Starting grandchild, ip=85ed0 sp=8eff8
+child:  started grandchild, id=0x300a0000000c002b
+child:  page fault 0x85ed0    0x85ed0   
+child:  sending fpage   0x85ed0 0xea
+grandchild:     I'm 0x300a0000000c002b
+grandchild:     parent 20080000000a0001 id_n 20080000000a0001 4
+child:  Sending mappings, this may take a while...
+child:  done
+child:  Sent 0 mappings of size 58
+grandchild:     Got 1 mappings, 1 real, junk=108
+grandchild:     I'm done.
+child:  killing grandchild
+
+child:  Testing fpage size 59 base 0 step 20000000
+child:  Starting grandchild, ip=85ed0 sp=8eff8
+child:  started grandchild, id=0x300a0000000c002c
+child:  page fault 0x85ed0    0x85ed0   
+child:  sending fpage   0x85ed0 0xee
+grandchild:     I'm 0x300a0000000c002c
+grandchild:     parent 20080000000a0001 id_n 20080000000a0001 4
+child:  Sending mappings, this may take a while...
+child:  done
+child:  Sent 0 mappings of size 59
+grandchild:     Got 1 mappings, 1 real, junk=108
+grandchild:     I'm done.
+child:  killing grandchild
+
+child:  Testing fpage size 60 base 0 step 20000000
+child:  Starting grandchild, ip=85ed0 sp=8eff8
+child:  started grandchild, id=0x300a0000000c002d
+child:  page fault 0x85ed0    0x85ed0   
+child:  sending fpage   0x85ed0 0xf2
+grandchild:     I'm 0x300a0000000c002d
+grandchild:     parent 20080000000a0001 id_n 20080000000a0001 4
+child:  Sending mappings, this may take a while...
+child:  done
+child:  Sent 0 mappings of size 60
+grandchild:     Got 1 mappings, 1 real, junk=108
+grandchild:     I'm done.
+child:  killing grandchild
+
+child:  Testing fpage size 61 base 0 step 20000000
+child:  Starting grandchild, ip=85ed0 sp=8eff8
+child:  started grandchild, id=0x300a0000000c002e
+child:  page fault 0x85ed0    0x85ed0   
+child:  sending fpage   0x85ed0 0xf6
+grandchild:     I'm 0x300a0000000c002e
+grandchild:     parent 20080000000a0001 id_n 20080000000a0001 4
+child:  Sending mappings, this may take a while...
+child:  done
+child:  Sent 0 mappings of size 61
+grandchild:     Got 1 mappings, 1 real, junk=108
+grandchild:     I'm done.
+child:  killing grandchild
+
+child:  Testing fpage size 62 base 0 step 20000000
+child:  Starting grandchild, ip=85ed0 sp=8eff8
+child:  started grandchild, id=0x300a0000000c002f
+child:  page fault 0x85ed0    0x85ed0   
+child:  sending fpage   0x85ed0 0xfa
+grandchild:     I'm 0x300a0000000c002f
+grandchild:     parent 20080000000a0001 id_n 20080000000a0001 4
+child:  Sending mappings, this may take a while...
+child:  done
+child:  Sent 0 mappings of size 62
+grandchild:     Got 1 mappings, 1 real, junk=108
+grandchild:     I'm done.
+child:  killing grandchild
+
+child:  Testing fpage size 63 base 0 step 20000000
+child:  Starting grandchild, ip=85ed0 sp=8eff8
+child:  started grandchild, id=0x300a0000000c0030
+child:  page fault 0x85ed0    0x85ed0   
+child:  sending fpage   0x85ed0 0xfe
+grandchild:     I'm 0x300a0000000c0030
+grandchild:     parent 20080000000a0001 id_n 20080000000a0001 4
+child:  Sending mappings, this may take a while...
+child:  done
+child:  Sent 0 mappings of size 63
+grandchild:     Got 1 mappings, 1 real, junk=108
+grandchild:     I'm done.
+child:  killing grandchild
+
+child:  Testing fpage size 64 base 0 step 20000000
+child:  Starting grandchild, ip=85ed0 sp=8eff8
+child:  started grandchild, id=0x300a0000000c0031
+child:  page fault 0x85ed0    0x85ed0   
+child:  sending fpage   0x85ed0 0x102
+grandchild:     I'm 0x300a0000000c0031
+grandchild:     parent 20080000000a0001 id_n 20080000000a0001 4
+child:  Sending mappings, this may take a while...
+child:  done
+child:  Sent 0 mappings of size 64
+grandchild:     Got 1 mappings, 1 real, junk=108
+grandchild:     I'm done.
+child:  killing grandchild
+child:  I'm done.
+main:   MAPPING TEST COMPLETED
+L4 KERNEL DEBUGGER: assert(0) failed, file 'map_main.c', line 273.

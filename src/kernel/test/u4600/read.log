@@ -1,0 +1,12 @@
+Interrupt Serial IO, thread id 0x1002000000060001
+Read test: my thread id is 0x1002000000080001
+Starting keyboard reader...ID = 0x1002000000080401
+Testing starts now.0401
+This program should simply echo what you type.
+^D terminates test.
+Linux is cool,
+L4 is cooler!
+L4 KERNEL DEBUGGER: assert(!"Terminated by ^D.") failed, file 'read.c', line 136.
+
+TCB BASE: 0xc000000000100000
+KDBG> 

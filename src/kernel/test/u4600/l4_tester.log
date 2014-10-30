@@ -1,0 +1,104 @@
+Interrupt Serial IO, thread id 0x1002000000060001
+********************  L4 tester ********************
+my thread id is 0x1002000000080001
+l4_thread_ex_regs (probe nil thread) PASSED
+l4_thread_ex_regs (start thread) PASSED
+l4_ipc_call PASSED
+l4_ipc_reply_and_wait PASSED
+l4_ipc_send PASSED
+l4_ipc_wait PASSED
+l4_ipc_receive PASSED
+l4_task_new (simple) PASSED
+l4_ipc_reply_deceiving_and_wait PASSED
+l4_ipc_send_deceiving PASSED
+send to non-existent thread PASSED
+send timeout (0) PASSED
+wait timeout (0) PASSED
+send timeout (5ms) PASSED
+wait timeout (5ms) PASSED
+send cancel PASSED
+task_new (replace) PASSED
+pager thread id is 0x1002000000080c01
+printer thread id is 0x1002000000081001
+page fault 0x80010 0x80010 0x2008000000200002
+map message fpage receive PASSED
+pager send fpage to 0x2008000000200002 PASSED
+page fault 0x820e8 0x820e8 0x2008000000200002
+page fault 0x7ffd0 0x820f4 0x2008000000200002
+page fault 0x813f8 0x813f8 0x2008000000200002
+printer: 0x2008000000200002 -> 0x1002000000081001
+child fpage received from pager PASSED
+child unmapping.....
+page fault 0x81ca0 0x81ca0 0x2008000000200002
+page fault 0x7fe00 0x81ca0 0x2008000000200002
+page fault 0x821d4 0x821d4 0x2008000000200002
+page fault 0x80ee8 0x80ee8 0x2008000000200002
+..... should have produced page faults
+invalid deceit test PASSED
+outer -> inner ipc deceit test PASSED
+short recv sent direct msg PASSED
+page fault 0x83008 0x8234c 0x2008000000200002
+send direct, receiver unwilling PASSED
+recv buffer 0xt direct msg PASSED
+recv direct string PASSED
+direct msg boundary check PASSED
+fpage recv with memory fpage option PASSED
+confirmation of fpage recv PASSED
+recv indirect string PASSED
+recv cut indirect string PASSED
+send cut indirect string PASSED
+Testing page faults during IPC - ignore SIGMA0 errors...
+page fault 0x400008 0xffffffff8005505c 0x2008000000200002
+indirect string with sender page fault PASSED
+page fault 0x500008 0x0 0x2008000000200002
+recv SIGMA0 INFO: mapping request to sigma0 out of available memory range
+thread id 0x1002000000080001, address 0xe, IP 0x0
+indirect string with page fault PASSED
+recv indirect string with failed recv pfault PASSED
+send SIGMA0 INFO: mapping request to sigma0 out of available memory range
+thread id 0x1002000000080001, address 0x8, IP 0xffffffff8005505c
+indirect string with failed recv pfault PASSED
+rcv indirect string with failed sndr pfault PASSED
+snd indirect string with failed sndr pfault PASSED
+page fault 0x507ffc 0x0 0x2008000000200002
+rcv indirect string with ex_reg abort PASSED
+snd indirect string with ex_reg abort PASSED
+page fault 0x90000 0x90000 0x2008000000220001
+task_new (inactive) on chief of task hierarchy PASSED
+
+CHIEF IPC TEST: Tests that redirected messages are received with a valid
+         destination attached. Assumes that the functions l4_mips_ipc_send
+         and l4_mips_ipc_send_deceiving work.
+         (chief_reply_and_wait not fully tested)
+Initialize Chief IPC Tester Child:
+page fault 0x6a8f4 0x6a8f4 0x2008000000640001
+page fault 0x72538 0x6a8fc 0x2008000000640001
+page fault 0x699d4 0x699d4 0x2008000000640001
+TID:0x2008000000640001,IP:0x6a8f4,SP:0x72540
+l4_mips_ipc_chief_wait(): page fault 0x714c0 0x6a928 0x2008000000640001
+page fault 0x68ed8 0x68ed8 0x2008000000640001
+Message from 0x2008000000640001 to 0x20000
+PASS: Redirect gives real destination (Correct source id)
+l4_mips_ipc_chief_receive(): Message from 0x2008000000640001 to 0x20000
+PASS: Redirect gives real destination (Correct source id)
+Child direction-preserving deceiving send: Message from 0x3064000000660001 to 0x20000PASS: Redirect gives real destination (Correct source id)
+Not direction preserving: Message from 0x2008000000640001 to 0x20000
+PASS: Redirect gives real destination (Correct source id)
+Closed receive bug (Receiving from a deceiving source)
+Sender IPCs before receiver:FAILED
+Receiver IPCs before sender:PASSED: Message from 0x3064000000660001 to 0x20000
+l4_mips_ipc_chief_send: Message from 0x3064000000660001 to 0x20000
+PASS: Redirect gives real destination (Correct source id)
+l4_mips_ipc_chief_call()[send]: Message from 0x3064000000660001 to 0x20000
+PASS: Redirect gives real destination (Correct source id)
+l4_mips_ipc_chief_call()[receive]:
+Message from 0x20000 to 0x2008000000640001
+PASS: Redirect gives real destination (Correct source id)
+l4_mips_ipc_chief_reply_and_wait()[reply]: Message from 0x3064000000660001 to 0x
+20000
+PASS: Redirect gives real destination (Correct source id)
+l4_mips_ipc_chief_reply_and_wait()[wait]:
+Message from 0x20000 to 0x2008000000640001
+PASS: Redirect gives real destination (Correct source id)
+Chief IPC Test FAILED
+****************  IPC tests complete ****************

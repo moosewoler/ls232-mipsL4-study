@@ -1,0 +1,564 @@
+% Permission to make digital/hard copy of part or all of this work for
+% personal or classroom use is granted without fee provided that copies
+% are not made or distributed for profit or commercial advantage, the
+% copyright notice, the title of the publication and its date appear, and
+% notice is given that copying is by permission of the authors. To copy
+% otherwise, to republish, to post on servers, or to redistribute to lists
+% requires prior specific permission and/or a fee.
+%
+% Copyright (C) 1998 by Gernot Heiser, The University of New South Wales.
+
+
+% L4 user manual non-IPC system calls chapter
+% Author: Alan Au
+% Created On: 5 January 1998
+% Last Modified: 29 May 1998
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\chapter{\label{c:other}Other L4 System Calls}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{Task Creation and Deletion}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\label{sec:tasks}
+
+A task can be in either an \emph{active} or an \emph{inactive} state.
+Creating an active task creates a new address space as well as the
+maximum number of threads for a task (128). Initially, all the threads
+of an active task except for one (called lthread 0) are
+\emph{inactive}. In contrast, an inactive task has no address space
+and no threads (whether active or not) and thus consumes no resources.
+
+The kernel only allows a certain number of tasks to be created on a
+first-come-first-served basis with subsequent attempts to create a new
+task failing (see section~\ref{sec:ralloc}). Thus, the purpose of
+creating an inactive task is essentially to reserve the right to create
+an active task. Further, an inactive task can be donated to another
+chief which effectively transfers the right to create an active
+task. The chief of a new active task is the task that created it. A task
+created as inactive can have a new chief (\emph{task donation}).
+
+Deleting a task removes the address space and all associated threads of
+the task. A task can only be deleted by its chief or indirectly by (a
+chief higher up in the task hierarchy) deleting its chief.
+
+Task creation and deletion is done by using the {\footnotesize\verb+task_new+} system
+call. This system call first deletes a (active or inactive) task and
+creates a new (active or inactive) one. If the task is created active
+it gets the same task number (as provided in the \emph{dest}
+parameter) but a different version number, hence producing a different
+ID. An active task is created by providing a valid pager id to the
+system call while a nil pager produces an inactive task.
+
+Note that there is no separate task deletion system call as such. To
+kill a task, simply create a new inactive task providing the id of the
+task to be killed to the {\footnotesize\verb+task_new+} system call (as the
+\emph{dest} parameter).
+
+Creating an \emph{active} task requires the caller to supply
+\begin{itemize}
+\item a pager (the pager for the new task's lthread 0, as well as the
+default pager for all further threads),
+\item a start address and an initial stack pointer
+\item a maximum scheduling priority (MCP), and
+\item an exception handler (the handler for the new task's lthread 0, as
+well as the default handler for all further threads).
+\end{itemize}
+Creating an \emph{inactive} task requires the caller to specify
+\begin{itemize}
+\item a null pager (which identifies the new task as being inactive),
+and
+\item a new chief for the task (which can be the same as the calling
+task, if not then the call donates the task to the new chief).
+\end{itemize}
+An example of task creation can be found in Section~\ref{s:ex-task}.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{Thread Related System Calls}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\subsection{Thread Manipulation}
+\label{sec:exregs}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+As mentioned already, an active task is created with a full set (128) of
+threads but with only one thread active (lthread 0). A thread is
+activated by setting its instruction pointer (IP) and stack pointer (SP)
+to valid values. Once active, a thread cannot be deactivated (other than
+by deleting its task). To stop a thread from running it needs to be
+blocked on an IPC which will never succeed.
+
+A thread's instruction and stack pointers, along with its exception
+handler and pager, are set by manipulating the thread's register
+values through the {\footnotesize\verb+lthread_ex_regs+} system call. Providing the
+invalid value (-1) for any of these to this system call will retain the old
+values. {\footnotesize\verb+lthread_ex_regs+} also gives back the old values of the
+instruction pointer, stack pointer, exception handler and pager. Thus,
+the call can also be used to perform a (logical) thread switch
+(exchange registers of running thread with saved a one, this supports
+thread management by an OS personality ) as well as save a thread's
+current context (by providing invalid values only). A thread's pending
+IPC's are cancelled and those in progress are aborted by this system
+call.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\subsection{Release CPU}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+A thread can use the {\footnotesize\verb+thread_switch+} system call to voluntarily
+release the CPU. The releasing thread can specify a specific thread to
+which to donate its remaining time slice. If ready, the thread
+receiving the donation obtains the remaining time of the other thread
+on top of its own time slice. Alternatively, if the receiving thread
+is not ready or if the releasing thread does not specify a destination
+thread as part of the system call, the caller's remaining time slice
+is simply forfeited and normal scheduling takes place immediately.
+
+An important use of this system call is to implement user-level
+scheduling. The user-level scheduler is (the only) thread running at
+highest priority, so it will be run by the \micro-kernel whenever the
+kernel scheduler is invoked. The user-level scheduler then selects the
+next thread it wants to run and donates its time slice to it.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\subsection{Thread Scheduling}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+Thread scheduling in L4 is controlled by three parameters:
+\emph{timeslice length, thread priority and maximum controlled
+  priority (MCP)}.
+
+\subsubsection{Timeslice Length}
+
+Each L4 thread has a timeslice length associated with it.  The timeslice value
+can range from 0  to {\footnotesize\verb+MAX_TIMESLICE+} and can  vary between
+individual threads  of  a task. Each  thread  is scheduled for  the  timeslice
+length currently associated with it. When a thread's time quantum expires, the
+scheduler  selects the next runnable  thread  as  described  in the  following
+section.
+
+A timeslice length of zero is valid.  A thread with zero timeslice is
+taken out of the ready queue and therefore never scheduled (until it
+is given a non-zero timeslice length).
+
+Note that a thread's timeslice length is in no way determined by its
+priority. It is valid for threads of the same priority to have
+different timeslice lengths. A thread initially gets the same
+timeslice length as its parent and that value can only be changed via
+a {\footnotesize\verb+l4_thread_schedule+} system call.
+
+\subsubsection{Priority}
+
+The kernel defines 256 levels of priority in the range
+[255..0] with 255 being the highest priority and 0 the lowest. L4's
+internal scheduler uses multiple-level round-robin queues such that
+there is a queue (possibly empty) associated with each priority level.
+All the queues taken together form the kernel's ready queue.
+
+Figure~\ref{fig:pbl} shows an example of a ready queue in L4. Each circle 
+represents a thread in a particular round robin queue. 
+
+\begin{figure}[htb]
+\begin{center}
+\leavevmode
+\epsfxsize = .7\textwidth
+\epsfbox{eps/priority.eps}
+\end{center}
+\caption{Example Ready Queue}
+\label{fig:pbl}
+\end{figure}
+
+Each thread has an associated priority at any given time. The priority
+determines which round robin queue the thread belongs to in the kernel
+ready queue.  Changing a thread's priority (via
+{\footnotesize\verb+l4_thread_schedule+}) will change the queue it belongs to.
+
+L4 priorities are absolute.  On each scheduling event, the scheduler
+will always select the next thread to run from the head of the highest
+priority queue that is currently non-empty. For example, in
+Figure~\ref{fig:pbl}, the scheduler would take the thread at the head
+of the queue associated with priority 254.
+
+\subsubsection{Maximum Controlled Priority}
+\label{sec:mcp}
+
+Unlike the timeslice length and timeslice priority, the MCP is not
+thread based but rather task based. The MCP of a task is specified at
+creation time (see Section~\ref{sec:tasks}) and all threads in the
+task will share this MCP value.
+
+Any thread can change another thread's scheduling parameters (timeslice
+length and priority) by invoking L4's {\footnotesize\verb+l4_thread_schedule+} system
+call under the right conditions. {\footnotesize\verb+l4_thread_schedule+} works if
+and only if src.mcp $\geq$ dest.prio AND src.mcp $\geq$ new prio.
+Otherwise, it will not change the destination's status but its effects
+on src are undefined.
+
+\subsubsection{Scheduling Parameter Inheritance}
+
+When an L4 task is created (by calling {\footnotesize\verb+l4_task_new+}), only the
+MCP is specified but neither the time slice length nor priority is
+given. Simlarily, creating an L4 thread (by calling
+{\footnotesize\verb+l4_thread_ex_regs+}) does not explicitly require any of the
+scheduling parameters to be provided. Thus there are implicit
+scheduling parameter inheritance rules defined for new tasks and
+threads.
+
+In the following description of the inheritance rules $new~x$
+represents the value of $x$ given as a parameter in the relevant
+system call ({\footnotesize\verb+l4_task_new+} or {\footnotesize\verb+l4_thread_ex_regs+}),
+$src.x$ represents the value of $x$ in the creator task/thread and
+$dest.x$ represents the value of $x$ in the task/thread being
+created. $x$ is one of either $mcp$, $tsl$ or $prio$. 
+
+\begin{description}
+
+\item[New task] Only lthread~0 of the new task has its scheduling
+  parameters defined.  All other threads will have their scheduling
+  parameters defined when they are first activated (except for MCP
+  which is task based). So the actual inheritance rules for lthread~0
+  of the new task are:
+
+  \begin{itemize}
+
+    \item $dest.mcp = \min\{new~mcp, src.mcp\}$
+
+    \item $dest.tsl = src.tsl$
+
+    \item $dest.prio = src.prio$
+      
+  \end{itemize}
+
+\item[New thread] In this context, a thread is only considered new
+  when it is first ``created''. Recall from Section~\ref{sec:exregs}
+  that the system call {\footnotesize\verb+l4_thread_ex_regs+} can be used to
+  activate an inactive thread, to do a logical thread switch or just
+  to get a thread's state. For the current purposes, only the first
+  use of {\footnotesize\verb+l4_thread_ex_regs+} is considered as ``creating'' a new
+  thread. This distinction is important because the following
+  inheritance rules only apply when a new thread is created.
+  \emph{There is no change in scheduling parameters in the other two
+    cases.}
+  
+  \begin{itemize}
+
+  \item $dest.mcp = src.mcp$\footnote{MCP is actually only defined for
+      lthread~0 with all other threads in the task using the value from
+      lthread~0.}
+
+  \item $dest.tsl = src.tsl$
+
+  \item $dest.prio = src.prio$
+      
+  \end{itemize}
+
+\end{description}
+
+One final issue must be considered as part of scheduling parameter
+inheritance. At boot time, $\sigma_0$ (Section~\ref{sec:sigma0})
+starts up any programs that have been marked as initial servers in the
+kernel boot image (see Section~\ref{sec:bootstrap} for information on
+the L4 bootstrap and Section~\ref{sec:dit} for the boot image).
+$\sigma_0$ has maximum values for all its scheduling parameters and
+also calls {\footnotesize\verb+l4_task_new+} (to create the initial servers) with the
+MCP parameter set to maximum.  Hence all initial servers will have
+maximum values for their MCP and thread priority. This behaviour is
+sensible because initial servers should form the OS and thus should be
+given maximum privileges.
+
+
+\subsubsection{L4 Scheduling System Call}
+
+The {\footnotesize\verb+l4_thread_schedule+} system call allows setting (kernel)
+scheduling parameters of user threads.  It also returns thread states,
+in particular accumulated CPU time. The following restrictions and
+points must be remembered when calling {\footnotesize\verb+l4_thread_schedule+}:
+
+\begin{itemize}
+  
+\item For the call to be effective, the MCP condition described above
+  must be satisfied.
+
+\item The call cannot increase the destination thread's priority over
+  the caller task's own MCP. That is, the value of \emph{prio} given
+  in the \emph{param} parameter must not exceed the caller's MCP.
+
+\item The new timeslice length of the destination can be set to any
+  value\footnote{Obviously, the timeslice length can only be specified
+  with the accuracy allowed by the granularity of the timeslice
+  format. Moreover, not all representable values may be possible in the
+  particular kernel, and the set of possible values may depend on the
+  priority of the target thread. L4 will round the specified value to
+  the nearest possible value.} within the interval [0,
+  {\footnotesize\verb+MAX_TIMESLICE+}]. One way to set a thread to have
+  {\footnotesize\verb+MAX_TIMESLICE+} is to give the maximum value that
+  can be specified in timeslice format as the new timeslice length.
+
+\end{itemize}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\subsection{Obtaining Thread Identifiers}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+The {\footnotesize\verb+id_nearest+} system call returns the ID of the thread that
+would \emph{really} receive a message sent to a specific thread. In
+particular, if the destination is:
+
+\begin{description}
+
+        \item[outside invoker's clan:] Return ID of invoker's own chief.
+
+        \item[in same clan as invoker, or inside invoker's clan:] Return ID of destination thread.
+
+        \item[in subclan of invoker's clan:] Return ID of chief (within own
+        clan) of topmost subclan.
+
+        \item[nil:] Return invoker's own thread ID. (This is the closest
+        thing to a ``null system call'' in L4 and is frequently used for
+        benchmarking.)
+
+\end{description}
+
+\begin{figure}[h]
+\centering
+\mbox{\subfigure[Outside]
+        {\epsfig{figure=eps/id1.eps,width=.32\textwidth}}\quad
+      \subfigure[Inside]
+        {\epsfig{figure=eps/id2.eps,width=.25\textwidth}}\quad
+      \subfigure[In Subclan]
+        {\epsfig{figure=eps/id3.eps,width=.25\textwidth}}}
+\caption{id\_nearest}
+\label{fig:id}
+\end{figure}
+
+Figure~\ref{fig:id} shows the first three cases. Clan boundaries are
+shown as ovals and tasks are shown as circles. An arrow is drawn from
+the sender to the destination and the shaded circle is the thread ID
+that is returned by {\footnotesize\verb+id_nearest+} when invoked by the sender.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{Revoking Mappings}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+Mappings can be recalled by using the {\footnotesize\verb+fpage_unmap+} system
+call.  The invoker  specifies an fpage to  be revoked from  all address spaces
+into which the  invoker mapped directly or indirectly.   The unmapping can  be
+done partially  (revert to read-only) or completely  (pages no  longer part of
+the other   address  spaces).   As part  of  the  unmapping,  the  invoker can
+optionally elect to remove the pages from its own address space.
+
+\cbstart
+
+The {\footnotesize\verb+fpage_unmap+} takes two paramters:
+
+\begin{itemize}
+
+\item \emph{fpage:} This the fpage to  be unmapped subject  to the map mask in
+the second  parameter. As with mapping and   granting, the fpage specification
+designates all valid mapping  within the address  space region defined  by the
+fpage.
+
+\item \emph{map\_mask:} This determines how the unmap is performed
+by indicating:
+
+	\begin{enumerate}
+
+	\item The unmap operation - set fpage to read-only
+	({\footnotesize\verb+L4_FP_REMAP_PAGE+}) or completely unmap fpage
+	({\footnotesize\verb+L4_FP_FLUSH_PAGE+}).
+
+	\item The unmap extent - apply the unmap operation to all other address
+	spaces in which the fpage has been mapped but not the original flex
+	page ({\footnotesize\verb+L4_FP_OTHER_SPACES+}) or apply the unmap
+	operation in every address space including the original
+	({\footnotesize\verb+L4_FP_ALL_SPACES+})
+
+	\end{enumerate}
+
+	Note that the  unmap operation and  unmap extent are orthogonal and so
+	both should  be  specified (by combining the    two attributes with  a
+	logical   OR). The  table   below shows   all  the  valid  values  for
+	\emph{map\_mask}.
+
+	\begin{tabular}{|c|c|}  \hline \hline
+
+	\emph{map\_mask} & Description \\ \hline
+	
+	{\footnotesize\verb+L4_FP_REMAP_PAGE |+} & 
+	Map fpage read-only  in all other address spaces\\ 
+
+	{\footnotesize\verb+L4_FP_OTHER_SPACES+} & 
+	in which the fpage has been mapped\\ \hline
+
+	{\footnotesize\verb+L4_FP_FLUSH_PAGE |+} & 
+	Completely unmap the fpage in all other address spaces\\
+
+	{\footnotesize\verb+L4_FP_OTHER_SPACES+} & 
+	in which the fpage has been mapped \\ \hline
+
+	{\footnotesize\verb+L4_FP_REMAP_PAGE |+} & 
+	Map fpage read-only \\
+
+	{\footnotesize\verb+L4_FP_ALL_SPACES+} & 
+	in all address spaces\\ \hline
+
+	{\footnotesize\verb+L4_FP_FLUSH_PAGE |+} & 
+	Completely unmap the fpage \\
+
+	{\footnotesize\verb+L4_FP_ALL_SPACES+} & 
+	in all address spaces\\ \hline
+
+	\end{tabular}
+
+\end{itemize}
+
+\cbend
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{An Example}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\example{Thread and task creation}
+
+This example illustrates how a thread can be made active and how to create an active (sub)task. First a pager thread will be started and then a sub-task will be created using the newly started pager.
+
+Assume we have the following declarations: \\ \\
+\hspace*{10pt} {\footnotesize\verb+#define PAGERSTACKSIZE 1024+} \\
+\hspace*{10pt} {\footnotesize\verb+dword_t pager_stack[PAGERSTACKSIZE];+} \\
+\hspace*{10pt} {\footnotesize\verb+extern void pager(void); /* pager function */+} \\
+\hspace*{10pt} {\footnotesize\verb+extern void subtask(void); /* subtask function */+} \\
+\hspace*{10pt} {\footnotesize\verb+dword_t oip, osp; /* old insturction & stack pointers */+} \\
+\hspace*{10pt} {\footnotesize\verb+l4_thread_id_t excpt, page; /* exception handler and pager */+} \\
+\hspace*{10pt} {\footnotesize\verb+l4_thread_id_t pagerid, subtaskid, myid;+} \\
+
+Now, to start a new thread the following steps are needed.
+
+\begin{enumerate}
+
+\item Get the id of own task. \\ \\
+  \hspace*{10pt} {\footnotesize\verb+myid = l4_myself();+} \\ \\
+  Note that {\footnotesize\verb+l4_myself+} is just a C interface procedure which
+  uses the {\footnotesize\verb+id_nearest+} L4 system call with a \emph{nil} parameter.
+  
+\item Obtain an id for the new thread. Here we just use an
+  lthread number one higher than that of the calling thread. (This
+  one better be unused!) \\ \\
+  \hspace*{10pt} {\footnotesize\verb+ pagerid = myid; /* same task */+} \\
+  \hspace*{10pt} {\footnotesize\verb" pagerid.id.lthread += 1; /* new thread */"}
+
+\item For this example, there is to be no change in exception handler
+  and pager. That is, the new thread is to have the same exception
+  handler and pager as the thread that started it. Recall that this
+  is done by providing an invalid (-1) value for the exception handler
+  and pager parameters in the {\footnotesize\verb+l4_thread_ex_regs+} system call. \\ \\
+  \hspace*{10pt} {\footnotesize\verb+excpt.ID = -1LL;+} \\
+  \hspace*{10pt} {\footnotesize\verb+page.ID = -1LL;+}
+  
+\item Determine the new instruction pointer for the thread. In this
+  case, it is just the entry address of our pager function (i.e.
+  {\footnotesize\verb+pager+}).
+
+\item Determine the new stack pointer for the thread. We can use any
+  region of memory (in this task's address space) reserved for such a
+  purpose. The stack starts from high memory and ``grows'' downwards.
+  Therefore out stack pointer is\\ \\
+  \hspace*{10pt} {\footnotesize\verb+&pager_stack[PAGERSTACK - 1]+}
+  
+\item Use {\footnotesize\verb+l4_thread_ex_regs+} to start the new thread. \\ \\
+  \hspace*{10pt} {\footnotesize\verb+l4_thread_ex_regs(pagerid,+} \\
+  \hspace*{105pt} {\footnotesize\verb+(dword_t) pager,+}\\
+  \hspace*{105pt} {\footnotesize\verb+(dword_t) &pager_stack[PAGERSTACK - 1],+}\\
+  \hspace*{105pt} {\footnotesize\verb+&excpt,+}\\
+  \hspace*{105pt} {\footnotesize\verb+&page,+}\\
+  \hspace*{105pt} {\footnotesize\verb+&oip,+}\\
+  \hspace*{105pt} {\footnotesize\verb+&osp);+}
+\end{enumerate}
+
+The second part of this example is to create a new task with the newly
+started thread as the pager for the new task. The steps may be as
+follows:\label{s:ex-task}
+
+\begin{enumerate}
+
+\item Obtain a new task id. This can be done simply by picking
+  any unused task id, here we assume that the caller's task is the
+  last one in use so far. In general we need to manage
+  task IDs. \\ \\
+  \hspace*{10pt} {\footnotesize\verb+subtaskid.ID = myid.ID;+} \\
+  \hspace*{10pt} {\footnotesize\verb"subtaskid.id.task += 1; /* just pick an id higher than self */"} \\
+  
+\item Determine the exception handler for the new task. For this
+  example, the exception handler will be set to be the thread that
+  creates the new task (i.e. {\footnotesize\verb+myid+}).
+  
+\item Determine the pager for the new task. For this example, the
+  pager will be the previously started thread (i.e. {\footnotesize\verb+pagerid+}).
+  
+\item Determine the initial instruction pointer for the new task.  In
+  this case, it is just {\footnotesize\verb+subtask+}.
+  
+\item Determine the maximum scheduling priority of the new task. Here
+  we assume that this is already set in a variable {\footnotesize\verb+mcp+}.
+  
+\item Determine the initial stack pointer for the new task. Note the
+  difference between this stack pointer and that for creating a new
+  thread. A new thread has the same address space as the thread that
+  started it (because they belong to the same task) but the new task
+  will have a totally new address space. By convention, the stack for
+  a new task is placed in the high end of memory though the exact
+  place is up to the user. For this example, we place the stack at the
+  top end of user addressable memory (address \(2^{40}\) on the R4x00).
+
+\item Use {\footnotesize\verb+l4_task_new+} to create the new task. \\ \\ 
+  \hspace*{10pt} {\footnotesize\verb+subtaskid = l4_task_new(subtaskid, mcp, 1<<40, &subtask, pagerid, myid);+}
+
+\end{enumerate}
+
+
+
+% 
+%%% Local Variables: %%%
+%%% mode: latex %%%
+%%% End: %%%

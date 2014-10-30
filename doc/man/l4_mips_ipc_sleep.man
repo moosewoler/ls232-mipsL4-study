@@ -1,0 +1,63 @@
+.\"     $Id: l4_mips_ipc_sleep.man,v 1.4 1998/12/16 02:51:00 gernot Exp $
+.\"     Copyright (C) 1997, 1998 Kevin Elphinstone, University of New
+.\"     South Wales.
+.\"
+.\"     This file is part of the L4/MIPS micro-kernel distribution.
+.\"
+.\"     This program is free software; you can redistribute it and/or
+.\"     modify it under the terms of the GNU General Public License
+.\"     as published by the Free Software Foundation; either version 2
+.\"     of the License, or (at your option) any later version.
+.\"     
+.\"     This program is distributed in the hope that it will be useful,
+.\"     but WITHOUT ANY WARRANTY; without even the implied warranty of
+.\"     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+.\"     GNU General Public License for more details.
+.\"     
+.\"     You should have received a copy of the GNU General Public License
+.\"     along with this program; if not, write to the Free Software
+.\"     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+.TH L4_MIPS_IPC_SLEEP 2 "06.12.97" "CSE/UNSW" "System calls"
+.SH NAME
+l4_mips_ipc_sleep \- sleep for a specified time interval
+.SH "Synopsis"
+.br
+\fB#include <ipc.h>\fP
+.PP
+\fBstatic inline int\fP 
+.br
+\fBl4_mips_ipc_sleep(l4_timeout_t\fP \fItimeout\fP \fB, l4_msgdope_t\fP \fI*result\fP
+\fB);\fP
+.SH "Description"
+This operation includes no send phase and specifies an invalid source
+for the receive phase. No message can therefore be received and the ipc
+will be terminated with ``receive timeout'' after the time specified in
+the parameter \fItimeout\fP is elapsed.
+.SH "Arguments"
+.IP "\fItimeout\fP"
+This 32\-bit word specifies the timeouts value. Only the receive timeout
+is relevant. For a detailed description see
+the L4 Reference Manual.
+.IP "\fIresult\fP"
+The message dope describing the result of the ipc.
+.SH "Return Values"
+The following return values are possible:
+.IP "\fBL4_IPC_RETIMEOUT\fP"
+Timeout during receive operation.
+.IP "\fBL4_IPC_RERCVPFTO\fP"
+Receive pagefault timeout.
+.SH "See Also"
+\fIl4_ipc\fP, 
+\fIl4_mips_ipc_receive\fP, 
+\fIl4_mips_ipc_chief_receive\fP, 
+\fIl4_mips_ipc_reply_and_wait\fP, 
+\fIl4_mips_ipc_reply_deceiving_and_wait\fP, 
+\fIl4_mips_ipc_chief_reply_and_wait\fP, 
+\fIl4_mips_ipc_send\fP, 
+\fIl4_mips_ipc_send_deceiving\fP, 
+\fIl4_mips_ipc_chief_send\fP, 
+\fIl4_mips_ipc_call\fP,
+\fIl4_mips_ipc_chief_call\fP,
+\fIl4_mips_ipc_wait\fP,
+\fIl4_mips_ipc_chief_wait\fP,
+.\" \fIl4_mips_ipc_sleep\fP 
