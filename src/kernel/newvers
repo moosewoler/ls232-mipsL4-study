@@ -1,4 +1,0 @@
-BEGIN {OFS="=";FS="="}
-/hword_t l4_build/ {$2 = $2 + 1}
-                   {print $0}
-

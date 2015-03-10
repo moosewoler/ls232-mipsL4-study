@@ -1,9 +1,0 @@
-Interrupt Serial I0, thread id 0x1002000000060001
-My thread id is 0x1002000000080001
-r = 0x10 - PASSED
-r = 0x10 - PASSED
-r = 0x10 - PASSED
-r = 0x10 - PASSED
-r = 0x10 - PASSED
-L4 KERNEL DEBUGGER: break
-TCB BASE: 0xc000000000000000
